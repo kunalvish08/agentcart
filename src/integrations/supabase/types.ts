@@ -14,6 +14,159 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_runs: {
+        Row: {
+          completed_at: string | null
+          completion_tokens: number | null
+          created_at: string
+          duration_ms: number | null
+          error: string | null
+          gateway_run_id: string | null
+          id: string
+          model: string
+          prompt_tokens: number | null
+          session_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["agent_status"]
+          step_count: number
+          stop_reason: string | null
+          tool_call_count: number
+          total_tokens: number | null
+          user_request: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completion_tokens?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          gateway_run_id?: string | null
+          id?: string
+          model: string
+          prompt_tokens?: number | null
+          session_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["agent_status"]
+          step_count?: number
+          stop_reason?: string | null
+          tool_call_count?: number
+          total_tokens?: number | null
+          user_request?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          completion_tokens?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          gateway_run_id?: string | null
+          id?: string
+          model?: string
+          prompt_tokens?: number | null
+          session_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["agent_status"]
+          step_count?: number
+          stop_reason?: string | null
+          tool_call_count?: number
+          total_tokens?: number | null
+          user_request?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_runs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          merchant_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["agent_status"]
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          merchant_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["agent_status"]
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["agent_status"]
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_sessions_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_steps: {
+        Row: {
+          created_at: string
+          id: string
+          input_summary: string | null
+          latency_ms: number | null
+          output_summary: string | null
+          run_id: string
+          status: string
+          step_number: number
+          step_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input_summary?: string | null
+          latency_ms?: number | null
+          output_summary?: string | null
+          run_id: string
+          status?: string
+          step_number: number
+          step_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input_summary?: string | null
+          latency_ms?: number | null
+          output_summary?: string | null
+          run_id?: string
+          status?: string
+          step_number?: number
+          step_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_steps_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "agent_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_request_logs: {
         Row: {
           created_at: string
@@ -323,6 +476,60 @@ export type Database = {
           },
         ]
       }
+      tool_calls: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          input_json: Json | null
+          latency_ms: number | null
+          output_json: Json | null
+          run_id: string
+          status: string
+          step_id: string | null
+          tool_name: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input_json?: Json | null
+          latency_ms?: number | null
+          output_json?: Json | null
+          run_id: string
+          status?: string
+          step_id?: string | null
+          tool_name: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input_json?: Json | null
+          latency_ms?: number | null
+          output_json?: Json | null
+          run_id?: string
+          status?: string
+          step_id?: string | null
+          tool_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_calls_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "agent_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_calls_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "agent_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -364,6 +571,7 @@ export type Database = {
       owns_product: { Args: { _product_id: string }; Returns: boolean }
     }
     Enums: {
+      agent_status: "running" | "completed" | "failed" | "stopped"
       app_role: "merchant" | "admin" | "demo_buyer"
       entity_status: "active" | "inactive"
       relation_type: "upsell" | "cross_sell" | "alternative"
@@ -494,6 +702,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agent_status: ["running", "completed", "failed", "stopped"],
       app_role: ["merchant", "admin", "demo_buyer"],
       entity_status: ["active", "inactive"],
       relation_type: ["upsell", "cross_sell", "alternative"],
