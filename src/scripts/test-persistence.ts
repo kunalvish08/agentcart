@@ -19,27 +19,29 @@ async function testPhase11Persistence() {
   }
   console.log(`Merchant ID: ${merchant.id}`);
   
-  // 2. Check for runs in sessions belonging to this merchant
+  // 2. Check for Judge Mode sessions (by title)
   const { data: sessions } = await supabaseAdmin
     .from("agent_sessions")
-    .select("id")
-    .eq("merchant_id", merchant.id);
+    .select("id, title, user_id")
+    .eq("merchant_id", merchant.id)
+    .ilike("title", "%Judge Mode%");
   
   const sessionIds = sessions?.map(s => s.id) ?? [];
-  console.log(`Sessions found: ${sessionIds.length}`);
+  console.log(`Judge Mode sessions found: ${sessionIds.length}`);
 
   if (sessionIds.length > 0) {
     const { data: runs } = await supabaseAdmin
       .from("agent_runs")
-      .select("id, session_id, started_at")
+      .select("id, session_id, started_at, model")
       .in("session_id", sessionIds)
       .order("started_at", { ascending: false });
     
     const judgeRuns = runs?.length ?? 0;
-    console.log(`Persisted agent runs: ${judgeRuns}`);
+    console.log(`Persisted agent runs in Judge sessions: ${judgeRuns}`);
     
     if (judgeRuns > 0) {
       const latestRun = runs![0]!;
+      console.log(`Latest run ID: ${latestRun.id}, Model: ${latestRun.model}`);
       // 3. Verify steps for latest run
       const { count: stepCount } = await supabaseAdmin
         .from("agent_steps")
