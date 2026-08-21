@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
+import type { ProductRecord } from "@/lib/public-api.server";
+
 const idSchema = z.string().uuid();
 
 export const Route = createFileRoute("/api/public/products/$id")({
@@ -64,7 +66,7 @@ export const Route = createFileRoute("/api/public/products/$id")({
           return {
             response: api.jsonResponse({
               merchant: { name: merchant.name, slug: merchant.slug, currency: merchant.currency },
-              product: api.toPublicProduct(data as api.ProductRecord),
+              product: api.toPublicProduct(data as ProductRecord),
               related_products: related,
               quote_endpoint: "/api/public/quote",
             }),

@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
+import type { ProductRecord } from "@/lib/public-api.server";
+
 const querySchema = z.object({
   q: z.string().trim().max(200).optional(),
   category: z.string().trim().max(80).optional(),
@@ -101,7 +103,7 @@ export const Route = createFileRoute("/api/public/search")({
             .slice(0, 10);
 
           const scored = (data ?? [])
-            .map((row) => ({ row: row as api.ProductRecord, relevance: score(row, terms) }))
+            .map((row) => ({ row: row as ProductRecord, relevance: score(row, terms) }))
             .filter((entry) => entry.relevance > 0)
             .sort((a, b) => b.relevance - a.relevance || Number(a.row.price) - Number(b.row.price))
             .slice(0, limit);

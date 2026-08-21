@@ -12,9 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
+import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
+import { Route as ApiPublicProductsIdRouteImport } from './routes/api/public/products/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -30,6 +35,12 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotwellKnownAgentManifestRoute =
+  DotwellKnownAgentManifestRouteImport.update({
+    id: '/.well-known/agent-manifest',
+    path: '/.well-known/agent-manifest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -45,49 +56,114 @@ const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicAgentManifestRoute = ApiPublicAgentManifestRouteImport.update({
+  id: '/api/public/agent-manifest',
+  path: '/api/public/agent-manifest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
+  id: '/api/public/catalog',
+  path: '/api/public/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSearchRoute = ApiPublicSearchRouteImport.update({
+  id: '/api/public/search',
+  path: '/api/public/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicProductsIdRoute = ApiPublicProductsIdRouteImport.update({
+  id: '/api/public/products/$id',
+  path: '/api/public/products/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/dashboard' | '/policies' | '/products'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/.well-known/agent-manifest'
+    | '/dashboard'
+    | '/policies'
+    | '/products'
+    | '/api/public/agent-manifest'
+    | '/api/public/catalog'
+    | '/api/public/search'
+    | '/api/public/products/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/dashboard' | '/policies' | '/products'
+  to:
+    | '/'
+    | '/login'
+    | '/.well-known/agent-manifest'
+    | '/dashboard'
+    | '/policies'
+    | '/products'
+    | '/api/public/agent-manifest'
+    | '/api/public/catalog'
+    | '/api/public/search'
+    | '/api/public/products/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/.well-known/agent-manifest'
     | '/_authenticated/dashboard'
     | '/_authenticated/policies'
     | '/_authenticated/products'
+    | '/api/public/agent-manifest'
+    | '/api/public/catalog'
+    | '/api/public/search'
+    | '/api/public/products/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
+  ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
+  ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
+  ApiPublicSearchRoute: typeof ApiPublicSearchRoute
+  ApiPublicProductsIdRoute: typeof ApiPublicProductsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -113,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/agent-manifest': {
+      id: '/.well-known/agent-manifest'
+      path: '/.well-known/agent-manifest'
+      fullPath: '/.well-known/agent-manifest'
+      preLoaderRoute: typeof DotwellKnownAgentManifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -133,6 +216,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/products'
       preLoaderRoute: typeof AuthenticatedProductsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/agent-manifest': {
+      id: '/api/public/agent-manifest'
+      path: '/api/public/agent-manifest'
+      fullPath: '/api/public/agent-manifest'
+      preLoaderRoute: typeof ApiPublicAgentManifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/catalog': {
+      id: '/api/public/catalog'
+      path: '/api/public/catalog'
+      fullPath: '/api/public/catalog'
+      preLoaderRoute: typeof ApiPublicCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/search': {
+      id: '/api/public/search'
+      path: '/api/public/search'
+      fullPath: '/api/public/search'
+      preLoaderRoute: typeof ApiPublicSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/products/$id': {
+      id: '/api/public/products/$id'
+      path: '/api/public/products/$id'
+      fullPath: '/api/public/products/$id'
+      preLoaderRoute: typeof ApiPublicProductsIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -156,6 +267,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
+  ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
+  ApiPublicCatalogRoute: ApiPublicCatalogRoute,
+  ApiPublicSearchRoute: ApiPublicSearchRoute,
+  ApiPublicProductsIdRoute: ApiPublicProductsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
