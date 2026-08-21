@@ -15,6 +15,8 @@ import {
   Play,
   Repeat,
   ShieldCheck,
+  RefreshCcw,
+  CheckCircle2,
 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
@@ -23,6 +25,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   ARCHITECTURE_LAYERS,
   CHAOS_SCENARIOS,
@@ -37,8 +50,9 @@ import {
   getMoneyAuthorityProof,
   runJudgeChaos,
   runJudgeDemoRun,
+  performJudgeDemoReset,
 } from "@/lib/judge.functions";
-import type { ChaosResult, JudgeDemoResult } from "@/lib/judge.server";
+import type { ChaosResult, JudgeDemoResult, ResetResult } from "@/lib/judge.server";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/judge")({
@@ -99,10 +113,12 @@ function JudgePage() {
   const fetchReplay = useServerFn(getJudgeReplay);
   const demoFn = useServerFn(runJudgeDemoRun);
   const chaosFn = useServerFn(runJudgeChaos);
+  const resetFn = useServerFn(performJudgeDemoReset);
 
   const [demo, setDemo] = useState<JudgeDemoResult | null>(null);
   const [chaos, setChaos] = useState<Record<string, ChaosResult>>({});
   const [replayId, setReplayId] = useState<string | null>(null);
+  const [resetSummary, setResetSummary] = useState<ResetResult | null>(null);
 
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const evidence = useQuery({ queryKey: ["judge", "evidence"], queryFn: () => fetchEvidence() });
@@ -133,6 +149,18 @@ function JudgePage() {
       else if (result.status === "skipped") toast.info(result.observed);
       else toast.error("Protection did NOT hold — see the drill output.");
       void queryClient.invalidateQueries({ queryKey: ["judge", "evidence"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const demoReset = useMutation({
+    mutationFn: () => resetFn(),
+    onSuccess: (result) => {
+      setResetSummary(result);
+      setDemo(null);
+      setReplayId(null);
+      toast.success("Judge demo state reset successfully.");
+      void queryClient.invalidateQueries({ queryKey: ["judge"] });
     },
     onError: (error: Error) => toast.error(error.message),
   });
