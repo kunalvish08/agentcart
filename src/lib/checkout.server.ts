@@ -526,7 +526,7 @@ async function finalizeApprovedOrder(args: {
     actorType: "system",
     fromStatus: "ORDER_CREATED",
     toStatus: "PAYMENT_PENDING",
-    reason: "Awaiting payment. Payment capture is not part of this phase.",
+    reason: "Awaiting payment. A Razorpay test-mode payment can now be initialized by the buyer.",
   });
   args.add?.("Payment pending");
   return state;
