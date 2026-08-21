@@ -47,7 +47,7 @@ const ENDPOINTS: Endpoint[] = [
     method: "GET",
     path: "/.well-known/agent-manifest",
     purpose:
-      "Agent discovery. Describes the merchant, currency, supported capabilities and the endpoints an external AI buyer should call. Checkout and payments are advertised as false in Phase 02.",
+      "Agent discovery. Describes the merchant, currency, supported capabilities and the endpoints an external AI buyer should call. Also advertises the negotiation, checkout and order-observation contracts, and the explicit AI authority boundary.",
     auth: "None (public, read-only)",
     request: `curl https://your-domain/.well-known/agent-manifest`,
     response: `{
@@ -191,7 +191,95 @@ const ENDPOINTS: Endpoint[] = [
       { code: "order_value_exceeded", status: 409, when: "Total above the merchant max order value" },
     ],
   },
+  {
+    id: "negotiate",
+    method: "POST",
+    path: "/api/public/negotiate",
+    purpose:
+      "Bounded negotiation round. The agent may only REQUEST a discount percent; the decision, the approved percent and every amount come from the merchant policy engine. Rounds are capped server-side.",
+    auth: "Requires an X-Agent-Session token issued by AgentCart for a buyer session. The token is bound to one merchant and expires.",
+    request: `curl -X POST https://your-domain/api/public/negotiate \\
+  -H "content-type: application/json" \\
+  -H "x-agent-session: <token>" \\
+  -d '{ "product_id": "<uuid>", "quantity": 1, "requested_discount_percent": 20 }'`,
+    response: `{
+  "merchant": "technova-store",
+  "currency": "INR",
+  "max_rounds": 4,
+  "decision": "counter",
+  "requested_discount_percent": 20,
+  "policy_limit_percent": 12,
+  "approved_discount_percent": 12,
+  "final_amount": 48400,
+  "round_number": 1,
+  "rounds_remaining": 3,
+  "policy_reason": "Requested discount 20% exceeds the merchant limit of 12%; countered at 12%.",
+  "policy_authority": "server"
+}`,
+    errors: [
+      { code: "invalid_request", status: 400, when: "Bad UUID, quantity out of range, discount outside 0–100" },
+      { code: "missing_agent_session", status: 401, when: "No X-Agent-Session header" },
+      { code: "expired_agent_session", status: 401, when: "Token past its expiry" },
+      { code: "merchant_mismatch", status: 403, when: "Token belongs to another merchant" },
+      { code: "round_limit_reached", status: 409, when: "Negotiation rounds exhausted" },
+    ],
+  },
+  {
+    id: "checkout",
+    method: "POST",
+    path: "/api/public/checkout",
+    purpose:
+      "Requests checkout against a server-issued quote. The server re-validates the quote, inventory and policy, then creates the order and its state machine entry. The agent never sends an amount.",
+    auth: "Requires an X-Agent-Session token. Requires an Idempotency-Key; repeats return the original order.",
+    request: `curl -X POST https://your-domain/api/public/checkout \\
+  -H "content-type: application/json" \\
+  -H "x-agent-session: <token>" \\
+  -H "idempotency-key: <unique-key>" \\
+  -d '{ "quote_id": "<uuid>" }'`,
+    response: `{
+  "accepted": true,
+  "order_id": "uuid",
+  "status": "APPROVAL_REQUIRED",
+  "final_amount": 48400,
+  "currency": "INR",
+  "approval_required": true,
+  "next_action": "Merchant approval required before payment.",
+  "amount_authority": "server"
+}`,
+    errors: [
+      { code: "invalid_request", status: 400, when: "Missing quote_id or Idempotency-Key" },
+      { code: "missing_agent_session", status: 401, when: "No X-Agent-Session header" },
+      { code: "quote_expired", status: 409, when: "Quote past its 15-minute TTL" },
+      { code: "insufficient_inventory", status: 409, when: "Stock changed since the quote" },
+      { code: "policy_violation", status: 409, when: "Order exceeds merchant policy limits" },
+    ],
+  },
+  {
+    id: "order-status",
+    method: "GET",
+    path: "/api/public/orders/:id",
+    purpose:
+      "Read-only observation of an order the agent created: checkout state, payment state and whether merchant approval is still pending. No mutation is possible through this endpoint.",
+    auth: "Requires the X-Agent-Session token that created the order.",
+    request: `curl https://your-domain/api/public/orders/<uuid> \\
+  -H "x-agent-session: <token>"`,
+    response: `{
+  "order_id": "uuid",
+  "status": "PAYMENT_PENDING",
+  "final_amount": 48400,
+  "currency": "INR",
+  "approval_required": false,
+  "payment_state": "CREATED",
+  "observation_only": true
+}`,
+    errors: [
+      { code: "invalid_request", status: 400, when: "Order id is not a UUID" },
+      { code: "missing_agent_session", status: 401, when: "No X-Agent-Session header" },
+      { code: "order_not_found", status: 404, when: "Order does not belong to this agent session" },
+    ],
+  },
 ];
+
 
 function AgentApiPage() {
   return (

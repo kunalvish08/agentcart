@@ -16,16 +16,21 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedBuyerRouteImport } from './routes/_authenticated/buyer'
+import { Route as AuthenticatedBuyerLabRouteImport } from './routes/_authenticated/buyer-lab'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedJudgeRouteImport } from './routes/_authenticated/judge'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as ApiAgentBuyerRouteImport } from './routes/api/agent/buyer'
+import { Route as ApiAgentExternalBuyerRouteImport } from './routes/api/agent/external-buyer'
 import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicCheckoutRouteImport } from './routes/api/public/checkout'
+import { Route as ApiPublicNegotiateRouteImport } from './routes/api/public/negotiate'
 import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
 import { Route as ApiPublicRazorpayWebhookRouteImport } from './routes/api/public/razorpay-webhook'
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
+import { Route as ApiPublicOrdersIdRouteImport } from './routes/api/public/orders/$id'
 import { Route as ApiPublicProductsIdRouteImport } from './routes/api/public/products/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -63,6 +68,11 @@ const AuthenticatedBuyerRoute = AuthenticatedBuyerRouteImport.update({
   path: '/buyer',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBuyerLabRoute = AuthenticatedBuyerLabRouteImport.update({
+  id: '/buyer-lab',
+  path: '/buyer-lab',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -88,6 +98,11 @@ const ApiAgentBuyerRoute = ApiAgentBuyerRouteImport.update({
   path: '/api/agent/buyer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAgentExternalBuyerRoute = ApiAgentExternalBuyerRouteImport.update({
+  id: '/api/agent/external-buyer',
+  path: '/api/agent/external-buyer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAgentManifestRoute = ApiPublicAgentManifestRouteImport.update({
   id: '/api/public/agent-manifest',
   path: '/api/public/agent-manifest',
@@ -96,6 +111,16 @@ const ApiPublicAgentManifestRoute = ApiPublicAgentManifestRouteImport.update({
 const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   id: '/api/public/catalog',
   path: '/api/public/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCheckoutRoute = ApiPublicCheckoutRouteImport.update({
+  id: '/api/public/checkout',
+  path: '/api/public/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNegotiateRoute = ApiPublicNegotiateRouteImport.update({
+  id: '/api/public/negotiate',
+  path: '/api/public/negotiate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicQuoteRoute = ApiPublicQuoteRouteImport.update({
@@ -114,6 +139,11 @@ const ApiPublicSearchRoute = ApiPublicSearchRouteImport.update({
   path: '/api/public/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOrdersIdRoute = ApiPublicOrdersIdRouteImport.update({
+  id: '/api/public/orders/$id',
+  path: '/api/public/orders/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicProductsIdRoute = ApiPublicProductsIdRouteImport.update({
   id: '/api/public/products/$id',
   path: '/api/public/products/$id',
@@ -127,16 +157,21 @@ export interface FileRoutesByFullPath {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
+  '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
+  '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/checkout': typeof ApiPublicCheckoutRoute
+  '/api/public/negotiate': typeof ApiPublicNegotiateRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRoutesByTo {
@@ -146,16 +181,21 @@ export interface FileRoutesByTo {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
+  '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
+  '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/checkout': typeof ApiPublicCheckoutRoute
+  '/api/public/negotiate': typeof ApiPublicNegotiateRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRoutesById {
@@ -167,16 +207,21 @@ export interface FileRoutesById {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/buyer': typeof AuthenticatedBuyerRoute
+  '/_authenticated/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/judge': typeof AuthenticatedJudgeRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
+  '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/checkout': typeof ApiPublicCheckoutRoute
+  '/api/public/negotiate': typeof ApiPublicNegotiateRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
+  '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
 export interface FileRouteTypes {
@@ -188,16 +233,21 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/approvals'
     | '/buyer'
+    | '/buyer-lab'
     | '/dashboard'
     | '/judge'
     | '/policies'
     | '/products'
     | '/api/agent/buyer'
+    | '/api/agent/external-buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/checkout'
+    | '/api/public/negotiate'
     | '/api/public/quote'
     | '/api/public/razorpay-webhook'
     | '/api/public/search'
+    | '/api/public/orders/$id'
     | '/api/public/products/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,16 +257,21 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/approvals'
     | '/buyer'
+    | '/buyer-lab'
     | '/dashboard'
     | '/judge'
     | '/policies'
     | '/products'
     | '/api/agent/buyer'
+    | '/api/agent/external-buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/checkout'
+    | '/api/public/negotiate'
     | '/api/public/quote'
     | '/api/public/razorpay-webhook'
     | '/api/public/search'
+    | '/api/public/orders/$id'
     | '/api/public/products/$id'
   id:
     | '__root__'
@@ -227,16 +282,21 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/_authenticated/approvals'
     | '/_authenticated/buyer'
+    | '/_authenticated/buyer-lab'
     | '/_authenticated/dashboard'
     | '/_authenticated/judge'
     | '/_authenticated/policies'
     | '/_authenticated/products'
     | '/api/agent/buyer'
+    | '/api/agent/external-buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/checkout'
+    | '/api/public/negotiate'
     | '/api/public/quote'
     | '/api/public/razorpay-webhook'
     | '/api/public/search'
+    | '/api/public/orders/$id'
     | '/api/public/products/$id'
   fileRoutesById: FileRoutesById
 }
@@ -247,11 +307,15 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
   ApiAgentBuyerRoute: typeof ApiAgentBuyerRoute
+  ApiAgentExternalBuyerRoute: typeof ApiAgentExternalBuyerRoute
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
+  ApiPublicCheckoutRoute: typeof ApiPublicCheckoutRoute
+  ApiPublicNegotiateRoute: typeof ApiPublicNegotiateRoute
   ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
   ApiPublicRazorpayWebhookRoute: typeof ApiPublicRazorpayWebhookRoute
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
+  ApiPublicOrdersIdRoute: typeof ApiPublicOrdersIdRoute
   ApiPublicProductsIdRoute: typeof ApiPublicProductsIdRoute
 }
 
@@ -306,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBuyerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/buyer-lab': {
+      id: '/_authenticated/buyer-lab'
+      path: '/buyer-lab'
+      fullPath: '/buyer-lab'
+      preLoaderRoute: typeof AuthenticatedBuyerLabRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -341,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAgentBuyerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agent/external-buyer': {
+      id: '/api/agent/external-buyer'
+      path: '/api/agent/external-buyer'
+      fullPath: '/api/agent/external-buyer'
+      preLoaderRoute: typeof ApiAgentExternalBuyerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/agent-manifest': {
       id: '/api/public/agent-manifest'
       path: '/api/public/agent-manifest'
@@ -353,6 +431,20 @@ declare module '@tanstack/react-router' {
       path: '/api/public/catalog'
       fullPath: '/api/public/catalog'
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/checkout': {
+      id: '/api/public/checkout'
+      path: '/api/public/checkout'
+      fullPath: '/api/public/checkout'
+      preLoaderRoute: typeof ApiPublicCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/negotiate': {
+      id: '/api/public/negotiate'
+      path: '/api/public/negotiate'
+      fullPath: '/api/public/negotiate'
+      preLoaderRoute: typeof ApiPublicNegotiateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/quote': {
@@ -376,6 +468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/orders/$id': {
+      id: '/api/public/orders/$id'
+      path: '/api/public/orders/$id'
+      fullPath: '/api/public/orders/$id'
+      preLoaderRoute: typeof ApiPublicOrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/products/$id': {
       id: '/api/public/products/$id'
       path: '/api/public/products/$id'
@@ -389,6 +488,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedBuyerRoute: typeof AuthenticatedBuyerRoute
+  AuthenticatedBuyerLabRoute: typeof AuthenticatedBuyerLabRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedJudgeRoute: typeof AuthenticatedJudgeRoute
   AuthenticatedPoliciesRoute: typeof AuthenticatedPoliciesRoute
@@ -398,6 +498,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedBuyerRoute: AuthenticatedBuyerRoute,
+  AuthenticatedBuyerLabRoute: AuthenticatedBuyerLabRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedJudgeRoute: AuthenticatedJudgeRoute,
   AuthenticatedPoliciesRoute: AuthenticatedPoliciesRoute,
@@ -414,11 +515,15 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
   ApiAgentBuyerRoute: ApiAgentBuyerRoute,
+  ApiAgentExternalBuyerRoute: ApiAgentExternalBuyerRoute,
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
+  ApiPublicCheckoutRoute: ApiPublicCheckoutRoute,
+  ApiPublicNegotiateRoute: ApiPublicNegotiateRoute,
   ApiPublicQuoteRoute: ApiPublicQuoteRoute,
   ApiPublicRazorpayWebhookRoute: ApiPublicRazorpayWebhookRoute,
   ApiPublicSearchRoute: ApiPublicSearchRoute,
+  ApiPublicOrdersIdRoute: ApiPublicOrdersIdRoute,
   ApiPublicProductsIdRoute: ApiPublicProductsIdRoute,
 }
 export const routeTree = rootRouteImport
