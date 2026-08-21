@@ -766,7 +766,7 @@ function CheckoutSection({
           ? {
               checkout_created: true,
               idempotent_replay: response.idempotent_replay,
-              order: response.order as CheckoutToolResult["order"],
+              order: response.order as NonNullable<CheckoutToolResult["order"]>,
               trace: response.trace,
             }
           : {
