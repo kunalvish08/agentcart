@@ -402,6 +402,34 @@ function stepIcon(step: TraceStep) {
   return <Check className="size-3.5 text-primary" />;
 }
 
+/** Renders the model's plain answer: light markdown only, no HTML injection. */
+function AssistantText({ content }: { content: string }) {
+  const lines = content.split("\n").filter((line) => line.trim().length > 0);
+  return (
+    <>
+      {lines.map((line, index) => {
+        const clean = line.replace(/\*\*/g, "").replace(/^#+\s*/, "").trim();
+        if (/^#+\s/.test(line)) {
+          return (
+            <p key={index} className="pt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {clean}
+            </p>
+          );
+        }
+        if (/^[-*]\s/.test(line)) {
+          return (
+            <p key={index} className="flex gap-2">
+              <span className="text-primary">•</span>
+              <span>{clean.replace(/^[-*]\s*/, "")}</span>
+            </p>
+          );
+        }
+        return <p key={index}>{clean}</p>;
+      })}
+    </>
+  );
+}
+
 function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
   const [open, setOpen] = useState(true);
   const rec = turn.recommendation;
@@ -457,8 +485,8 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
           ) : null}
 
           {turn.content ? (
-            <div className="whitespace-pre-wrap rounded-lg border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
-              {turn.content}
+            <div className="space-y-1.5 rounded-lg border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
+              <AssistantText content={turn.content} />
             </div>
           ) : running ? (
             <p className="text-sm text-muted-foreground">Working…</p>
