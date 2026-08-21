@@ -27,33 +27,37 @@ async function auditDatabaseState() {
   console.log(`Judge sessions found: ${sessions?.length ?? 0}`);
   if (sessions && sessions.length > 0) {
     const latestSession = sessions[0];
-    console.log(`Latest Session: ${latestSession.id} (${latestSession.title}) at ${latestSession.started_at}`);
+    if (latestSession) {
+      console.log(`Latest Session: ${latestSession.id} (${latestSession.title}) at ${latestSession.started_at}`);
 
-    // 3. Check for runs in this session
-    const { data: runs } = await supabaseAdmin
-      .from("agent_runs")
-      .select("id, status, started_at, model")
-      .eq("session_id", latestSession.id)
-      .order("started_at", { ascending: false });
-    
-    console.log(`Runs in latest session: ${runs?.length ?? 0}`);
-    if (runs && runs.length > 0) {
-      const latestRun = runs[0];
-      console.log(`Latest Run: ${latestRun.id} (Status: ${latestRun.status}) at ${latestRun.started_at}`);
+      // 3. Check for runs in this session
+      const { data: runs } = await supabaseAdmin
+        .from("agent_runs")
+        .select("id, status, started_at, model")
+        .eq("session_id", latestSession.id)
+        .order("started_at", { ascending: false });
+      
+      console.log(`Runs in latest session: ${runs?.length ?? 0}`);
+      if (runs && runs.length > 0) {
+        const latestRun = runs[0];
+        if (latestRun) {
+          console.log(`Latest Run: ${latestRun.id} (Status: ${latestRun.status}) at ${latestRun.started_at}`);
 
-      // 4. Check for steps and tool calls
-      const { count: stepsCount } = await supabaseAdmin
-        .from("agent_steps")
-        .select("id", { count: "exact", head: true })
-        .eq("run_id", latestRun.id);
-      
-      const { count: toolsCount } = await supabaseAdmin
-        .from("tool_calls")
-        .select("id", { count: "exact", head: true })
-        .eq("run_id", latestRun.id);
-      
-      console.log(`Steps in run: ${stepsCount}`);
-      console.log(`Tool calls in run: ${toolsCount}`);
+          // 4. Check for steps and tool calls
+          const { count: stepsCount } = await supabaseAdmin
+            .from("agent_steps")
+            .select("id", { count: "exact", head: true })
+            .eq("run_id", latestRun.id);
+          
+          const { count: toolsCount } = await supabaseAdmin
+            .from("tool_calls")
+            .select("id", { count: "exact", head: true })
+            .eq("run_id", latestRun.id);
+          
+          console.log(`Steps in run: ${stepsCount}`);
+          console.log(`Tool calls in run: ${toolsCount}`);
+        }
+      }
     }
   }
 
@@ -68,15 +72,17 @@ async function auditDatabaseState() {
   console.log(`Judge-tagged orders found: ${orders?.length ?? 0}`);
   if (orders && orders.length > 0) {
     const latestOrder = orders[0];
-    console.log(`Latest Order: ${latestOrder.id} (Status: ${latestOrder.status}) Amount: ${latestOrder.final_amount}`);
+    if (latestOrder) {
+      console.log(`Latest Order: ${latestOrder.id} (Status: ${latestOrder.status}) Amount: ${latestOrder.final_amount}`);
 
-    const { data: payments } = await supabaseAdmin
-      .from("payments")
-      .select("id, status, amount")
-      .eq("order_id", latestOrder.id);
-    
-    console.log(`Payments for order: ${payments?.length ?? 0}`);
-    payments?.forEach(p => console.log(` - Payment ${p.id}: ${p.status} (${p.amount})`));
+      const { data: payments } = await supabaseAdmin
+        .from("payments")
+        .select("id, status, amount")
+        .eq("order_id", latestOrder.id);
+      
+      console.log(`Payments for order: ${payments?.length ?? 0}`);
+      payments?.forEach(p => console.log(` - Payment ${p.id}: ${p.status} (${p.amount})`));
+    }
   }
 }
 
