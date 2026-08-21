@@ -84,8 +84,21 @@ function rows(data: unknown): Candidate[] {
     }));
 }
 
+/**
+ * A real shopper only buys something that is actually the kind of thing they came
+ * for. Without this gate the storefront arm "converted" by buying a ₹1,499 laptop
+ * stand when the shopper wanted a laptop under ₹21,000 — a false conversion that
+ * flattered the control arm. Relevance is derived from the scenario's declared
+ * target category (the same field the agentic arm sees), never from a product id.
+ */
+function isRelevant(scenario: EvaluationScenario, candidate: Candidate): boolean {
+  if (!scenario.target_category) return true;
+  if (candidate.category) return candidate.category === scenario.target_category;
+  return true;
+}
+
 function selectProduct(scenario: EvaluationScenario, candidates: Candidate[]): Candidate | null {
-  const available = candidates.filter((c) => c.in_stock && c.price > 0);
+  const available = candidates.filter((c) => c.in_stock && c.price > 0 && isRelevant(scenario, c));
   if (available.length === 0) return null;
 
   const named = scenario.target_product
@@ -109,6 +122,7 @@ function selectProduct(scenario: EvaluationScenario, candidates: Candidate[]): C
   }
   return inBudget[0] ?? null;
 }
+
 
 function errorOf(result: { ok: false; error: { code: string; message: string } }) {
   return { code: result.error.code, message: result.error.message };
