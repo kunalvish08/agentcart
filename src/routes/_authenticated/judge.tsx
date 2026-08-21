@@ -126,7 +126,8 @@ function JudgePage() {
   const runs = useQuery({ queryKey: ["judge", "runs"], queryFn: () => fetchRuns() });
 
   // Automatically select the latest JUDGE_DEMO run if none is active
-  const latestDemoRunId = runs.data?.find(r => r.run_type === "JUDGE_DEMO")?.run_id;
+  // Filter for runs that actually have steps (to avoid selecting aborted runs)
+  const latestDemoRunId = runs.data?.find(r => r.run_type === "JUDGE_DEMO" && r.step_count > 0)?.run_id;
   const effectiveRunId = activeRunId || latestDemoRunId;
 
   const activeRun = useQuery({
