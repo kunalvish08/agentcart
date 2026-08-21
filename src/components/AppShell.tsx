@@ -76,7 +76,7 @@ export function AppShell({
         </div>
 
         <div className="space-y-3 px-2">
-          <p className="text-xs text-sidebar-foreground/60">Phase 05 · Agentic checkout</p>
+          <p className="text-xs text-sidebar-foreground/60">Phase 06 · Razorpay test payments</p>
         </div>
       </aside>
 
