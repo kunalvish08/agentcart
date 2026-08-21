@@ -18,6 +18,7 @@ import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
 import { Route as ApiPublicProductsIdRouteImport } from './routes/api/public/products/$id'
 
@@ -66,6 +67,11 @@ const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicQuoteRoute = ApiPublicQuoteRouteImport.update({
+  id: '/api/public/quote',
+  path: '/api/public/quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSearchRoute = ApiPublicSearchRouteImport.update({
   id: '/api/public/search',
   path: '/api/public/search',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/products': typeof AuthenticatedProductsRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
+  '/api/public/quote': typeof ApiPublicQuoteRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/quote'
     | '/api/public/search'
     | '/api/public/products/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/quote'
     | '/api/public/search'
     | '/api/public/products/$id'
   id:
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_authenticated/products'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
+    | '/api/public/quote'
     | '/api/public/search'
     | '/api/public/products/$id'
   fileRoutesById: FileRoutesById
@@ -162,6 +174,7 @@ export interface RootRouteChildren {
   DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
+  ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
   ApiPublicProductsIdRoute: typeof ApiPublicProductsIdRoute
 }
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/quote': {
+      id: '/api/public/quote'
+      path: '/api/public/quote'
+      fullPath: '/api/public/quote'
+      preLoaderRoute: typeof ApiPublicQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/search': {
       id: '/api/public/search'
       path: '/api/public/search'
@@ -270,6 +290,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
+  ApiPublicQuoteRoute: ApiPublicQuoteRoute,
   ApiPublicSearchRoute: ApiPublicSearchRoute,
   ApiPublicProductsIdRoute: ApiPublicProductsIdRoute,
 }

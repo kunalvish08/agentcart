@@ -27,7 +27,7 @@ export const getWorkspace = createServerFn({ method: "GET" })
 
     const { data: merchant, error: merchantError } = await supabase
       .from("merchants")
-      .select("id, name, description, currency, status")
+      .select("id, name, description, currency, status, slug, agent_commerce_enabled")
       .eq("owner_id", userId)
       .order("created_at", { ascending: true })
       .limit(1)
@@ -35,7 +35,9 @@ export const getWorkspace = createServerFn({ method: "GET" })
     if (merchantError) throw new Error(merchantError.message);
     if (!merchant) throw new Error("No merchant found for this account");
 
-    const [policyResult, productsResult, rolesResult, profileResult] = await Promise.all([
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const [policyResult, productsResult, rolesResult, profileResult, logsResult] = await Promise.all([
       supabase
         .from("merchant_policies")
         .select(
@@ -49,6 +51,13 @@ export const getWorkspace = createServerFn({ method: "GET" })
         .eq("merchant_id", merchant.id),
       supabase.from("user_roles").select("role").eq("user_id", userId),
       supabase.from("profiles").select("full_name, email").eq("id", userId).maybeSingle(),
+      supabase
+        .from("api_request_logs")
+        .select("success, created_at")
+        .eq("merchant_id", merchant.id)
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500),
     ]);
 
     if (policyResult.error) throw new Error(policyResult.error.message);
@@ -75,6 +84,11 @@ export const getWorkspace = createServerFn({ method: "GET" })
           (sum, p) => sum + Number(p.price ?? 0) * (p.stock_quantity ?? 0),
           0,
         ),
+      },
+      agentApi: {
+        requests24h: (logsResult.data ?? []).length,
+        failures24h: (logsResult.data ?? []).filter((l) => !l.success).length,
+        lastRequestAt: logsResult.data?.[0]?.created_at ?? null,
       },
       roles: (rolesResult.data ?? []).map((r) => r.role as string),
       profile: {

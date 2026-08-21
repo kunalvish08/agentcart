@@ -50,6 +50,13 @@ export type WorkspaceSummary = {
     description: string | null;
     currency: string;
     status: "active" | "inactive";
+    slug: string | null;
+    agent_commerce_enabled: boolean;
+  };
+  agentApi: {
+    requests24h: number;
+    failures24h: number;
+    lastRequestAt: string | null;
   };
   policy: PolicyInput & { id: string };
   stats: {
