@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { AlertTriangle, Check, ClipboardCheck, Loader2, ScrollText, X } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
+import { PaymentLedgerCard } from "@/components/PaymentLedgerCard";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -255,6 +257,8 @@ function ApprovalsPage() {
             </CardContent>
           </Card>
 
+          <PaymentLedgerCard />
+
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Authority model</CardTitle>
@@ -263,9 +267,13 @@ function ApprovalsPage() {
               <p>· The AI agent may request checkout; only you can approve or reject.</p>
               <p>· Order amounts are copied from the server quote, never from the model.</p>
               <p>· Illegal state transitions are rejected by a database trigger.</p>
-              <p>· Payment capture arrives in Phase 06 — orders stop at payment pending.</p>
+              <p>
+                · Payments run in Razorpay test mode and only a server-verified signature can
+                complete an order — the AI can never mark a payment successful.
+              </p>
             </CardContent>
           </Card>
+
         </aside>
       </div>
     </AppShell>
