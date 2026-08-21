@@ -413,12 +413,17 @@ function BuyerLabPage() {
                       ? /\/products\//.test(c.path)
                       : c.path.includes(stage.key),
                 );
-                const stageDone =
+                const note =
                   stage.key === "approval"
-                    ? Boolean(state?.checkout?.approval_required)
+                    ? state?.checkout?.approval_required
+                      ? "awaiting merchant"
+                      : state?.checkout?.order_id
+                        ? "not required"
+                        : null
                     : stage.key === "payment"
-                      ? Boolean(state?.checkout?.payment_state)
-                      : reached;
+                      ? (state?.checkout?.payment_state ?? null)
+                      : null;
+                const stageDone = note ? false : reached;
                 return (
                   <div
                     key={stage.key}
@@ -437,7 +442,7 @@ function BuyerLabPage() {
                       {stageDone ? (
                         <Check className="size-4 text-primary" />
                       ) : (
-                        <span className="text-xs text-muted-foreground">pending</span>
+                        <span className="text-xs text-muted-foreground">{note ?? "pending"}</span>
                       )}
                     </div>
                   </div>
