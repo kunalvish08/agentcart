@@ -19,6 +19,7 @@ import { Route as AuthenticatedBuyerRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedBuyerLabRouteImport } from './routes/_authenticated/buyer-lab'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedJudgeRouteImport } from './routes/_authenticated/judge'
+import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated/lab'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as ApiAgentBuyerRouteImport } from './routes/api/agent/buyer'
@@ -81,6 +82,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedJudgeRoute = AuthenticatedJudgeRouteImport.update({
   id: '/judge',
   path: '/judge',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLabRoute = AuthenticatedLabRouteImport.update({
+  id: '/lab',
+  path: '/lab',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPoliciesRoute = AuthenticatedPoliciesRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
+  '/lab': typeof AuthenticatedLabRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
+  '/lab': typeof AuthenticatedLabRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/_authenticated/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/judge': typeof AuthenticatedJudgeRoute
+  '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/buyer-lab'
     | '/dashboard'
     | '/judge'
+    | '/lab'
     | '/policies'
     | '/products'
     | '/api/agent/buyer'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/buyer-lab'
     | '/dashboard'
     | '/judge'
+    | '/lab'
     | '/policies'
     | '/products'
     | '/api/agent/buyer'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/_authenticated/buyer-lab'
     | '/_authenticated/dashboard'
     | '/_authenticated/judge'
+    | '/_authenticated/lab'
     | '/_authenticated/policies'
     | '/_authenticated/products'
     | '/api/agent/buyer'
@@ -391,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJudgeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/lab': {
+      id: '/_authenticated/lab'
+      path: '/lab'
+      fullPath: '/lab'
+      preLoaderRoute: typeof AuthenticatedLabRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/policies': {
       id: '/_authenticated/policies'
       path: '/policies'
@@ -491,6 +510,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBuyerLabRoute: typeof AuthenticatedBuyerLabRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedJudgeRoute: typeof AuthenticatedJudgeRoute
+  AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedPoliciesRoute: typeof AuthenticatedPoliciesRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
 }
@@ -501,6 +521,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBuyerLabRoute: AuthenticatedBuyerLabRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedJudgeRoute: AuthenticatedJudgeRoute,
+  AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedPoliciesRoute: AuthenticatedPoliciesRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
 }
