@@ -115,7 +115,7 @@ function JudgePage() {
   const chaosFn = useServerFn(runJudgeChaos);
   const resetFn = useServerFn(performJudgeDemoReset);
 
-  const [demo, setDemo] = useState<JudgeDemoResult | null>(null);
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [chaos, setChaos] = useState<Record<string, ChaosResult>>({});
   const [replayId, setReplayId] = useState<string | null>(null);
   const [resetSummary, setResetSummary] = useState<ResetResult | null>(null);
@@ -124,6 +124,18 @@ function JudgePage() {
   const evidence = useQuery({ queryKey: ["judge", "evidence"], queryFn: () => fetchEvidence() });
   const proof = useQuery({ queryKey: ["judge", "money"], queryFn: () => fetchMoney() });
   const runs = useQuery({ queryKey: ["judge", "runs"], queryFn: () => fetchRuns() });
+
+  // Automatically select the latest JUDGE_DEMO run if none is active
+  const latestDemoRunId = runs.data?.find(r => r.run_type === "JUDGE_DEMO")?.run_id;
+  const effectiveRunId = activeRunId || latestDemoRunId;
+
+  const activeRun = useQuery({
+    queryKey: ["judge", "replay", effectiveRunId],
+    queryFn: () => fetchReplay({ data: { runId: effectiveRunId! } }),
+    enabled: Boolean(effectiveRunId),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
   const replay = useQuery({
     queryKey: ["judge", "replay", replayId],
     queryFn: () => fetchReplay({ data: { runId: replayId! } }),
@@ -133,9 +145,12 @@ function JudgePage() {
   const demoRun = useMutation({
     mutationFn: () => demoFn(),
     onSuccess: (result) => {
-      setDemo(result);
-      if (result.ok) toast.success("Demo transaction completed through the real server paths.");
-      else toast.error(result.error?.message ?? "The demo run stopped early.");
+      if (result.ok && result.run_id) {
+        setActiveRunId(result.run_id);
+        toast.success("Demo transaction completed through the real server paths.");
+      } else {
+        toast.error(result.error?.message ?? "The demo run stopped early.");
+      }
       void queryClient.invalidateQueries({ queryKey: ["judge"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -157,7 +172,7 @@ function JudgePage() {
     mutationFn: () => resetFn(),
     onSuccess: (result) => {
       setResetSummary(result);
-      setDemo(null);
+      setActiveRunId(null);
       setReplayId(null);
       toast.success("Judge demo state reset successfully.");
       void queryClient.invalidateQueries({ queryKey: ["judge"] });
