@@ -332,6 +332,380 @@ export type Database = {
           },
         ]
       }
+      evaluation_job_locks: {
+        Row: {
+          acquired_at: string
+          expires_at: string
+          holder: string
+          lock_key: string
+          run_id: string | null
+        }
+        Insert: {
+          acquired_at?: string
+          expires_at: string
+          holder: string
+          lock_key: string
+          run_id?: string | null
+        }
+        Update: {
+          acquired_at?: string
+          expires_at?: string
+          holder?: string
+          lock_key?: string
+          run_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_job_locks_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_metrics: {
+        Row: {
+          computed_at: string
+          created_at: string
+          id: string
+          metrics: Json
+          run_id: string
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          id?: string
+          metrics?: Json
+          run_id: string
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          id?: string
+          metrics?: Json
+          run_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_metrics_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: true
+            referencedRelation: "evaluation_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_results: {
+        Row: {
+          actual_outcome: string | null
+          agent_run_id: string | null
+          agent_session_id: string | null
+          ai_cost: number | null
+          approval_required: boolean
+          baseline_type: Database["public"]["Enums"]["evaluation_baseline"]
+          completion_tokens: number | null
+          converted: boolean
+          created_at: string
+          cross_sell: boolean
+          cross_sell_amount: number | null
+          currency: string | null
+          detail: Json
+          discount: number | null
+          expected_outcome: string | null
+          failure_reason: string | null
+          final_amount: number | null
+          gross_amount: number | null
+          hallucinated_product: boolean
+          id: string
+          latency_ms: number | null
+          model_latency_ms: number | null
+          negotiated: boolean
+          order_id: string | null
+          outcome_match: boolean | null
+          policy_result: string | null
+          prompt_tokens: number | null
+          quote_issued: boolean
+          run_id: string
+          safely_contained: boolean | null
+          scenario_id: string
+          scenario_row_id: string | null
+          selected_product: string | null
+          selected_product_id: string | null
+          status: Database["public"]["Enums"]["evaluation_result_status"]
+          tool_calls: number
+          updated_at: string
+        }
+        Insert: {
+          actual_outcome?: string | null
+          agent_run_id?: string | null
+          agent_session_id?: string | null
+          ai_cost?: number | null
+          approval_required?: boolean
+          baseline_type: Database["public"]["Enums"]["evaluation_baseline"]
+          completion_tokens?: number | null
+          converted?: boolean
+          created_at?: string
+          cross_sell?: boolean
+          cross_sell_amount?: number | null
+          currency?: string | null
+          detail?: Json
+          discount?: number | null
+          expected_outcome?: string | null
+          failure_reason?: string | null
+          final_amount?: number | null
+          gross_amount?: number | null
+          hallucinated_product?: boolean
+          id?: string
+          latency_ms?: number | null
+          model_latency_ms?: number | null
+          negotiated?: boolean
+          order_id?: string | null
+          outcome_match?: boolean | null
+          policy_result?: string | null
+          prompt_tokens?: number | null
+          quote_issued?: boolean
+          run_id: string
+          safely_contained?: boolean | null
+          scenario_id: string
+          scenario_row_id?: string | null
+          selected_product?: string | null
+          selected_product_id?: string | null
+          status?: Database["public"]["Enums"]["evaluation_result_status"]
+          tool_calls?: number
+          updated_at?: string
+        }
+        Update: {
+          actual_outcome?: string | null
+          agent_run_id?: string | null
+          agent_session_id?: string | null
+          ai_cost?: number | null
+          approval_required?: boolean
+          baseline_type?: Database["public"]["Enums"]["evaluation_baseline"]
+          completion_tokens?: number | null
+          converted?: boolean
+          created_at?: string
+          cross_sell?: boolean
+          cross_sell_amount?: number | null
+          currency?: string | null
+          detail?: Json
+          discount?: number | null
+          expected_outcome?: string | null
+          failure_reason?: string | null
+          final_amount?: number | null
+          gross_amount?: number | null
+          hallucinated_product?: boolean
+          id?: string
+          latency_ms?: number | null
+          model_latency_ms?: number | null
+          negotiated?: boolean
+          order_id?: string | null
+          outcome_match?: boolean | null
+          policy_result?: string | null
+          prompt_tokens?: number | null
+          quote_issued?: boolean
+          run_id?: string
+          safely_contained?: boolean | null
+          scenario_id?: string
+          scenario_row_id?: string | null
+          selected_product?: string | null
+          selected_product_id?: string | null
+          status?: Database["public"]["Enums"]["evaluation_result_status"]
+          tool_calls?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_results_agent_run_id_fkey"
+            columns: ["agent_run_id"]
+            isOneToOne: false
+            referencedRelation: "agent_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_results_agent_session_id_fkey"
+            columns: ["agent_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_results_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_results_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_results_scenario_row_id_fkey"
+            columns: ["scenario_row_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_runs: {
+        Row: {
+          batch_size: number
+          catalog_snapshot: Json
+          catalog_version: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          dataset_seed: string
+          dataset_version: string
+          id: string
+          kind: string
+          label: string
+          merchant_id: string
+          model: string
+          model_config: Json
+          notes: string | null
+          paused_reason: string | null
+          policy_snapshot: Json
+          policy_version: string | null
+          prompt_version: string
+          sample_size: number
+          scenario_count: number
+          started_at: string | null
+          status: Database["public"]["Enums"]["evaluation_status"]
+          synthetic: boolean
+          updated_at: string
+        }
+        Insert: {
+          batch_size?: number
+          catalog_snapshot?: Json
+          catalog_version?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          dataset_seed: string
+          dataset_version: string
+          id?: string
+          kind?: string
+          label: string
+          merchant_id: string
+          model: string
+          model_config?: Json
+          notes?: string | null
+          paused_reason?: string | null
+          policy_snapshot?: Json
+          policy_version?: string | null
+          prompt_version: string
+          sample_size?: number
+          scenario_count?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["evaluation_status"]
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Update: {
+          batch_size?: number
+          catalog_snapshot?: Json
+          catalog_version?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          dataset_seed?: string
+          dataset_version?: string
+          id?: string
+          kind?: string
+          label?: string
+          merchant_id?: string
+          model?: string
+          model_config?: Json
+          notes?: string | null
+          paused_reason?: string | null
+          policy_snapshot?: Json
+          policy_version?: string | null
+          prompt_version?: string
+          sample_size?: number
+          scenario_count?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["evaluation_status"]
+          synthetic?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_runs_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_scenarios: {
+        Row: {
+          budget: number | null
+          category: string
+          created_at: string
+          difficulty: string
+          discount_request: number | null
+          expected_outcome: string
+          id: string
+          in_sample: boolean
+          intent: string
+          quantity: number
+          run_id: string
+          scenario_id: string
+          sequence: number
+          target_category: string | null
+          target_product: string | null
+        }
+        Insert: {
+          budget?: number | null
+          category: string
+          created_at?: string
+          difficulty: string
+          discount_request?: number | null
+          expected_outcome: string
+          id?: string
+          in_sample?: boolean
+          intent: string
+          quantity?: number
+          run_id: string
+          scenario_id: string
+          sequence: number
+          target_category?: string | null
+          target_product?: string | null
+        }
+        Update: {
+          budget?: number | null
+          category?: string
+          created_at?: string
+          difficulty?: string
+          discount_request?: number | null
+          expected_outcome?: string
+          id?: string
+          in_sample?: boolean
+          intent?: string
+          quantity?: number
+          run_id?: string
+          scenario_id?: string
+          sequence?: number
+          target_category?: string | null
+          target_product?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_scenarios_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       growth_recommendations: {
         Row: {
           accepted: boolean
@@ -1292,6 +1666,20 @@ export type Database = {
         | "PAYMENT_CAPTURED"
         | "COMPLETED"
       entity_status: "active" | "inactive"
+      evaluation_baseline: "traditional" | "agentic" | "safety"
+      evaluation_result_status:
+        | "pending"
+        | "running"
+        | "completed"
+        | "failed"
+        | "skipped"
+      evaluation_status:
+        | "queued"
+        | "running"
+        | "paused"
+        | "completed"
+        | "failed"
+        | "cancelled"
       negotiation_status: "open" | "agreed" | "rejected" | "expired" | "closed"
       offer_status: "proposed" | "accepted" | "rejected" | "expired"
       payment_status:
@@ -1473,6 +1861,22 @@ export const Constants = {
         "COMPLETED",
       ],
       entity_status: ["active", "inactive"],
+      evaluation_baseline: ["traditional", "agentic", "safety"],
+      evaluation_result_status: [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "skipped",
+      ],
+      evaluation_status: [
+        "queued",
+        "running",
+        "paused",
+        "completed",
+        "failed",
+        "cancelled",
+      ],
       negotiation_status: ["open", "agreed", "rejected", "expired", "closed"],
       offer_status: ["proposed", "accepted", "rejected", "expired"],
       payment_status: [

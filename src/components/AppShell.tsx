@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Network,
+  FlaskConical,
 
   Package,
   ShieldCheck,
@@ -25,6 +26,7 @@ const NAV = [
   { to: "/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/products", label: "Products", icon: Package },
   { to: "/policies", label: "Policies", icon: ShieldCheck },
+  { to: "/lab", label: "Evaluation Lab", icon: FlaskConical },
   { to: "/judge", label: "Judge Mode", icon: Gavel },
 ] as const;
 
