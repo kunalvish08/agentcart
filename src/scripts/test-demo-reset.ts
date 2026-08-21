@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "../integrations/supabase/client.server";
-import { resetJudgeDemo } from "./judge.server";
-import { runJudgeDemo } from "./judge.server";
+import { resetJudgeDemo } from "../lib/judge.server";
+import { runJudgeDemo } from "../lib/judge.server";
 
 async function testReset() {
   console.log("Starting Phase 11 Safe Demo Reset Test...");
