@@ -324,105 +324,137 @@ function DashboardPage() {
             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            STOP MAKING UI/TEXT CHANGES.
+                                            Phase 11 — Safe Judge Demo Reset
 
-The previous request was an AUDIT request, not a UI copywriting request.
+The read-only audit is approved.
 
-Do not modify any file, database, UI, schema, prompt, logic, or configuration.
-
-Perform READ-ONLY AUDIT ONLY.
-
-Inspect the actual existing implementation and return a report containing:
-
-1. GOLDEN DEMO
-
-- Can buyer search a product?
-
-- Can buyer negotiate?
-
-- Is discount enforced server-side?
-
-- Can buyer request checkout?
-
-- Does approval create the correct order state?
-
-- Does Razorpay test payment work?
-
-- Is payment signature verified server-side?
-
-- Does verified payment complete the order?
-
-2. JUDGE MODE
-
-Identify the actual files/functions responsible for:
-
-- trace creation
-
-- tool calls
-
-- policy decisions
-
-- order state transitions
-
-- payment state transitions
-
-- replay
-
-3. SECURITY
-
-Verify whether these existing paths actually work:
-
-- discount above policy cap
-
-- inventory overshoot
-
-- duplicate checkout
-
-- forged webhook
-
-- illegal state transition
-
-4. DEMO RESET
-
-Check whether a safe demo reset already exists.
-
-Do NOT implement one.
-
-5. EVIDENCE
-
-For every claim, identify the actual file/function/database table
-
-that proves it.
-
-Distinguish:
-
-- REAL IMPLEMENTATION
-
-- UI ONLY
-
-- HARDCODED DISPLAY
-
-- NOT IMPLEMENTED
-
-6. REGRESSION RISK
-
-Confirm whether Phase 09 and Phase 10 functionality is untouched.
+Implement ONLY a safe, scoped Demo Reset capability.
 
 IMPORTANT:
 
-- DO NOT edit anything.
+Do not modify:
 
-- DO NOT change dashboard text.
+- Razorpay integration
 
-- DO NOT create new components.
+- payment verification
 
-- DO NOT create new database tables.
+- webhook verification
 
-- DO NOT run migrations.
+- order/payment state machines
 
-- DO NOT change payment/security logic.
+- server-side pricing or negotiation
 
-Return ONLY the audit report.`}
+- public Agent API contract
+
+- RLS/security architecture
+
+- Phase 09 evaluation data/results
+
+- Phase 10 evaluation data/results
+
+Requirements:
+
+1. Add a server-side demo reset function.
+
+2. It must operate ONLY on explicitly designated demo/test
+
+records belonging to the TechNova demo merchant.
+
+3. It must NEVER:
+
+- delete the merchant
+
+- delete products
+
+- delete merchant policies
+
+- delete Razorpay credentials/secrets
+
+- modify production configuration
+
+- delete Phase 09 evaluation runs/results
+
+- delete Phase 10 evaluation runs/results
+
+- modify historical evaluation evidence
+
+- bypass RLS/security
+
+4. Reset only transient judge-demo state required for a clean
+
+golden demo, such as:
+
+- demo buyer sessions
+
+- demo agent runs/steps/tool calls
+
+- demo negotiations
+
+- demo checkout orders
+
+- demo approvals
+
+- demo payment records
+
+- demo webhook events
+
+Only reset records that are explicitly marked/scoped as demo
+
+records. Do NOT rely on timestamps or "latest rows" to decide
+
+what is safe to delete.
+
+5. Prefer a server-side transaction.
+
+6. Add confirmation in the Judge Mode UI:
+
+"Reset Judge Demo"
+
+Warning:
+
+"This removes only designated TechNova demo transaction data.
+
+Evaluation history and merchant configuration are preserved."
+
+Require explicit confirmation before execution.
+
+7. After reset, show:
+
+- reset timestamp
+
+- records removed by category
+
+- confirmation that Phase 09/10 evaluation history remains
+
+- confirmation that merchant/catalog/policy remain unchanged
+
+8. Add tests covering:
+
+- demo records are removed
+
+- merchant remains
+
+- products remain
+
+- policies remain
+
+- Phase 09 evaluation records remain
+
+- Phase 10 evaluation records remain
+
+- non-demo records cannot be deleted
+
+- unauthorized users cannot invoke reset
+
+9. Run typecheck, build and relevant security tests.
+
+Do not add fake demo data or hardcoded results.
+
+Before implementation, identify exactly how demo records will be
+
+safely distinguished from historical/non-demo records.
+
+Return the proposed scope first, then implement.`}
           </div>
         </CardContent>
       </Card>
