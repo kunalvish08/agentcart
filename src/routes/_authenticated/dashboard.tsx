@@ -324,105 +324,93 @@ function DashboardPage() {
             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Phase 11 — Safe Judge Demo Reset
+                                            Judge Mode persistence bug — READ-ONLY AUDIT ONLY
 
-The read-only audit is approved.
+When I leave /judge and return to it, the Judge Mode counters and
 
-Implement ONLY a safe, scoped Demo Reset capability.
+demo transaction state appear as 0 / empty, even though I just
+
+completed a real Razorpay test payment and the order reached:
+
+PAYMENT_VERIFIED → ORDER_COMPLETED
+
+DO NOT CHANGE ANY CODE YET.
+
+Audit the actual implementation and determine:
+
+1. Where Judge Mode counters are loaded from.
+
+2. Whether counters are calculated from persisted database records
+
+   or only from current/in-memory demo state.
+
+3. How the selected/latest Judge demo run is identified.
+
+4. Whether \`/judge\` loses its selected run after navigation/remount.
+
+5. Whether React/TanStack Query cache is responsible.
+
+6. Whether the completed order, payment, agent run, steps and tool
+
+   calls still exist in the database after leaving \`/judge\`.
+
+7. Whether the "Reset Judge Demo" action is being called accidentally
+
+   or whether any cleanup happens on page unmount.
+
+8. Whether the current Judge Mode query filters are incorrectly
+
+   restricted to an in-memory session/run.
+
+9. Whether the completed Razorpay order is still retrievable from
+
+   persisted records.
+
+Specifically inspect:
+
+- src/routes/_authenticated/judge.tsx
+
+- src/lib/judge.server.ts
+
+- relevant TanStack Query hooks
+
+- agent_runs
+
+- agent_steps
+
+- tool_calls
+
+- orders
+
+- payments
+
+- webhook_events
+
+Return:
+
+A. DATABASE STATE AFTER NAVIGATION
+
+B. WHY /judge SHOWS ZERO
+
+C. EXACT FILE/FUNCTION CAUSING IT
+
+D. WHETHER DATA WAS ACTUALLY DELETED
+
+E. MINIMUM SAFE FIX
 
 IMPORTANT:
 
-Do not modify:
+- READ ONLY
 
-- Razorpay integration
+- Do not modify database
 
-- payment verification
+- Do not reset demo state
 
-- webhook verification
+- Do not modify Razorpay/payment logic
 
-- order/payment state machines
+- Do not modify Phase 09/10 evaluation data
 
-- server-side pricing or negotiation
-
-- public Agent API contract
-
-- RLS/security architecture
-
-- Phase 09 evaluation data/results
-
-- Phase 10 evaluation data/results
-
-Requirements:
-
-1. Add a server-side demo reset function.
-
-2. It must operate ONLY on explicitly designated demo/test
-
-records belonging to the TechNova demo merchant.
-
-3. It must NEVER:
-
-- delete the merchant
-
-- delete products
-
-- delete merchant policies
-
-- delete Razorpay credentials/secrets
-
-- modify production configuration
-
-- delete Phase 09 evaluation runs/results
-
-- delete Phase 10 evaluation runs/results
-
-- modify historical evaluation evidence
-
-- bypass RLS/security
-
-4. Reset only transient judge-demo state required for a clean
-
-golden demo, such as:
-
-- demo buyer sessions
-
-- demo agent runs/steps/tool calls
-
-- demo negotiations
-
-- demo checkout orders
-
-- demo approvals
-
-- demo payment records
-
-- demo webhook events
-
-Only reset records that are explicitly marked/scoped as demo
-
-records. Do NOT rely on timestamps or "latest rows" to decide
-
-what is safe to delete.
-
-5. Prefer a server-side transaction.
-
-6. Add confirmation in the Judge Mode UI:
-
-"Reset Judge Demo"
-
-Warning:
-
-"This removes only designated TechNova demo transaction data.
-
-Evaluation history and merchant configuration are preserved."
-
-Require explicit confirmation before execution.
-
-7. After reset, show:
-
-- reset timestamp
-
-- records removed by category
+- Do not implement a fix yet`}
 
 - confirmation that Phase 09/10 evaluation history remains
 
