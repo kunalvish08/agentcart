@@ -47,7 +47,7 @@ const ENDPOINTS: Endpoint[] = [
     method: "GET",
     path: "/.well-known/agent-manifest",
     purpose:
-      "Agent discovery. Describes the merchant, currency, supported capabilities and the endpoints an external AI buyer should call. Checkout and payments are advertised as false in Phase 02.",
+      "Agent discovery. Describes the merchant, currency, supported capabilities and the endpoints an external AI buyer should call. Also advertises the negotiation, checkout and order-observation contracts, and the explicit AI authority boundary.",
     auth: "None (public, read-only)",
     request: `curl https://your-domain/.well-known/agent-manifest`,
     response: `{
