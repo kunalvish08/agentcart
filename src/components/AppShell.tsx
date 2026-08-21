@@ -19,11 +19,13 @@ import { Button } from "@/components/ui/button";
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/buyer", label: "AI Buyer", icon: Bot },
+  { to: "/buyer-lab", label: "External AI Buyer", icon: Network },
   { to: "/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/products", label: "Products", icon: Package },
   { to: "/policies", label: "Policies", icon: ShieldCheck },
   { to: "/judge", label: "Judge Mode", icon: Gavel },
 ] as const;
+
 
 
 export function AppShell({
