@@ -17,6 +17,7 @@ describe("controlled tool layer", () => {
       "propose_discount",
       "validate_offer",
       "get_eligible_related_products",
+      "request_checkout",
     ]);
 
   });
@@ -33,6 +34,27 @@ describe("controlled tool layer", () => {
       const { result } = await executeTool("propose_discount", args, ctx);
       expect(result.error?.code).toBe("invalid_tool_arguments");
     }
+  });
+
+  it("rejects checkout arguments the server cannot trust", async () => {
+    for (const args of [
+      {},
+      { quote_id: "not-a-uuid" },
+      { quote_id: "33333333-3333-4333-8333-000000000001", idempotency_key: "short" },
+      { quote_id: "33333333-3333-4333-8333-000000000001", idempotency_key: "'; drop table orders;--" },
+    ]) {
+      const { result } = await executeTool("request_checkout", args, ctx);
+      expect(result.error?.code).toBe("invalid_tool_arguments");
+    }
+  });
+
+  it("refuses checkout without an authenticated buyer session", async () => {
+    const { result } = await executeTool(
+      "request_checkout",
+      { quote_id: "33333333-3333-4333-8333-000000000001" },
+      { baseUrl: ctx.baseUrl },
+    );
+    expect(result.error?.code).toBe("checkout_unavailable");
   });
 
   it("rejects invalid offer validation arguments", async () => {

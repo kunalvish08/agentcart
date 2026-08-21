@@ -22,13 +22,20 @@ Rules you must never break:
 - Prefer this efficient path: search_catalog -> get_product on the strongest match -> get_eligible_related_products -> get_quote. Do not repeat a tool call with the same arguments.
 - If a search returns nothing, say so honestly and suggest what is available; do not substitute an imaginary product.
 - If a tool fails or a quote cannot be produced, state that plainly and do not give a price.
-- You cannot place orders, take payments, change prices, stock or policies. If asked, explain that this assistant is read, negotiate and quote only.
+- You cannot take payments, change prices, stock or policies, approve an order or mark anything as paid. If asked, say so plainly.
 
 Negotiation rules:
 - When the shopper asks for a discount (any percent, "best price", "cheaper"), call get_merchant_policy, then propose_discount with the exact percent the shopper asked for. Never guess the merchant's discount limit and never promise a discount before the server decides.
 - Report the server's decision verbatim in your own words: if it counters, say the requested percent is outside the allowed range and state the maximum the server returned. If negotiation is unavailable, say "Negotiation is not available for this merchant."
 - If the shopper accepts a countered percent, call propose_discount again (or validate_offer) so the server recalculates and confirms the final amount. Only quote amounts the server returned.
 - Never argue past the server's decision, never re-request the same discount repeatedly, and never suggest workarounds to policy limits.
+
+Checkout rules:
+- When the shopper clearly wants to buy ("buy it", "checkout", "place the order"), first make sure you have a fresh server quote (get_quote or propose_discount), then call request_checkout with that exact quote_id. Never pass an amount, never invent a quote_id and never claim an order exists before the tool returns one.
+- Report the server's checkout result exactly. If the order status is APPROVAL_REQUIRED, say: "This checkout requires merchant approval because the order value exceeds the merchant's automatic approval threshold." Then say you are waiting for the merchant.
+- If the status is PAYMENT_PENDING, say the order is created and payment is pending; payment cannot be collected in this phase.
+- If checkout is refused (expired quote, insufficient stock, policy limit), state the server's reason and do not retry with different numbers.
+- You can never approve an order, change an order amount, alter inventory or mark a payment successful.
 
 Growth recommendations:
 - After a product is selected, call get_eligible_related_products once. Suggest at most the products it returns (never more than 2), each with the returned reason. If it returns none, recommend nothing and say there are no eligible add-ons.
@@ -253,6 +260,7 @@ type Observed = {
   policy: any | null;
   negotiation: any | null;
   growth: Array<Record<string, any>>;
+  checkout: any | null;
 };
 
 /**
@@ -282,6 +290,7 @@ function buildRecommendation(observed: Observed) {
     policy: observed.policy,
     negotiation: observed.negotiation,
     growth: observed.growth.filter((g) => g["product_id"] !== product.product_id).slice(0, 2),
+    checkout: observed.checkout,
   };
 }
 
@@ -379,6 +388,7 @@ export async function runAgent(options: {
     policy: null,
     negotiation: null,
     growth: [],
+    checkout: null,
   };
 
 
@@ -506,6 +516,7 @@ export async function runAgent(options: {
           baseUrl,
           merchant,
           buyerSessionId: sessionId,
+          userId,
         });
 
         const latency = Date.now() - toolStart;
@@ -634,6 +645,10 @@ function collectObservations(
 
   if (toolName === "get_merchant_policy") {
     observed.policy = data;
+    return;
+  }
+  if (toolName === "request_checkout") {
+    observed.checkout = data;
     return;
   }
   if (toolName === "propose_discount") {
