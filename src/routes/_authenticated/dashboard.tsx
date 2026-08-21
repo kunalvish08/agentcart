@@ -5,6 +5,7 @@ import {
   Bot,
   Boxes,
   CheckCircle2,
+  ClipboardCheck,
   ExternalLink,
   Handshake,
   IndianRupee,
@@ -18,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCheckoutMetrics } from "@/lib/checkout.functions";
 import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
 
 
@@ -41,6 +43,12 @@ function DashboardPage() {
   const { data: growth } = useQuery({
     queryKey: ["growth-metrics"],
     queryFn: () => fetchGrowth(),
+  });
+  const fetchCheckout = useServerFn(getCheckoutMetrics);
+  const { data: checkout } = useQuery({
+    queryKey: ["checkout-metrics"],
+    queryFn: () => fetchCheckout(),
+    refetchInterval: 15_000,
   });
 
 
@@ -230,8 +238,54 @@ function DashboardPage() {
             Every discount here was decided by the server policy engine against your
             {" "}
             {data ? `${data.policy.max_discount_percent}%` : ""} cap — never by the AI model.
-            Checkout and payment capture arrive in a later phase.
+            Payment capture arrives in a later phase.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ClipboardCheck className="size-4" /> Agentic checkout
+            {checkout && checkout.pendingApprovals > 0 ? (
+              <Badge variant="secondary">{checkout.pendingApprovals} awaiting you</Badge>
+            ) : null}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <Field label="Orders created" value={checkout ? String(checkout.orders) : "—"} />
+            <Field
+              label="Pending approvals"
+              value={checkout ? String(checkout.pendingApprovals) : "—"}
+            />
+            <Field
+              label="Reviewed today"
+              value={
+                checkout
+                  ? `${checkout.approvedToday} approved · ${checkout.rejectedToday} rejected`
+                  : "—"
+              }
+            />
+            <Field
+              label="Awaiting payment"
+              value={
+                checkout
+                  ? `${checkout.awaitingPayment} · ${inr.format(checkout.paymentPendingValue)}`
+                  : "—"
+              }
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button asChild size="sm" variant="outline">
+              <Link to="/approvals">Open approval queue</Link>
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Orders above your{" "}
+              {data ? inr.format(data.policy.approval_required_above) : ""} approval threshold wait for
+              your decision. The AI agent can request checkout but can never approve one.
+            </p>
+          </div>
         </CardContent>
       </Card>
 
