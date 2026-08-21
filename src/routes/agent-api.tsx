@@ -175,12 +175,12 @@ const ENDPOINTS: Endpoint[] = [
   "quantity": 1,
   "base_amount": 129000,
   "requested_discount_percent": 50,
-  "allowed_discount_percent": 10,
-  "discount_amount": 12900,
-  "final_amount": 116100,
+  "allowed_discount_percent": 12,
+  "discount_amount": 15480,
+  "final_amount": 113520,
   "currency": "INR",
   "policy_applied": true,
-  "policy_reason": "Requested discount 50% exceeds the merchant limit of 10%; capped at 10%.",
+  "policy_reason": "Requested discount 50% exceeds the merchant limit of 12%; capped at 12%.",
   "expires_at": "2026-01-01T00:15:00.000Z"
 }`,
     errors: [
