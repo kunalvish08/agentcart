@@ -322,209 +322,79 @@ function DashboardPage() {
         <CardContent className="space-y-4 text-sm">
           <div className="rounded-md border border-border bg-card p-4 font-mono text-[10px] leading-relaxed whitespace-pre-wrap">
             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-
                                         
-                                        Phase 11 — Final Judge & Demo Readiness
+                                            
+                                            The previous Phase 11 request was not satisfied by changing
 
-Phase 01–10 are now frozen. Do not change existing commerce,
+dashboard display text alone.
 
-payment, security, evaluation, or agent authority logic.
+Do NOT make more visual-only edits.
 
-Before implementing anything, audit the current application and
+Now audit the existing implementation and verify whether the
 
-prepare it for a final competition judge/demo.
+following actually work end-to-end using real persisted data:
 
-Goal:
+1. Golden demo:
 
-Make the existing Agentic Commerce system demonstrable in a
+Buyer → search → quote → negotiation → checkout →
 
-single 5–7 minute end-to-end flow.
+APPROVAL_REQUIRED → merchant approval → PAYMENT_PENDING →
 
-Create a Judge Demo Mode that clearly demonstrates:
+Razorpay test payment → server verification → COMPLETED.
 
-1. BUYER DISCOVERY
+2. Judge Mode:
 
-Buyer asks:
+Real trace with tool calls, policy decisions, order state
 
-"I need a coding laptop under ₹60,000."
+transitions and payment state.
 
-Show:
+3. Security demo:
 
-Agent → catalog search → product selection → server quote.
+- discount above cap rejected/capped
 
-2. NEGOTIATION
+- inventory overshoot rejected
 
-Buyer asks for 30% discount.
+- duplicate checkout prevented
 
-Show:
+- forged webhook rejected
 
-30% requested → policy cap 12% → server-authoritative quote
+- illegal state transition blocked
 
-₹55,000 → ₹48,400.
+4. Demo reset:
 
-The agent must never calculate or authorize the discount.
+If not already implemented, determine whether it is necessary.
 
-3. CHECKOUT
+Do not create destructive reset logic without an explicit safe
 
-Buyer explicitly requests checkout.
+scope.
 
-Show:
+5. Evidence:
 
-quote → checkout request → APPROVAL_REQUIRED.
+All displayed results must come from real persisted records,
 
-4. HUMAN-IN-THE-LOOP
+not hardcoded/demo text.
 
-Open merchant Approvals.
+6. Regression:
 
-Show:
+Do not modify Razorpay verification, webhook verification,
 
-pending approval → merchant approves → order created →
+RLS, server-side pricing, state machines, Phase 09 results,
 
-PAYMENT_PENDING.
+or Phase 10 results.
 
-5. PAYMENT
+First return an AUDIT ONLY report:
 
-Open buyer payment.
+A. What Phase 11 functionality already exists
 
-Use Razorpay TEST MODE.
+B. What is missing
 
-Show:
+C. What is only visual text
 
-payment → server-side signature verification →
+D. Exact files/functions that would need changes
 
-PAYMENT_VERIFIED → ORDER_COMPLETED.
+E. Whether any existing payment/security logic would be touched
 
-6. SECURITY / CHAOS DEMO
-
-Provide quick demo actions for:
-
-- 30/40% discount request → capped at 12%
-
-- inventory overshoot → rejected
-
-- duplicate checkout → prevented
-
-- forged webhook → rejected
-
-- illegal payment/order state transition → blocked
-
-Every result must come from the existing server-authoritative
-
-logic. Do not create fake demo results.
-
-7. JUDGE EVIDENCE
-
-Make Judge Mode clearly show:
-
-Agent request
-
-↓
-
-Validated tool
-
-↓
-
-Public API
-
-↓
-
-Server policy
-
-↓
-
-Quote
-
-↓
-
-Checkout
-
-↓
-
-Human approval
-
-↓
-
-Razorpay
-
-↓
-
-Webhook/signature verification
-
-↓
-
-Completed order
-
-Also show:
-
-- trace ID
-
-- tool calls
-
-- policy decisions
-
-- order state transitions
-
-- payment state
-
-- security decisions
-
-8. FINAL DEMO RESET
-
-Add a safe "Reset Demo State" action that only resets
-
-designated demo/test records and never deletes merchant,
-
-security, payment credentials, or production data.
-
-9. UI
-
-Do not redesign the entire application.
-
-Only improve the screens necessary for the final demo:
-
-- Dashboard
-
-- AI Buyer
-
-- Approvals
-
-- Judge Mode
-
-- Evaluation Lab
-
-Use existing visual language.
-
-10. IMPORTANT
-
-Do not modify:
-
-- Razorpay verification
-
-- webhook verification
-
-- payment state machine
-
-- order state machine
-
-- public Agent API contract
-
-- RLS
-
-- Phase 09 historical results
-
-- Phase 10 evaluation results
-
-- server-side pricing/policy authority
-
-First audit the existing implementation.
-
-Then implement only the minimum changes needed for a reliable
-
-5–7 minute judge demonstration.
-
-Before completion, verify the entire golden path end-to-end
-
-using real persisted records and Razorpay TEST MODE.`}
+DO NOT IMPLEMENT anything yet.`}
           </div>
         </CardContent>
       </Card>
