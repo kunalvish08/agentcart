@@ -34,8 +34,16 @@ Method you follow:
 5. If the shopper wants a better price, call negotiate with the percent they want. Report the server's decision exactly: if it counters, state the requested percent, the merchant's policy limit, and the server's final amount.
 6. If the shopper wants to buy, call request_checkout with the quote_id the server issued.
 
+Deciding whether to complete the purchase (read carefully):
+- The shopper is not available for follow-up questions in this channel. Never end your turn by asking "shall I proceed?" or "let me know and I will order it" — decide from the intent you were given and act.
+- PURCHASE INTENT means the shopper is shopping: they name a product, a product type, a category or a budget and want you to obtain it. "I want to buy", "buy", "order", "get me", "purchase", "I need <thing>", "looking for <thing>", "shopping for", "trying to get", "can you find me", "help me pick", and shopping requests that also ask "what do you recommend?" are ALL purchase intent — asking for a recommendation is how a shopper delegates the choice, not a request for a brochure. When the intent is a purchase and the server has issued a quote for an in-stock product that fits any stated budget, you MUST call request_checkout with that quote_id in the SAME run. Ending a purchase run at the quote is a failure to do your job.
+- If the shopper also asks for accessories or add-ons "that go with it", call get_quote for the accessory you recommend as well, so every amount you report is server-issued, then check out the main item.
+- PURE INFORMATION INTENT is the narrow case where the shopper wants no purchase at all: policy questions, specification comparisons, "is it worth it", "just checking today's price", "does it support X". Only then stop after reporting the server's quote and do NOT check out.
+
+- If checkout is refused (inventory, order-value limit, policy), report the server's error code and stop; never retry with different numbers.
+
 Hard rules you can never break:
-- You never calculate, estimate, round or invent any monetary amount, discount, or total. Every number you state must appear verbatim in a tool result.
+- You never calculate, estimate, round or invent any monetary amount, discount, or total. Every number you state must appear verbatim in a tool result from THIS run. If you cannot find a figure in a tool result, do not state a figure — ask for a fresh quote instead.
 - You never claim a discount before the server has decided, and you never argue past a policy decision or retry the same rejected percent.
 - You cannot approve a checkout, capture or confirm a payment, change an order amount, alter inventory or override policy. If asked, say plainly that only the merchant can approve and that payment happens in the merchant's own flow.
 - When checkout returns APPROVAL_REQUIRED, state: "Merchant approval required before payment." Then stop; do not call more tools.
@@ -46,6 +54,7 @@ Final message format (short, factual, no internal reasoning):
 1. One line with the recommended product or an honest no-match statement.
 2. "Actions taken" — the API steps you performed.
 3. "Outcome" — the server's amount, policy decision and transaction status, quoted from tool results.`;
+
 
 /* --------------------------------- events ---------------------------------- */
 
@@ -72,6 +81,11 @@ export type ExternalBuyerEvent =
   | { type: "text"; delta: string }
   | { type: "state"; state: BuyerState }
   | { type: "notice"; code: string; message: string }
+  /** Every monetary figure the SERVER returned in this run (defence-in-depth #1). */
+  | { type: "trusted_amounts"; amounts: number[] }
+  /** Validated closing message (defence-in-depth #3). `corrected` = unsafe text replaced. */
+  | { type: "final_text"; text: string; corrected: boolean; unsupported_amounts: number[] }
+
   | {
       type: "done";
       status: string;
@@ -152,7 +166,71 @@ function emptyState(): BuyerState {
   };
 }
 
+/* ------------------------ trusted monetary provenance ---------------------- */
+
+/**
+ * Defence-in-depth against invented prices.
+ *
+ * 1. Every number the SERVER returned in a successful tool result is recorded
+ *    here, keyed to this run only. Nothing the model writes ever enters the set.
+ * 2. The system prompt forbids stating a figure that is not in a tool result.
+ * 3. The closing message is validated against this ledger before it is reported.
+ */
+const MONEY_FIELD = /amount|price|total|subtotal|value|paid|payable|limit|threshold/i;
+
+function collectTrustedAmounts(value: unknown, into: Set<number>, keyHint = "") {
+  if (value === null || value === undefined) return;
+  if (typeof value === "number") {
+    if (Number.isFinite(value) && value > 0) into.add(Math.round(value * 100) / 100);
+    return;
+  }
+  if (typeof value === "string") {
+    // Numeric strings are how Postgres numerics arrive over JSON.
+    if (MONEY_FIELD.test(keyHint) && /^\d+(\.\d+)?$/.test(value.trim())) {
+      const n = Number(value);
+      if (Number.isFinite(n) && n > 0) into.add(Math.round(n * 100) / 100);
+    }
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectTrustedAmounts(item, into, keyHint);
+    return;
+  }
+  if (typeof value === "object") {
+    for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+      collectTrustedAmounts(item, into, key);
+    }
+  }
+}
+
+/** Money figures the model stated in prose (₹ or "INR 1,234"). */
+export function claimedMonetaryAmounts(text: string): number[] {
+  const found: number[] = [];
+  const re = /(?:₹|INR|Rs\.?)\s?([\d,]+(?:\.\d+)?)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const value = Number((m[1] ?? "").replace(/,/g, ""));
+    if (Number.isFinite(value) && value > 0) found.push(value);
+  }
+  return found;
+}
+
+/** Claims with no matching server figure (±₹1 tolerance for rounding in prose). */
+export function unsupportedMonetaryClaims(text: string, trusted: Set<number>): number[] {
+  const allowed = [...trusted];
+  return claimedMonetaryAmounts(text).filter(
+    (value) => !allowed.some((ok) => Math.abs(ok - value) < 1),
+  );
+}
+
+const SAFE_REPLACEMENT_TEXT = [
+  "I cannot confirm the amounts in my draft answer against the merchant's own API responses, so I am withholding them.",
+  "",
+  "Outcome: no price is quoted here. Every amount must come from a server-issued quote — please request a fresh quote from the merchant and I will report the server's figures verbatim.",
+].join("\n");
+
 /* --------------------------------- helpers --------------------------------- */
+
 
 function clip(value: unknown): unknown {
   const text = JSON.stringify(value ?? null);
@@ -523,6 +601,9 @@ export async function runExternalBuyer(options: ExternalBuyerRunOptions) {
   let stopReason = "model_finished";
   let errorText: string | null = null;
   let usage: ModelTurn["usage"] = null;
+  const trustedAmounts = new Set<number>();
+  let lastModelText = "";
+
 
   const recordStep = async (step: {
     step_type: string;
@@ -597,6 +678,9 @@ export async function runExternalBuyer(options: ExternalBuyerRunOptions) {
       const modelStart = Date.now();
       const turn = await callModel(apiKey, messages, (delta) => emit({ type: "text", delta }), signal);
       if (turn.usage) usage = turn.usage;
+      if (turn.content.trim()) lastModelText = turn.content;
+
+
 
       await recordStep({
         step_type: turn.toolCalls.length > 0 ? "model_tool_plan" : "model_answer",
@@ -646,7 +730,12 @@ export async function runExternalBuyer(options: ExternalBuyerRunOptions) {
 
         const result = await executeExternalTool(call.name, call.arguments, client);
         collect(call.name, result, state);
+        if (result.ok) {
+          collectTrustedAmounts(result.data, trustedAmounts);
+          emit({ type: "trusted_amounts", amounts: [...trustedAmounts] });
+        }
         const decision = policyDecisionLabel(call.name, result);
+
 
         const stepId = await recordStep({
           step_type: "external_api_call",
@@ -714,7 +803,34 @@ export async function runExternalBuyer(options: ExternalBuyerRunOptions) {
     emit({ type: "notice", code: "agent_error", message: errorText });
   }
 
+  // Defence-in-depth #3: validate the closing message against the trusted ledger.
+  // An unsupported figure is never shown as if the merchant had quoted it — the
+  // answer is replaced with a request for a fresh server quote.
+  const unsupported = unsupportedMonetaryClaims(lastModelText, trustedAmounts);
+  const corrected = unsupported.length > 0;
+  if (corrected) {
+    emit({
+      type: "notice",
+      code: "unsupported_monetary_claim",
+      message: `Withheld ${unsupported.length} amount(s) that no merchant API response supports.`,
+    });
+    await recordStep({
+      step_type: "final_answer_validation",
+      status: "failed",
+      label: "Closing message failed monetary-provenance validation",
+      input_summary: summarize(lastModelText),
+      output_summary: `unsupported amounts: ${unsupported.join(", ")} · answer replaced with a fresh-quote request`,
+    });
+  }
+  emit({
+    type: "final_text",
+    text: corrected ? SAFE_REPLACEMENT_TEXT : lastModelText,
+    corrected,
+    unsupported_amounts: unsupported,
+  });
+
   const durationMs = Date.now() - startedAt;
+
   await supabaseAdmin
     .from("agent_runs")
     .update({

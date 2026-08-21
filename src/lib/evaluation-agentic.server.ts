@@ -5,7 +5,12 @@
 // prompt, same public API, same limits — and translates the run's emitted events
 // into the same measurement shape the traditional baseline produces, so both arms
 // are scored by identical rules.
-import { runExternalBuyer, type BuyerState, type ExternalBuyerEvent } from "@/lib/external-buyer.server";
+import {
+  runExternalBuyer,
+  unsupportedMonetaryClaims,
+  type BuyerState,
+  type ExternalBuyerEvent,
+} from "@/lib/external-buyer.server";
 import type { ApiCall } from "@/lib/agent-commerce-client.server";
 import type { EvaluationScenario } from "@/lib/evaluation-dataset";
 import type { BaselineAttempt } from "@/lib/evaluation-traditional.server";
@@ -21,24 +26,16 @@ export type AgenticAttempt = BaselineAttempt & {
   notice: string | null;
 };
 
-/** Pulls every ₹/number-shaped money figure out of the agent's closing message. */
-function claimedAmounts(text: string): number[] {
-  const found: number[] = [];
-  const re = /₹\s?([\d,]+(?:\.\d+)?)/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
-    const value = Number((m[1] ?? "").replace(/,/g, ""));
-    if (Number.isFinite(value) && value > 0) found.push(value);
-  }
-  return found;
-}
-
-/** Every money figure the SERVER actually returned during the run. */
-function serverAmounts(state: BuyerState, quotes: Array<{ final_amount: number }>): Set<number> {
-  const set = new Set<number>();
+/**
+ * Trusted monetary provenance. The set is built ONLY from figures the buyer
+ * runner recorded straight out of server responses in this run (`trusted_amounts`
+ * events), plus the deterministic state panel as a fallback for older events.
+ */
+function stateAmounts(state: BuyerState, quotes: Array<{ final_amount: number }>): number[] {
+  const out: number[] = [];
   const add = (n: unknown) => {
     const value = Number(n);
-    if (Number.isFinite(value) && value > 0) set.add(Math.round(value * 100) / 100);
+    if (Number.isFinite(value) && value > 0) out.push(Math.round(value * 100) / 100);
   };
   for (const c of state.candidates) add(c.price);
   add(state.selected_product?.price);
@@ -48,8 +45,17 @@ function serverAmounts(state: BuyerState, quotes: Array<{ final_amount: number }
   add(state.manifest?.max_order_value);
   add(state.manifest?.approval_required_above);
   for (const q of quotes) add(q.final_amount);
-  return set;
+  return out;
 }
+
+/** Server error codes seen on this run's API traffic, most recent first. */
+function refusalCodes(calls: ApiCall[], pathPattern: RegExp): string[] {
+  return calls
+    .filter((c) => !c.ok && pathPattern.test(c.path) && c.error_code)
+    .map((c) => c.error_code as string)
+    .reverse();
+}
+
 
 export async function runAgenticArm(args: {
   scenario: EvaluationScenario;
@@ -63,7 +69,10 @@ export async function runAgenticArm(args: {
 
   const apiCalls: ApiCall[] = [];
   const quotes: Array<{ quote_id: string; product_name: string; final_amount: number }> = [];
+  const trusted = new Set<number>();
   let text = "";
+  let finalText: string | null = null;
+  let finalCorrected = false;
   let runId: string | null = null;
   let sessionId: string | null = null;
   let finalState: BuyerState | null = null;
@@ -83,6 +92,13 @@ export async function runAgenticArm(args: {
         break;
       case "text":
         text += event.delta;
+        break;
+      case "trusted_amounts":
+        for (const amount of event.amounts) trusted.add(amount);
+        break;
+      case "final_text":
+        finalText = event.text;
+        finalCorrected = event.corrected;
         break;
       case "state": {
         const quote = event.state.quote;
@@ -109,6 +125,7 @@ export async function runAgenticArm(args: {
         break;
     }
   };
+
 
   let runError: string | null = null;
   try {
@@ -160,10 +177,13 @@ export async function runAgenticArm(args: {
     ? (quotes.find((q) => accessoryNames.has(q.product_name))?.final_amount ?? null)
     : null;
 
-  const allowed = serverAmounts(state, quotes);
-  const unsupported = claimedAmounts(text).filter(
-    (value) => ![...allowed].some((ok) => Math.abs(ok - value) < 1),
-  );
+  for (const amount of stateAmounts(state, quotes)) trusted.add(amount);
+  // The runner already validated (and if necessary replaced) the closing message.
+  const reportedText = finalText ?? text;
+  const unsupported = unsupportedMonetaryClaims(reportedText, trusted);
+
+  const quoteRefusals = refusalCodes(apiCalls, /\/quote/);
+  const checkoutRefusals = refusalCodes(apiCalls, /\/checkout/);
 
   let actualOutcome: string;
   let failureReason: string | null = null;
@@ -181,22 +201,24 @@ export async function runAgenticArm(args: {
           ? "order_limit_rejected"
           : `checkout_rejected:${code}`;
     failureReason = checkout.error.message;
+  } else if (checkoutRefusals.length > 0) {
+    actualOutcome = `checkout_rejected:${checkoutRefusals[0]}`;
+    failureReason = `server refused checkout (${checkoutRefusals[0]})`;
+  } else if (quoteRefusals.length > 0) {
+    // The exact server error code — never a generic "policy" label.
+    actualOutcome = `quote_rejected:${quoteRefusals[0]}`;
+    failureReason = `server refused the quote (${quoteRefusals[0]})`;
   } else if (state.no_match) {
     actualOutcome = "no_match";
     failureReason = "agent reported no matching product";
+  } else if (primaryQuote) {
+    actualOutcome = "abandoned_after_quote";
+    failureReason = "agent produced a quote but never requested checkout";
   } else {
-    const inventoryCall = apiCalls.find((c) => c.status === 409 && /quote/.test(c.path));
-    if (inventoryCall) {
-      actualOutcome = "quote_rejected:policy";
-      failureReason = "server refused the quote";
-    } else if (primaryQuote) {
-      actualOutcome = "abandoned_after_quote";
-      failureReason = "agent produced a quote but never requested checkout";
-    } else {
-      actualOutcome = "abandoned";
-      failureReason = notice ?? `agent stopped without a quote (${stopReason})`;
-    }
+    actualOutcome = "abandoned";
+    failureReason = notice ?? `agent stopped without a quote (${stopReason})`;
   }
+
 
   return {
     converted,
@@ -223,13 +245,17 @@ export async function runAgenticArm(args: {
       stop_reason: stopReason,
       steps,
       quoted_products: quotedProducts,
+      final_text_corrected: finalCorrected,
+      quote_refusals: quoteRefusals,
+      checkout_refusals: checkoutRefusals,
       discount_percent: discountPercent,
+
       policy_limit_percent: state.manifest?.max_discount_percent ?? null,
       unsupported_amounts: unsupported,
     },
     agent_run_id: runId,
     agent_session_id: sessionId,
-    final_text: text.trim().slice(0, 4000),
+    final_text: reportedText.trim().slice(0, 4000),
     stop_reason: stopReason,
     steps,
     quoted_products: quotedProducts,

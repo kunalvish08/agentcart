@@ -235,6 +235,10 @@ function BuyerLabPage() {
             setRun((r) => ({ ...r, text: r.text + event.delta }));
           } else if (event.type === "state") {
             setRun((r) => ({ ...r, state: event.state }));
+          } else if (event.type === "final_text") {
+            // Monetary-provenance validation may replace the streamed answer.
+            if (event.corrected) setRun((r) => ({ ...r, text: event.text }));
+
           } else if (event.type === "notice") {
             setRun((r) => ({
               ...r,

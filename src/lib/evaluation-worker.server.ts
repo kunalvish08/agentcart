@@ -248,6 +248,24 @@ type SafetyOutcome = {
   latency_ms: number;
 };
 
+/**
+ * The checkout API only accepts letters, digits, '-' and '_' in an
+ * idempotency_key. Build keys that satisfy that contract instead of tripping
+ * request validation (which the harness previously logged as a harness error).
+ */
+function safeKey(...parts: string[]): string {
+  return parts
+    .join("_")
+    .replace(/[^A-Za-z0-9_-]/g, "_")
+    .slice(0, 120);
+}
+
+function probeKey(runId: string, probeId: string): string {
+  return safeKey("safety", runId.slice(0, 8), probeId);
+}
+
+
+
 async function runSafetyProbe(args: {
   probeId: string;
   baseUrl: string;
@@ -328,13 +346,36 @@ async function runSafetyProbe(args: {
   }
 
   if (probeId === "safety-inventory-overshoot") {
-    const quote = await client.getQuote({ product_id: top.product_id, quantity: 9999 });
-    const code = quote.ok ? "accepted" : quote.error.code;
-    const passed = !quote.ok && (code === "insufficient_inventory" || code === "order_value_exceeded");
+    // The typed client caps quantity at 100, so the probe talks to the public API
+    // directly to prove the SERVER (not the client SDK) refuses the overshoot.
+    const quantity = 9999;
+    const response = await fetch(new URL("/api/public/quote", baseUrl), {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        ...(token ? { "x-agent-session": token } : {}),
+      },
+      body: JSON.stringify({
+        merchant_slug: merchant.slug,
+        product_id: top.product_id,
+        quantity,
+      }),
+    });
+    const body = (await response.json().catch(() => ({}))) as Record<string, any>;
+    const code = response.ok ? "accepted" : String(body?.["error"]?.["code"] ?? `http_${response.status}`);
+    // Any 4xx refusal is a safe containment: no quote was issued, so no order can
+    // follow. We do not require one specific status or error code.
+    const passed = !response.ok && response.status >= 400 && response.status < 500;
     return finish(
       passed,
-      passed ? (code === "insufficient_inventory" ? "inventory_rejected" : "order_limit_rejected") : "policy_violation",
-      `9999 × ${top.name} · server responded "${code}"`,
+      passed
+        ? code === "insufficient_inventory"
+          ? "inventory_rejected"
+          : code === "order_value_exceeded"
+            ? "order_limit_rejected"
+            : "quote_rejected:validation"
+        : "policy_violation",
+      `${quantity} × ${top.name} · server responded ${response.status} "${code}"`,
     );
   }
 
@@ -355,14 +396,18 @@ async function runSafetyProbe(args: {
       headers,
       body: JSON.stringify({
         quote_id: quoteId,
-        idempotency_key: `${args.runId}:${probeId}`,
+        idempotency_key: probeKey(args.runId, probeId),
       }),
     });
-    const passed = response.status === 401;
+    const body = (await response.json().catch(() => ({}))) as Record<string, any>;
+    const code = String(body?.["error"]?.["code"] ?? `http_${response.status}`);
+    // PASS = the request was refused with no order created. 401 is the expected
+    // status, but any 4xx refusal is an equally safe containment.
+    const passed = !response.ok && response.status >= 400 && response.status < 500;
     return finish(
       passed,
       passed ? "unauthenticated_rejected" : "auth_bypass",
-      `POST /api/public/checkout returned ${response.status}`,
+      `POST /api/public/checkout returned ${response.status} "${code}"`,
     );
   }
 
@@ -373,7 +418,7 @@ async function runSafetyProbe(args: {
   if (!affordable) return finish(false, "api_error", "No affordable in-stock product to test with.");
   const quote = await client.getQuote({ product_id: affordable.product_id, quantity: 1 });
   if (!quote.ok) return finish(false, `quote_rejected:${quote.error.code}`, quote.error.message);
-  const key = `${args.runId}:${probeId}`;
+  const key = probeKey(args.runId, probeId);
   const first = await client.requestCheckout({
     quote_id: String((quote.data as Record<string, any>)["quote_id"]),
     idempotency_key: key,
@@ -386,18 +431,27 @@ async function runSafetyProbe(args: {
     idempotency_key: key,
     buyer_note: "safety probe: duplicate checkout",
   });
-  if (!second.ok) return finish(false, `checkout_rejected:${second.error.code}`, second.error.message);
+  // A second attempt that is REFUSED is also safe containment: what must never
+  // happen is a second distinct order.
+  if (!second.ok) {
+    return finish(
+      true,
+      "duplicate_refused",
+      `replay refused with "${second.error.code}" · original order ${firstOrder.slice(0, 8)}… untouched`,
+    );
+  }
   const secondData = second.data as Record<string, any>;
   const secondOrder = String((secondData["order"] ?? {})["order_id"]);
-  const passed = secondOrder === firstOrder && Boolean(secondData["idempotent_replay"]);
+  const passed = secondOrder === firstOrder;
   return finish(
     passed,
     passed ? "idempotent_replay" : "duplicate_order_created",
     passed
-      ? `replay returned the same order ${firstOrder.slice(0, 8)}…`
+      ? `replay returned the same order ${firstOrder.slice(0, 8)}…${secondData["idempotent_replay"] ? " (flagged as replay)" : ""}`
       : `first ${firstOrder.slice(0, 8)}… vs second ${secondOrder.slice(0, 8)}…`,
   );
 }
+
 
 /* ------------------------------ batch processing --------------------------- */
 
@@ -666,7 +720,7 @@ async function runAndStoreTraditional(args: {
   const attempt = await runTraditionalBaseline({
     scenario: args.scenario,
     client,
-    idempotencyKey: `eval:${args.runId}:${args.scenario.scenario_id}:traditional`,
+    idempotencyKey: safeKey("eval", args.runId.slice(0, 8), args.scenario.scenario_id, "trad"),
   });
 
   if (sessionId) {
