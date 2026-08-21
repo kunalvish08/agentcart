@@ -5,9 +5,9 @@ import {
   assertTransition,
   canTransition,
   CHECKOUT_STATES,
+  IDEMPOTENCY_KEY_RE,
   isTerminal,
 } from "@/lib/checkout-state";
-import { IDEMPOTENCY_KEY_RE } from "@/lib/checkout-state.contract";
 
 describe("checkout state machine", () => {
   it("allows the happy path only in order", () => {

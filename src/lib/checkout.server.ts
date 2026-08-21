@@ -13,11 +13,11 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   assertTransition,
+  IDEMPOTENCY_KEY_RE,
   type CheckoutState,
 } from "@/lib/checkout-state";
 import { getPolicy } from "@/lib/public-api.server";
 
-export const IDEMPOTENCY_KEY_RE = /^[A-Za-z0-9_-]{8,128}$/;
 export const ORDER_TTL_HOURS = 24;
 
 export type CheckoutTraceEntry = { label: string; ok: boolean };

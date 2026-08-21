@@ -22,6 +22,9 @@ export const CHECKOUT_STATES = [
 
 export type CheckoutState = (typeof CHECKOUT_STATES)[number];
 
+/** Idempotency keys are opaque, safe identifiers — never free-form text. */
+export const IDEMPOTENCY_KEY_RE = /^[A-Za-z0-9_-]{8,128}$/;
+
 export const ALLOWED_TRANSITIONS: Record<CheckoutState, readonly CheckoutState[]> = {
   QUOTE_CREATED: ["CHECKOUT_REQUESTED", "CANCELLED", "EXPIRED"],
   CHECKOUT_REQUESTED: ["APPROVAL_REQUIRED", "APPROVED", "REJECTED", "CANCELLED", "EXPIRED"],
