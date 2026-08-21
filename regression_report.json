@@ -1,0 +1,122 @@
+{
+  "summary": [
+    {
+      "name": "Traditional",
+      "conversion": "0.0%",
+      "revenue": "₹5,56,595",
+      "errors": 0,
+      "matchRate": "0.0%",
+      "medianLatency": "4.3s",
+      "avgToolCalls": "3.3",
+      "aov": "₹0"
+    },
+    {
+      "name": "Agentic",
+      "conversion": "58.3%",
+      "revenue": "₹5,97,599.12",
+      "errors": 0,
+      "matchRate": "0.0%",
+      "medianLatency": "22.5s",
+      "avgToolCalls": "3.3",
+      "aov": "₹42,686"
+    }
+  ],
+  "agenticFailures": [
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "abandoned_after_quote",
+      "reason": "agent produced a quote but never requested checkout"
+    },
+    {
+      "actual": "abandoned_after_quote",
+      "reason": "agent produced a quote but never requested checkout"
+    },
+    {
+      "actual": "no_match",
+      "reason": "agent reported no matching product"
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "no_match",
+      "reason": "agent reported no matching product"
+    },
+    {
+      "actual": "no_match",
+      "reason": "agent reported no matching product"
+    },
+    {
+      "actual": "no_match",
+      "reason": "agent reported no matching product"
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "abandoned",
+      "reason": "agent stopped without a quote (stop)"
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "converted",
+      "reason": null
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "approval_required",
+      "reason": null
+    },
+    {
+      "actual": "quote_rejected:insufficient_inventory",
+      "reason": "server refused the quote (insufficient_inventory)"
+    },
+    {
+      "actual": "quote_rejected:insufficient_inventory",
+      "reason": "server refused the quote (insufficient_inventory)"
+    },
+    {
+      "actual": "quote_rejected:order_value_exceeded",
+      "reason": "server refused the quote (order_value_exceeded)"
+    }
+  ]
+}
