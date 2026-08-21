@@ -290,4 +290,14 @@ export class AgentCommerceClient {
       authenticated: true,
     });
   }
+
+  getRelatedProducts(input: { product_id: string }) {
+    const args = z.object({ product_id: z.string().uuid() }).parse(input);
+    return this.request<Record<string, any>>({
+      method: "GET",
+      path: "/api/public/catalog",
+      query: { merchant: this.merchantSlug, product_id: args.product_id },
+      tracePath: "/api/public/catalog?product_id=:id",
+    });
+  }
 }

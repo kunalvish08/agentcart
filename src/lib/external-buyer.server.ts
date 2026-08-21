@@ -24,36 +24,34 @@ export const EXTERNAL_MAX_TURNS = 8;
 export const EXTERNAL_MAX_TOOL_CALLS = 14;
 const MAX_LOG_CHARS = 3000;
 
-const SYSTEM_PROMPT = `You are an EXTERNAL autonomous buying agent acting for a human shopper. You are NOT part of the merchant's system. Your only access to the merchant (AgentCart) is the six HTTP tools provided; you have no database, no admin access and no payment credentials.
+const SYSTEM_PROMPT = `You are an EXTERNAL autonomous buying agent acting for a human shopper. You are NOT part of the merchant's system. Your only access to the merchant (AgentCart) is the tool registry provided.
 
-Method you follow:
-1. Call discover_merchant first to learn the merchant's capabilities and policy constraints (max discount, approval threshold, currency).
-2. Use search_catalog with the shopper's intent and budget. If nothing matches, say so honestly — never invent a product.
-3. Call get_product on the best match to confirm its facts.
-4. Call get_quote for the authoritative price.
-5. If the shopper wants a better price, call negotiate with the percent they want. Report the server's decision exactly: if it counters, state the requested percent, the merchant's policy limit, and the server's final amount.
-6. If the shopper wants to buy, call request_checkout with the quote_id the server issued.
+Optimization Layer (Intent Classification):
+1. DISCOVERY: Shopper asks broad questions or for categories. Call discover_merchant then search_catalog.
+2. RECOMMENDATION: Shopper asks for advice or "what goes with X". Call get_related_products for the primary item.
+3. PURCHASE INTENT: Shopper wants to buy/get/order a specific thing. Proceed from selection → get_quote → request_checkout.
+4. NEGOTIATION: Shopper wants a better price. Call negotiate with the requested percent.
+5. CHECKOUT: Shopper explicitly wants to finalize. Call request_checkout with a valid quote_id.
+6. UNSUPPORTED: Honest refusal if nothing matches or intent is outside commerce.
 
-Deciding whether to complete the purchase (read carefully):
-- The shopper is not available for follow-up questions in this channel. Never end your turn by asking "shall I proceed?" or "let me know and I will order it" — decide from the intent you were given and act.
-- PURCHASE INTENT means the shopper is shopping: they name a product, a product type, a category or a budget and want you to obtain it. "I want to buy", "buy", "order", "get me", "purchase", "I need <thing>", "looking for <thing>", "shopping for", "trying to get", "can you find me", "help me pick", and shopping requests that also ask "what do you recommend?" are ALL purchase intent — asking for a recommendation is how a shopper delegates the choice, not a request for a brochure. When the intent is a purchase and the server has issued a quote for an in-stock product that fits any stated budget, you MUST call request_checkout with that quote_id in the SAME run. Ending a purchase run at the quote is a failure to do your job.
-- If the shopper also asks for accessories or add-ons "that go with it", call get_quote for the accessory you recommend as well, so every amount you report is server-issued, then check out the main item.
-- PURE INFORMATION INTENT is the narrow case where the shopper wants no purchase at all: policy questions, specification comparisons, "is it worth it", "just checking today's price", "does it support X". Only then stop after reporting the server's quote and do NOT check out.
+Efficiency Rules:
+- Never repeat an identical tool call with identical arguments in one run.
+- Do not call search_catalog more than twice if the first yields good matches.
+- If you have a quote_id for the desired item, do not call get_quote again unless the quantity changes.
+- Access tool results directly; do not invent or estimate numbers.
 
-- If checkout is refused (inventory, order-value limit, policy), report the server's error code and stop; never retry with different numbers.
+Decisioning & Safety:
+- The shopper is not available for follow-up. Decide based on intent and act.
+- Naming a product/budget is PURCHASE INTENT. If in stock and within budget, YOU MUST call request_checkout.
+- If the shopper asks for "accessories" or "recommendations", call get_related_products, then check out the main item.
+- APPROVAL_REQUIRED orders stop at merchant approval. You cannot approve or pay.
+- PURE INFORMATION intent (e.g. "is it waterproof") must NOT trigger checkout. Stop after get_quote.
 
-Hard rules you can never break:
-- You never calculate, estimate, round or invent any monetary amount, discount, or total. Every number you state must appear verbatim in a tool result from THIS run. If you cannot find a figure in a tool result, do not state a figure — ask for a fresh quote instead.
-- You never claim a discount before the server has decided, and you never argue past a policy decision or retry the same rejected percent.
-- You cannot approve a checkout, capture or confirm a payment, change an order amount, alter inventory or override policy. If asked, say plainly that only the merchant can approve and that payment happens in the merchant's own flow.
-- When checkout returns APPROVAL_REQUIRED, state: "Merchant approval required before payment." Then stop; do not call more tools.
-- If a tool fails, report the server's reason plainly and do not substitute your own numbers.
-- Never repeat an identical tool call with identical arguments.
-
-Final message format (short, factual, no internal reasoning):
-1. One line with the recommended product or an honest no-match statement.
-2. "Actions taken" — the API steps you performed.
-3. "Outcome" — the server's amount, policy decision and transaction status, quoted from tool results.`;
+Final message format (short, factual):
+1. One line recommended product or no-match.
+2. "Actions taken" — API steps.
+3. "Outcome" — Final status, amount, and policy decision verbatim from tool results.
+4. "Optimization Trace" — Intent classified, reason for checkout/recommendation decisions.`;
 
 
 /* --------------------------------- events ---------------------------------- */
@@ -85,6 +83,8 @@ export type ExternalBuyerEvent =
   | { type: "trusted_amounts"; amounts: number[] }
   /** Validated closing message (defence-in-depth #3). `corrected` = unsafe text replaced. */
   | { type: "final_text"; text: string; corrected: boolean; unsupported_amounts: number[] }
+  | { type: "optimization_trace"; intent: string; trace: Record<string, string> }
+
 
   | {
       type: "done";
@@ -152,7 +152,10 @@ export type BuyerState = {
     error: { code: string; message: string } | null;
   } | null;
   no_match: boolean;
+  intent?: "discovery" | "recommendation" | "purchase_intent" | "negotiation" | "checkout" | "unsupported";
+  optimization_trace: Record<string, string>;
 };
+
 
 function emptyState(): BuyerState {
   return {
@@ -163,6 +166,7 @@ function emptyState(): BuyerState {
     negotiation: null,
     checkout: null,
     no_match: false,
+    optimization_trace: {},
   };
 }
 
@@ -422,6 +426,24 @@ function collect(toolName: string, result: ExternalToolResult, state: BuyerState
     }
     return;
   }
+
+  if (toolName === "get_related_products" && result.ok) {
+    const data = result.data as Record<string, any>;
+    const products = (data["products"] ?? []) as Array<Record<string, any>>;
+    state.candidates = [
+      ...state.candidates,
+      ...products.slice(0, 3).map((r) => ({
+        product_id: String(r["product_id"]),
+        name: String(r["name"]),
+        price: Number(r["price"] ?? 0),
+        currency: String(r["currency"] ?? "INR"),
+        availability: String(r["availability"] ?? "unknown"),
+        in_stock: Boolean(r["in_stock"]),
+      })),
+    ];
+    return;
+  }
+
 
   if (toolName === "get_quote" && result.ok) {
     const q = result.data as Record<string, any>;
@@ -831,6 +853,32 @@ export async function runExternalBuyer(options: ExternalBuyerRunOptions) {
     corrected,
     unsupported_amounts: unsupported,
   });
+
+  // --- Optimization Trace (Phase 10) ---
+  const trace: Record<string, string> = {};
+  const intent = state.checkout
+    ? "checkout"
+    : state.negotiation
+      ? "negotiation"
+      : state.quote
+        ? "purchase_intent"
+        : state.candidates.length > 0
+          ? "discovery"
+          : state.no_match
+            ? "unsupported"
+            : "discovery";
+
+  trace["Intent"] = intent;
+  trace["Product selection"] = state.selected_product ? state.selected_product.name : "None";
+  trace["Quote"] = state.quote ? `${state.quote.currency} ${state.quote.final_amount}` : "None";
+  trace["Recommendation decision"] = state.candidates.length > 1 ? "surfaced alternatives" : "direct match";
+  trace["Checkout decision"] = state.checkout?.accepted ? "requested" : state.checkout?.error ? "refused" : "not triggered";
+  trace["Approval state"] = state.checkout?.approval_required ? "approval_required" : "no approval needed";
+  state.intent = intent;
+  state.optimization_trace = trace;
+
+  emit({ type: "optimization_trace", intent, trace });
+
 
   const durationMs = Date.now() - startedAt;
 

@@ -11,6 +11,7 @@ export type ExternalToolName =
   | "discover_merchant"
   | "search_catalog"
   | "get_product"
+  | "get_related_products"
   | "get_quote"
   | "negotiate"
   | "request_checkout";
@@ -19,6 +20,7 @@ export const EXTERNAL_TOOL_NAMES: readonly ExternalToolName[] = [
   "discover_merchant",
   "search_catalog",
   "get_product",
+  "get_related_products",
   "get_quote",
   "negotiate",
   "request_checkout",
@@ -102,6 +104,26 @@ const REGISTRY: Record<ExternalToolName, ToolDefinition> = {
     run: async (client, args) => {
       const res = await client.getProduct(args);
       return { result: res, label: "GET /api/public/products/:id" };
+    },
+  },
+  get_related_products: {
+    name: "get_related_products",
+    description:
+      "Fetch products related to a specific product_id (upsell, cross-sell, or alternatives) according to merchant policy. Use this to improve cross-sell recommendations.",
+    parameters: {
+      type: "object",
+      properties: { product_id: { type: "string", description: "Product UUID" } },
+      required: ["product_id"],
+      additionalProperties: false,
+    },
+    schema: z.object({ product_id: z.string().uuid() }).strip(),
+    run: async (client, args) => {
+      // AgentCommerceClient needs to be updated too, but we can call catalog for now or add it there.
+      // Wait, let's look at AgentCommerceClient again.
+      // browseCatalog is there, but not fetchRelatedProducts.
+      // I'll add a new method to AgentCommerceClient first.
+      const res = await (client as any).getRelatedProducts(args);
+      return { result: res, label: "GET /api/public/catalog with relations" };
     },
   },
   get_quote: {
