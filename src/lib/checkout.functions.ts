@@ -85,7 +85,77 @@ export const getOrderStatus = createServerFn({ method: "GET" })
     };
   });
 
+export type BuyerActiveOrder = {
+  order_id: string;
+  status: CheckoutState;
+  currency: string;
+  final_amount: number;
+  approval_required: boolean;
+  approval_reason: string | null;
+  created_at: string;
+  product_name: string | null;
+  quantity: number;
+  buyer_session_id: string;
+  payment_state: PaymentState | "not_started";
+};
+
+/**
+ * Orders belonging to the signed-in buyer's own agent sessions, so the buyer UI can
+ * resume a checkout after navigating away (the chat turn state is in-memory only).
+ */
+export const getMyActiveOrders = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<BuyerActiveOrder[]> => {
+    const { data: sessions, error: sessionsError } = await context.supabase
+      .from("agent_sessions")
+      .select("id")
+      .eq("user_id", context.userId)
+      .order("started_at", { ascending: false })
+      .limit(50);
+    if (sessionsError) throw new Error(sessionsError.message);
+    const sessionIds = (sessions ?? []).map((s) => s.id);
+    if (sessionIds.length === 0) return [];
+
+    const { data, error } = await context.supabase
+      .from("orders")
+      .select(
+        "id, status, currency, final_amount, approval_required, approval_reason, created_at, buyer_session_id, order_items(quantity, products(name)), payments(status)",
+      )
+      .in("buyer_session_id", sessionIds)
+      .in("status", [
+        "CHECKOUT_REQUESTED",
+        "APPROVAL_REQUIRED",
+        "APPROVED",
+        "ORDER_CREATED",
+        "PAYMENT_PENDING",
+        "PAYMENT_CAPTURED",
+        "COMPLETED",
+      ])
+      .order("created_at", { ascending: false })
+      .limit(10);
+    if (error) throw new Error(error.message);
+
+    return (data ?? []).map((row) => {
+      const item = ((row as unknown as Record<string, any>)["order_items"] ?? [])[0] ?? null;
+      const payment = ((row as unknown as Record<string, any>)["payments"] ?? [])[0] ?? null;
+      return {
+        order_id: row.id,
+        status: row.status as CheckoutState,
+        currency: row.currency,
+        final_amount: Number(row.final_amount),
+        approval_required: row.approval_required,
+        approval_reason: row.approval_reason,
+        created_at: row.created_at,
+        product_name: item?.products?.name ?? null,
+        quantity: Number(item?.quantity ?? 0),
+        buyer_session_id: row.buyer_session_id,
+        payment_state: (payment?.status ?? "not_started") as PaymentState | "not_started",
+      };
+    });
+  });
+
 /* ------------------------------ merchant side ------------------------------ */
+
 
 async function ownedMerchantId(supabase: {
   from: (t: string) => any;
