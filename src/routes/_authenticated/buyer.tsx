@@ -9,14 +9,18 @@ import {
   ChevronDown,
   ChevronRight,
   Clock,
+  Handshake,
   History,
+
   Loader2,
   PackageCheck,
   Receipt,
   Search,
   Send,
   ShoppingBag,
+  Sparkles,
   User,
+
 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
@@ -26,7 +30,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { listAgentSessions } from "@/lib/agent.functions";
+import { acceptRecommendation, listAgentSessions } from "@/lib/agent.functions";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/buyer")({
@@ -74,13 +78,40 @@ type ProductCard = {
   relation_type?: string;
 };
 
+type GrowthPick = {
+  recommendation_id: string | null;
+  product_id: string;
+  name: string;
+  price: number;
+  currency: string;
+  recommendation_type: "upsell" | "cross_sell";
+  reason: string;
+  in_stock: boolean;
+};
+
+type NegotiationOutcome = {
+  negotiation_available: boolean;
+  decision: "accept" | "counter" | "reject";
+  round_number: number;
+  rounds_remaining: number;
+  requested_discount_percent: number;
+  policy_limit_percent: number;
+  approved_discount_percent: number;
+  policy_reason: string;
+  message: string;
+};
+
 type Recommendation = {
   product: ProductCard;
   related: ProductCard[];
   quote: any | null;
   quote_error: { code: string; message: string } | null;
   searched_count: number | null;
+  policy?: { max_discount_percent?: number; allow_negotiation?: boolean } | null;
+  negotiation?: NegotiationOutcome | null;
+  growth?: GrowthPick[];
 };
+
 
 type Turn = {
   id: string;
@@ -103,10 +134,11 @@ type Turn = {
 
 const SUGGESTIONS = [
   "I need a coding laptop under ₹60,000.",
-  "Find me something under ₹1,000.",
-  "Give me the DeveloperBook Pro 15 with a quote for 1 unit.",
-  "Buy me a quantum teleporter.",
+  "Can you give me a 5% discount on the DeveloperBook Pro 15?",
+  "I want 25% off the DeveloperBook Pro 15 — 1 unit.",
+  "What accessories go with the DeveloperBook Pro 15?",
 ];
+
 
 function money(amount: number | string | null | undefined, currency = "INR") {
   const value = Number(amount ?? 0);
@@ -269,7 +301,9 @@ function BuyerPage() {
           <Card className="border-dashed">
             <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2 font-medium text-foreground">
-                <Bot className="size-4" /> Tools: search · product · related · quote · merchant
+                <Bot className="size-4" /> Tools: search · product · quote · policy · negotiate ·
+                growth
+
               </span>
               <span>Max 10 steps</span>
               <span>Max 20 tool calls</span>
@@ -397,7 +431,13 @@ function BuyerPage() {
 function stepIcon(step: TraceStep) {
   if (step.status === "failed") return <AlertTriangle className="size-3.5 text-destructive" />;
   if (step.tool_name === "search_catalog") return <Search className="size-3.5 text-primary" />;
-  if (step.tool_name === "get_quote") return <Receipt className="size-3.5 text-primary" />;
+  if (step.tool_name === "get_quote" || step.tool_name === "get_current_quote")
+    return <Receipt className="size-3.5 text-primary" />;
+  if (step.tool_name === "propose_discount" || step.tool_name === "validate_offer")
+    return <Handshake className="size-3.5 text-primary" />;
+  if (step.tool_name === "get_eligible_related_products")
+    return <Sparkles className="size-3.5 text-primary" />;
+
   if (step.tool_name) return <PackageCheck className="size-3.5 text-primary" />;
   return <Check className="size-3.5 text-primary" />;
 }
@@ -583,6 +623,15 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
                   </div>
                 ) : null}
 
+                {rec.negotiation ? <NegotiationPanel outcome={rec.negotiation} /> : null}
+
+                {rec.growth && rec.growth.length > 0 ? (
+                  <>
+                    <Separator />
+                    <GrowthPicks picks={rec.growth} />
+                  </>
+                ) : null}
+
                 {rec.related.length > 0 ? (
                   <>
                     <Separator />
@@ -604,6 +653,7 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
                     </div>
                   </>
                 ) : null}
+
               </CardContent>
             </Card>
           ) : null}
@@ -621,3 +671,115 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
     </div>
   );
 }
+
+/* ------------------------- negotiation + growth cards ---------------------- */
+
+/** Every figure here comes from the server's policy engine, never model text. */
+function NegotiationPanel({ outcome }: { outcome: NegotiationOutcome }) {
+  const tone =
+    outcome.decision === "accept"
+      ? "border-primary/40 bg-primary/5"
+      : outcome.decision === "counter"
+        ? "border-border bg-muted/40"
+        : "border-destructive/40 bg-destructive/5";
+  return (
+    <div className={`rounded-md border p-3 text-sm ${tone}`}>
+      <p className="mb-2 flex flex-wrap items-center gap-2 font-medium text-foreground">
+        <Handshake className="size-4" /> Negotiation
+        <Badge variant={outcome.decision === "reject" ? "outline" : "secondary"}>
+          {outcome.decision === "accept"
+            ? "Accepted"
+            : outcome.decision === "counter"
+              ? "Counter-offer"
+              : "Declined"}
+        </Badge>
+        {outcome.negotiation_available ? (
+          <span className="text-xs font-normal text-muted-foreground">
+            Round {outcome.round_number} · {outcome.rounds_remaining} left
+          </span>
+        ) : (
+          <span className="text-xs font-normal text-muted-foreground">
+            Negotiation disabled by merchant policy
+          </span>
+        )}
+      </p>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+        <dt>Requested discount</dt>
+        <dd className="text-right text-foreground">{outcome.requested_discount_percent}%</dd>
+        <dt>Policy maximum</dt>
+        <dd className="text-right text-foreground">{outcome.policy_limit_percent}%</dd>
+        <dt className="font-medium text-foreground">Approved discount</dt>
+        <dd className="text-right font-semibold text-foreground">
+          {outcome.approved_discount_percent}%
+        </dd>
+      </dl>
+      <p className="mt-2 text-xs text-muted-foreground">{outcome.policy_reason}</p>
+    </div>
+  );
+}
+
+function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
+  const accept = useServerFn(acceptRecommendation);
+  const [accepted, setAccepted] = useState<Record<string, boolean>>({});
+  const [pending, setPending] = useState<string | null>(null);
+
+  return (
+    <div>
+      <p className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
+        <Sparkles className="size-4 text-primary" /> You may also want
+      </p>
+      <div className="grid gap-2">
+        {picks.map((pick) => {
+          const key = pick.recommendation_id ?? pick.product_id;
+          const isAccepted = Boolean(accepted[key]);
+          return (
+            <div key={key} className="rounded-md border border-border px-3 py-2 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="min-w-0 truncate font-medium text-foreground">{pick.name}</span>
+                <span className="flex items-center gap-2">
+                  <Badge variant="outline" className="capitalize">
+                    {pick.recommendation_type.replace("_", " ")}
+                  </Badge>
+                  <span className="text-muted-foreground">{money(pick.price, pick.currency)}</span>
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{pick.reason}</p>
+              {pick.recommendation_id ? (
+                <Button
+                  size="sm"
+                  variant={isAccepted ? "secondary" : "outline"}
+                  className="mt-2 h-7"
+                  disabled={isAccepted || pending === key}
+                  onClick={async () => {
+                    setPending(key);
+                    try {
+                      await accept({ data: { recommendationId: pick.recommendation_id! } });
+                      setAccepted((prev) => ({ ...prev, [key]: true }));
+                    } catch {
+                      /* keep the button available on failure */
+                    } finally {
+                      setPending(null);
+                    }
+                  }}
+                >
+                  {isAccepted ? (
+                    <>
+                      <Check className="size-3.5" /> Added to interest
+                    </>
+                  ) : pending === key ? (
+                    <>
+                      <Loader2 className="size-3.5 animate-spin" /> Saving
+                    </>
+                  ) : (
+                    "I'm interested"
+                  )}
+                </Button>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+

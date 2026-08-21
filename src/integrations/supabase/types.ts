@@ -208,6 +208,80 @@ export type Database = {
           },
         ]
       }
+      growth_recommendations: {
+        Row: {
+          accepted: boolean
+          accepted_at: string | null
+          buyer_session_id: string
+          created_at: string
+          currency: string
+          id: string
+          merchant_id: string
+          reason: string | null
+          recommendation_type: Database["public"]["Enums"]["recommendation_type"]
+          recommended_price: number
+          recommended_product_id: string
+          source_product_id: string
+        }
+        Insert: {
+          accepted?: boolean
+          accepted_at?: string | null
+          buyer_session_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id: string
+          reason?: string | null
+          recommendation_type: Database["public"]["Enums"]["recommendation_type"]
+          recommended_price?: number
+          recommended_product_id: string
+          source_product_id: string
+        }
+        Update: {
+          accepted?: boolean
+          accepted_at?: string | null
+          buyer_session_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id?: string
+          reason?: string | null
+          recommendation_type?: Database["public"]["Enums"]["recommendation_type"]
+          recommended_price?: number
+          recommended_product_id?: string
+          source_product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_recommendations_buyer_session_id_fkey"
+            columns: ["buyer_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_recommendations_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_recommendations_recommended_product_id_fkey"
+            columns: ["recommended_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_recommendations_source_product_id_fkey"
+            columns: ["source_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       merchant_policies: {
         Row: {
           allow_negotiation: boolean
@@ -290,6 +364,203 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      negotiation_rounds: {
+        Row: {
+          allowed_discount_percent: number
+          created_at: string
+          customer_request_summary: string | null
+          id: string
+          latency_ms: number | null
+          policy_decision: Database["public"]["Enums"]["policy_decision"]
+          policy_reason: string | null
+          proposed_discount_percent: number
+          quote_id: string | null
+          requested_discount_percent: number
+          response_summary: string | null
+          round_number: number
+          session_id: string
+        }
+        Insert: {
+          allowed_discount_percent?: number
+          created_at?: string
+          customer_request_summary?: string | null
+          id?: string
+          latency_ms?: number | null
+          policy_decision: Database["public"]["Enums"]["policy_decision"]
+          policy_reason?: string | null
+          proposed_discount_percent?: number
+          quote_id?: string | null
+          requested_discount_percent?: number
+          response_summary?: string | null
+          round_number: number
+          session_id: string
+        }
+        Update: {
+          allowed_discount_percent?: number
+          created_at?: string
+          customer_request_summary?: string | null
+          id?: string
+          latency_ms?: number | null
+          policy_decision?: Database["public"]["Enums"]["policy_decision"]
+          policy_reason?: string | null
+          proposed_discount_percent?: number
+          quote_id?: string | null
+          requested_discount_percent?: number
+          response_summary?: string | null
+          round_number?: number
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negotiation_rounds_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "negotiation_rounds_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "negotiation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      negotiation_sessions: {
+        Row: {
+          buyer_session_id: string
+          created_at: string
+          id: string
+          merchant_id: string
+          product_id: string
+          round_count: number
+          status: Database["public"]["Enums"]["negotiation_status"]
+          updated_at: string
+        }
+        Insert: {
+          buyer_session_id: string
+          created_at?: string
+          id?: string
+          merchant_id: string
+          product_id: string
+          round_count?: number
+          status?: Database["public"]["Enums"]["negotiation_status"]
+          updated_at?: string
+        }
+        Update: {
+          buyer_session_id?: string
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          product_id?: string
+          round_count?: number
+          status?: Database["public"]["Enums"]["negotiation_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negotiation_sessions_buyer_session_id_fkey"
+            columns: ["buyer_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "negotiation_sessions_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "negotiation_sessions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          approved_discount_percent: number
+          base_amount: number
+          created_at: string
+          currency: string
+          discount_amount: number
+          expires_at: string
+          final_amount: number
+          id: string
+          negotiation_session_id: string
+          product_id: string
+          quantity: number
+          quote_id: string | null
+          requested_discount_percent: number
+          requires_merchant_approval: boolean
+          status: Database["public"]["Enums"]["offer_status"]
+          unit_price: number
+        }
+        Insert: {
+          approved_discount_percent?: number
+          base_amount: number
+          created_at?: string
+          currency: string
+          discount_amount?: number
+          expires_at: string
+          final_amount: number
+          id?: string
+          negotiation_session_id: string
+          product_id: string
+          quantity: number
+          quote_id?: string | null
+          requested_discount_percent?: number
+          requires_merchant_approval?: boolean
+          status?: Database["public"]["Enums"]["offer_status"]
+          unit_price: number
+        }
+        Update: {
+          approved_discount_percent?: number
+          base_amount?: number
+          created_at?: string
+          currency?: string
+          discount_amount?: number
+          expires_at?: string
+          final_amount?: number
+          id?: string
+          negotiation_session_id?: string
+          product_id?: string
+          quantity?: number
+          quote_id?: string | null
+          requested_discount_percent?: number
+          requires_merchant_approval?: boolean
+          status?: Database["public"]["Enums"]["offer_status"]
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_negotiation_session_id_fkey"
+            columns: ["negotiation_session_id"]
+            isOneToOne: false
+            referencedRelation: "negotiation_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_relations: {
         Row: {
@@ -574,6 +845,10 @@ export type Database = {
       agent_status: "running" | "completed" | "failed" | "stopped"
       app_role: "merchant" | "admin" | "demo_buyer"
       entity_status: "active" | "inactive"
+      negotiation_status: "open" | "agreed" | "rejected" | "expired" | "closed"
+      offer_status: "proposed" | "accepted" | "rejected" | "expired"
+      policy_decision: "accept" | "counter" | "reject"
+      recommendation_type: "upsell" | "cross_sell"
       relation_type: "upsell" | "cross_sell" | "alternative"
     }
     CompositeTypes: {
@@ -705,6 +980,10 @@ export const Constants = {
       agent_status: ["running", "completed", "failed", "stopped"],
       app_role: ["merchant", "admin", "demo_buyer"],
       entity_status: ["active", "inactive"],
+      negotiation_status: ["open", "agreed", "rejected", "expired", "closed"],
+      offer_status: ["proposed", "accepted", "rejected", "expired"],
+      policy_decision: ["accept", "counter", "reject"],
+      recommendation_type: ["upsell", "cross_sell"],
       relation_type: ["upsell", "cross_sell", "alternative"],
     },
   },

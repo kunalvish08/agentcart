@@ -67,7 +67,7 @@ export function AppShell({
         </div>
 
         <div className="space-y-3 px-2">
-          <p className="text-xs text-sidebar-foreground/60">Phase 03 · AI Buyer agent</p>
+          <p className="text-xs text-sidebar-foreground/60">Phase 04 · Negotiation &amp; growth</p>
         </div>
       </aside>
 

@@ -6,6 +6,7 @@ import {
   Boxes,
   CheckCircle2,
   ExternalLink,
+  Handshake,
   IndianRupee,
   Package,
   Percent,
@@ -17,7 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getWorkspace } from "@/lib/merchant.functions";
+import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -31,10 +33,16 @@ const inr = new Intl.NumberFormat("en-IN", {
 
 function DashboardPage() {
   const fetchWorkspace = useServerFn(getWorkspace);
+  const fetchGrowth = useServerFn(getGrowthMetrics);
   const { data, isPending, error } = useQuery({
     queryKey: ["workspace"],
     queryFn: () => fetchWorkspace(),
   });
+  const { data: growth } = useQuery({
+    queryKey: ["growth-metrics"],
+    queryFn: () => fetchGrowth(),
+  });
+
 
   const manifestUrl =
     typeof window === "undefined"
@@ -181,6 +189,52 @@ function DashboardPage() {
           </p>
         </CardContent>
       </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Handshake className="size-4" /> Negotiation &amp; growth
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <Field
+              label="Negotiations"
+              value={growth ? `${growth.negotiations} (${growth.openNegotiations} open)` : "—"}
+            />
+            <Field
+              label="Discount rounds"
+              value={growth ? `${growth.rounds} (${growth.countered} countered)` : "—"}
+            />
+            <Field
+              label="Avg approved discount"
+              value={growth ? `${growth.avgApprovedDiscount}%` : "—"}
+            />
+            <Field label="Offers generated" value={growth ? String(growth.offers) : "—"} />
+            <Field
+              label="Offer value (final)"
+              value={growth ? inr.format(growth.offerValue) : "—"}
+            />
+            <Field label="List value" value={growth ? inr.format(growth.listValue) : "—"} />
+            <Field label="Discount given" value={growth ? inr.format(growth.discountGiven) : "—"} />
+            <Field
+              label="Recommendations"
+              value={
+                growth
+                  ? `${growth.recommendations} (${growth.acceptedRecommendations} accepted)`
+                  : "—"
+              }
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Every discount here was decided by the server policy engine against your
+            {" "}
+            {data ? `${data.policy.max_discount_percent}%` : ""} cap — never by the AI model.
+            Checkout and payment capture arrive in a later phase.
+          </p>
+        </CardContent>
+      </Card>
+
     </AppShell>
   );
 }
