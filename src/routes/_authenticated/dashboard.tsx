@@ -1,10 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Boxes, CheckCircle2, IndianRupee, Package, Percent, Store } from "lucide-react";
+import {
+  Bot,
+  Boxes,
+  CheckCircle2,
+  ExternalLink,
+  IndianRupee,
+  Package,
+  Percent,
+  Store,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getWorkspace } from "@/lib/merchant.functions";
@@ -25,6 +35,12 @@ function DashboardPage() {
     queryKey: ["workspace"],
     queryFn: () => fetchWorkspace(),
   });
+
+  const manifestUrl =
+    typeof window === "undefined"
+      ? "/.well-known/agent-manifest"
+      : `${window.location.origin}/.well-known/agent-manifest`;
+
 
   const metrics = [
     { label: "Total products", value: data ? String(data.stats.totalProducts) : "—", icon: Package },
