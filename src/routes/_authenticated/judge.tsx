@@ -311,68 +311,73 @@ function JudgePage() {
                   </div>
                 )}
 
-                {demo?.summary ? (
+                {activeRun.data?.run ? (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Metric label="List price" value={money(demo.summary.list_amount, demo.currency)} />
-                    <Metric
-                      label="Negotiated total"
-                      value={money(demo.summary.negotiated_amount, demo.currency)}
-                      hint={`${demo.summary.discount_percent}% granted · cap ${demo.summary.policy_cap_percent}%`}
+                    {/* Note: The summary data for the specific run would ideally be enriched, 
+                        but we'll map existing fields for now */}
+                    <Metric 
+                      label="Run status" 
+                      value={activeRun.data.run.status} 
+                      hint={activeRun.data.run.model}
                     />
                     <Metric
-                      label="Order status"
-                      value={demo.summary.order_status ?? "—"}
-                      hint={demo.summary.approval_required ? "Human approval was required" : "Straight-through"}
+                      label="Steps"
+                      value={String(activeRun.data.run.step_count)}
+                      hint={`${activeRun.data.run.tool_call_count} tool calls`}
+                    />
+                    <Metric
+                      label="Start time"
+                      value={new Intl.DateTimeFormat('en-IN', { timeStyle: 'short' }).format(new Date(activeRun.data.run.started_at))}
+                      hint="Persisted record"
                     />
                     <Metric
                       label="Run duration"
-                      value={`${demo.summary.duration_ms} ms`}
-                      hint={demo.summary.payment_next_action}
+                      value={`${activeRun.data.run.duration_ms ?? 0} ms`}
                     />
                   </div>
                 ) : null}
 
-                {demo ? (
+                {activeRun.data?.steps && activeRun.data.steps.length > 0 ? (
                   <ol className="space-y-3">
-                    {demo.steps.map((step) => (
+                    {activeRun.data.steps.map((step: any) => (
                       <li
-                        key={step.number}
+                        key={step.step_number}
                         className="flex gap-3 rounded-lg border border-border bg-muted/30 p-3"
                       >
-                        <StatusDot status={step.status} />
+                        <StatusDot status={step.status === 'completed' ? 'ok' : step.status} />
                         <div className="min-w-0 space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="text-sm font-medium text-foreground">
-                              {step.number}. {step.title}
+                              {step.step_number}. {step.tool_name || step.step_type}
                             </span>
                             <Badge variant="outline" className="text-xs">
-                              {step.phase}
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs">
-                              authority: {step.authority}
+                              {step.step_type}
                             </Badge>
                             <span className="text-xs tabular-nums text-muted-foreground">
                               {step.latency_ms} ms
                             </span>
                           </div>
-                          <p className="break-words font-mono text-xs text-muted-foreground">
-                            in · {step.input_summary}
-                          </p>
-                          <p className="break-words text-sm text-foreground/90">
-                            out · {step.output_summary}
-                          </p>
-                          {step.entity ? (
-                            <p className="break-all font-mono text-xs text-muted-foreground">
-                              {step.entity.label}: {step.entity.id}
+                          {step.input_summary && (
+                            <p className="break-words font-mono text-xs text-muted-foreground">
+                              in · {step.input_summary}
                             </p>
-                          ) : null}
+                          )}
+                          {step.output_summary && (
+                            <p className="break-words text-sm text-foreground/90">
+                              out · {step.output_summary}
+                            </p>
+                          )}
                         </div>
                       </li>
                     ))}
                   </ol>
+                ) : activeRun.isLoading ? (
+                  <div className="flex items-center justify-center p-8">
+                    <Loader2 className="size-8 animate-spin text-muted-foreground" />
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    No run yet. The trace will show every tool call, policy decision and database id.
+                    No run yet or selected. The trace will show every tool call, policy decision and database id.
                   </p>
                 )}
               </CardContent>
