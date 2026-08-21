@@ -25,8 +25,11 @@ async function testReset() {
     .insert({
       merchant_id: merchant.id,
       status: "completed",
-      total_scenarios: 1,
-      name: "TEST_PRESERVATION_RUN"
+      label: "TEST_PRESERVATION_RUN",
+      dataset_seed: "test-seed",
+      dataset_version: "v1",
+      model: "test-model",
+      prompt_version: "v1"
     } as any)
     .select("id")
     .single();
