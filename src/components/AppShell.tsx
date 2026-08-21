@@ -6,6 +6,8 @@ import {
   Gavel,
   LayoutDashboard,
   LogOut,
+  Network,
+
   Package,
   ShieldCheck,
   Sparkles,

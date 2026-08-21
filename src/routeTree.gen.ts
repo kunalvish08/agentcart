@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedBuyerRouteImport } from './routes/_authenticated/buyer'
+import { Route as AuthenticatedBuyerLabRouteImport } from './routes/_authenticated/buyer-lab'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedJudgeRouteImport } from './routes/_authenticated/judge'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
@@ -65,6 +66,11 @@ const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
 const AuthenticatedBuyerRoute = AuthenticatedBuyerRouteImport.update({
   id: '/buyer',
   path: '/buyer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBuyerLabRoute = AuthenticatedBuyerLabRouteImport.update({
+  id: '/buyer-lab',
+  path: '/buyer-lab',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
+  '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
   '/policies': typeof AuthenticatedPoliciesRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
+  '/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/judge': typeof AuthenticatedJudgeRoute
   '/policies': typeof AuthenticatedPoliciesRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/buyer': typeof AuthenticatedBuyerRoute
+  '/_authenticated/buyer-lab': typeof AuthenticatedBuyerLabRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/judge': typeof AuthenticatedJudgeRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/approvals'
     | '/buyer'
+    | '/buyer-lab'
     | '/dashboard'
     | '/judge'
     | '/policies'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/approvals'
     | '/buyer'
+    | '/buyer-lab'
     | '/dashboard'
     | '/judge'
     | '/policies'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/.well-known/agent-manifest'
     | '/_authenticated/approvals'
     | '/_authenticated/buyer'
+    | '/_authenticated/buyer-lab'
     | '/_authenticated/dashboard'
     | '/_authenticated/judge'
     | '/_authenticated/policies'
@@ -356,6 +368,13 @@ declare module '@tanstack/react-router' {
       path: '/buyer'
       fullPath: '/buyer'
       preLoaderRoute: typeof AuthenticatedBuyerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/buyer-lab': {
+      id: '/_authenticated/buyer-lab'
+      path: '/buyer-lab'
+      fullPath: '/buyer-lab'
+      preLoaderRoute: typeof AuthenticatedBuyerLabRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -469,6 +488,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedBuyerRoute: typeof AuthenticatedBuyerRoute
+  AuthenticatedBuyerLabRoute: typeof AuthenticatedBuyerLabRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedJudgeRoute: typeof AuthenticatedJudgeRoute
   AuthenticatedPoliciesRoute: typeof AuthenticatedPoliciesRoute
@@ -478,6 +498,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedBuyerRoute: AuthenticatedBuyerRoute,
+  AuthenticatedBuyerLabRoute: AuthenticatedBuyerLabRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedJudgeRoute: AuthenticatedJudgeRoute,
   AuthenticatedPoliciesRoute: AuthenticatedPoliciesRoute,
