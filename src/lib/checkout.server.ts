@@ -117,7 +117,7 @@ async function snapshot(orderId: string): Promise<OrderSnapshot | null> {
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select(
-      "id, status, currency, quantity:id, quote_id, idempotency_key, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, expires_at, approved_at, merchant_id, merchants(slug), order_items(product_id, quantity, unit_price, discount_amount, final_unit_price, products(name)), checkout_approvals(status)",
+      "id, status, currency, quote_id, idempotency_key, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, expires_at, approved_at, merchant_id, merchants(slug), order_items(product_id, quantity, unit_price, discount_amount, final_unit_price, products(name)), checkout_approvals(status)",
     )
     .eq("id", orderId)
     .maybeSingle();
