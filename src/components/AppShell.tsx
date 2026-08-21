@@ -20,7 +20,9 @@ const NAV = [
   { to: "/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/products", label: "Products", icon: Package },
   { to: "/policies", label: "Policies", icon: ShieldCheck },
+  { to: "/judge", label: "Judge Mode", icon: Gavel },
 ] as const;
+
 
 export function AppShell({
   title,
