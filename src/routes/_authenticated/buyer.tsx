@@ -342,6 +342,10 @@ function BuyerPage() {
             </CardContent>
           </Card>
 
+          <ActiveOrdersCard buyerName={workspace.data?.profile.full_name ?? undefined} />
+
+
+
           <div className="flex flex-col gap-6">
             {turns.length === 0 ? (
               <Card>
