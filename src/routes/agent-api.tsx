@@ -89,9 +89,9 @@ const ENDPOINTS: Endpoint[] = [
   "products": [
     {
       "product_id": "uuid",
-      "name": "DeveloperBook Pro 14",
+      "name": "DeveloperBook Pro 15",
       "category": "Laptops",
-      "price": 129000,
+      "price": 55000,
       "currency": "INR",
       "availability": "available",
       "stock_status": "in_stock",
@@ -116,8 +116,8 @@ const ENDPOINTS: Endpoint[] = [
     response: `{
   "product": {
     "product_id": "uuid",
-    "name": "DeveloperBook Pro 14",
-    "price": 129000,
+    "name": "DeveloperBook Pro 15",
+    "price": 55000,
     "currency": "INR",
     "availability": "available",
     "stock_status": "in_stock"
@@ -137,18 +137,18 @@ const ENDPOINTS: Endpoint[] = [
     purpose:
       "Deterministic catalog search and filtering — no LLM involved. Parameters: q (≤ 200 chars), category, min_price, max_price, in_stock, limit (≤ 20). Unknown parameters are ignored.",
     auth: "None (public, read-only)",
-    request: `curl "https://your-domain/api/public/search?q=coding+laptop&max_price=150000&limit=5"`,
+    request: `curl "https://your-domain/api/public/search?q=coding+laptop&max_price=60000&limit=5"`,
     response: `{
-  "query": { "q": "coding laptop", "max_price": 150000, "limit": 5 },
+  "query": { "q": "coding laptop", "max_price": 60000, "limit": 5 },
   "count": 1,
   "results": [
     {
       "rank": 1,
       "relevance_score": 9,
       "product_id": "uuid",
-      "name": "DeveloperBook Pro 14",
+      "name": "DeveloperBook Pro 15",
       "category": "Laptops",
-      "price": 129000,
+      "price": 55000,
       "currency": "INR",
       "availability": "available"
     }
@@ -173,11 +173,11 @@ const ENDPOINTS: Endpoint[] = [
   "quote_id": "uuid",
   "product_id": "uuid",
   "quantity": 1,
-  "base_amount": 129000,
+  "base_amount": 55000,
   "requested_discount_percent": 50,
   "allowed_discount_percent": 12,
-  "discount_amount": 15480,
-  "final_amount": 113520,
+  "discount_amount": 6600,
+  "final_amount": 48400,
   "currency": "INR",
   "policy_applied": true,
   "policy_reason": "Requested discount 50% exceeds the merchant limit of 12%; capped at 12%.",
@@ -294,7 +294,7 @@ const PRESETS = [
   {
     label: "Search",
     method: "GET" as const,
-    path: "/api/public/search?q=laptop&max_price=150000&limit=5",
+    path: "/api/public/search?q=laptop&max_price=60000&limit=5",
     body: "",
   },
   {
