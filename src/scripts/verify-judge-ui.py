@@ -29,13 +29,16 @@ async def main():
         await page.goto("http://localhost:8080/judge")
         await page.wait_for_selector("text=Deterministic end-to-end transaction")
         
-        # 3. Verify it loaded the latest run automatically (based on previous audit, one exists)
-        await page.wait_for_timeout(2000) # Wait for TanStack Query
+        # 3. Verify it loaded the latest run automatically
+        # We wait for the specific indicator that the trace is visible
+        # Based on the audit, 11 steps should exist
+        await page.wait_for_timeout(3000) # Increased wait for server functions and query
         await page.screenshot(path=str(SCREENSHOTS / "1_initial_load.png"))
         
         # Check if steps are visible
-        steps_visible = await page.locator("li:has-text('1.')").count()
-        print(f"Steps visible on initial load: {steps_visible}")
+        # We look for the status dot or the step number text
+        steps_count = await page.locator("li.flex.gap-3").count()
+        print(f"Steps visible on initial load: {steps_count}")
 
         # 4. Navigate away
         await page.get_by_role("link", name="Dashboard").click()
@@ -45,11 +48,16 @@ async def main():
         # 5. Navigate back
         await page.goto("http://localhost:8080/judge")
         await page.wait_for_selector("text=Deterministic end-to-end transaction")
-        await page.wait_for_timeout(2000)
+        await page.wait_for_timeout(3000)
         await page.screenshot(path=str(SCREENSHOTS / "3_navigated_back.png"))
         
-        steps_visible_after = await page.locator("li:has-text('1.')").count()
-        print(f"Steps visible after navigation: {steps_visible_after}")
+        steps_count_after = await page.locator("li.flex.gap-3").count()
+        print(f"Steps visible after navigation: {steps_count_after}")
+
+        if steps_count > 0 and steps_count == steps_count_after:
+            print("SUCCESS: Persistence verified.")
+        else:
+            print(f"FAILURE: Persistence mismatch. Before: {steps_count}, After: {steps_count_after}")
 
         await browser.close()
 
