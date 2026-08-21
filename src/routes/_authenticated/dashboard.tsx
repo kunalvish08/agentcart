@@ -324,77 +324,105 @@ function DashboardPage() {
             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            The previous Phase 11 request was not satisfied by changing
+                                            STOP MAKING UI/TEXT CHANGES.
 
-dashboard display text alone.
+The previous request was an AUDIT request, not a UI copywriting request.
 
-Do NOT make more visual-only edits.
+Do not modify any file, database, UI, schema, prompt, logic, or configuration.
 
-Now audit the existing implementation and verify whether the
+Perform READ-ONLY AUDIT ONLY.
 
-following actually work end-to-end using real persisted data:
+Inspect the actual existing implementation and return a report containing:
 
-1. Golden demo:
+1. GOLDEN DEMO
 
-Buyer → search → quote → negotiation → checkout →
+- Can buyer search a product?
 
-APPROVAL_REQUIRED → merchant approval → PAYMENT_PENDING →
+- Can buyer negotiate?
 
-Razorpay test payment → server verification → COMPLETED.
+- Is discount enforced server-side?
 
-2. Judge Mode:
+- Can buyer request checkout?
 
-Real trace with tool calls, policy decisions, order state
+- Does approval create the correct order state?
 
-transitions and payment state.
+- Does Razorpay test payment work?
 
-3. Security demo:
+- Is payment signature verified server-side?
 
-- discount above cap rejected/capped
+- Does verified payment complete the order?
 
-- inventory overshoot rejected
+2. JUDGE MODE
 
-- duplicate checkout prevented
+Identify the actual files/functions responsible for:
 
-- forged webhook rejected
+- trace creation
 
-- illegal state transition blocked
+- tool calls
 
-4. Demo reset:
+- policy decisions
 
-If not already implemented, determine whether it is necessary.
+- order state transitions
 
-Do not create destructive reset logic without an explicit safe
+- payment state transitions
 
-scope.
+- replay
 
-5. Evidence:
+3. SECURITY
 
-All displayed results must come from real persisted records,
+Verify whether these existing paths actually work:
 
-not hardcoded/demo text.
+- discount above policy cap
 
-6. Regression:
+- inventory overshoot
 
-Do not modify Razorpay verification, webhook verification,
+- duplicate checkout
 
-RLS, server-side pricing, state machines, Phase 09 results,
+- forged webhook
 
-or Phase 10 results.
+- illegal state transition
 
-First return an AUDIT ONLY report:
+4. DEMO RESET
 
-A. What Phase 11 functionality already exists
+Check whether a safe demo reset already exists.
 
-B. What is missing
+Do NOT implement one.
 
-C. What is only visual text
+5. EVIDENCE
 
-D. Exact files/functions that would need changes
+For every claim, identify the actual file/function/database table
 
-E. Whether any existing payment/security logic would be touched
+that proves it.
 
-DO NOT IMPLEMENT anything yet.`}
+Distinguish:
+
+- REAL IMPLEMENTATION
+
+- UI ONLY
+
+- HARDCODED DISPLAY
+
+- NOT IMPLEMENTED
+
+6. REGRESSION RISK
+
+Confirm whether Phase 09 and Phase 10 functionality is untouched.
+
+IMPORTANT:
+
+- DO NOT edit anything.
+
+- DO NOT change dashboard text.
+
+- DO NOT create new components.
+
+- DO NOT create new database tables.
+
+- DO NOT run migrations.
+
+- DO NOT change payment/security logic.
+
+Return ONLY the audit report.`}
           </div>
         </CardContent>
       </Card>
