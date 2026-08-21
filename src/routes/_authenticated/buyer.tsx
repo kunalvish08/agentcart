@@ -317,7 +317,7 @@ function BuyerPage() {
   return (
     <AppShell
       title="AI Buyer"
-      subtitle="A bounded tool-using shopping agent. Read + quote only — it cannot order or pay."
+      subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -325,7 +325,7 @@ function BuyerPage() {
           <Card className="border-dashed">
             <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2 font-medium text-foreground">
-                <Bot className="size-4" /> Tools: search · product · quote · policy · negotiate ·
+                <Bot className="size-4" /> Tools: search · product · quote · policy · negotiate · checkout ·
                 growth
 
               </span>
@@ -438,7 +438,7 @@ function BuyerPage() {
               <CardTitle className="text-base">Guardrails</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-muted-foreground">
-              <p>· Model reaches the catalog only through 5 registered tools.</p>
+              <p>· Model reaches the catalog only through registered, validated tools.</p>
               <p>· Every tool argument is re-validated server-side.</p>
               <p>· Prices, discounts and policy caps are computed by the quote API.</p>
               <p>· Checkout amounts are copied from the server quote; the agent cannot approve.</p>
