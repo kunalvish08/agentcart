@@ -11,6 +11,7 @@ import type {
   JudgeReplay,
   JudgeRunSummary,
   MoneyAuthorityProof,
+  ResetResult,
 } from "@/lib/judge.server";
 
 const chaosSchema = z.object({
