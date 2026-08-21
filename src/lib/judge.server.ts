@@ -1131,3 +1131,18 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
 
   return { order_id: order.id, currency: order.currency, rows, policy: base };
 }
+
+/* ----------------------- 6. user-scoped entry points ---------------------- */
+
+/** Evidence for the demo merchant the caller owns (falls back to an empty set). */
+export async function judgeEvidenceForUser(userId: string): Promise<JudgeEvidence | null> {
+  const merchant = await ownedMerchant(userId);
+  if (!merchant) return null;
+  return collectJudgeEvidence(merchant.id);
+}
+
+export async function moneyProofForUser(userId: string): Promise<MoneyAuthorityProof | null> {
+  const merchant = await ownedMerchant(userId);
+  if (!merchant) return null;
+  return buildMoneyAuthorityProof(merchant.id);
+}
