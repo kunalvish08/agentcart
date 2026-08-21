@@ -3,12 +3,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Bot,
   ClipboardCheck,
+  Gavel,
   LayoutDashboard,
   LogOut,
   Package,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+
 import type { ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +22,9 @@ const NAV = [
   { to: "/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/products", label: "Products", icon: Package },
   { to: "/policies", label: "Policies", icon: ShieldCheck },
+  { to: "/judge", label: "Judge Mode", icon: Gavel },
 ] as const;
+
 
 export function AppShell({
   title,
