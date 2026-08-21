@@ -208,6 +208,130 @@ export type Database = {
           },
         ]
       }
+      checkout_approvals: {
+        Row: {
+          created_at: string
+          id: string
+          merchant_id: string
+          order_id: string
+          reason: string | null
+          rejection_reason: string | null
+          requested_at: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          merchant_id: string
+          order_id: string
+          reason?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          order_id?: string
+          reason?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_approvals_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_approvals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_audit_events: {
+        Row: {
+          actor_id: string | null
+          actor_type: Database["public"]["Enums"]["audit_actor_type"]
+          buyer_session_id: string | null
+          created_at: string
+          event: Database["public"]["Enums"]["checkout_event"]
+          from_status: Database["public"]["Enums"]["checkout_status"] | null
+          id: string
+          merchant_id: string
+          order_id: string | null
+          policy_decision: Json
+          reason: string | null
+          to_status: Database["public"]["Enums"]["checkout_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_type: Database["public"]["Enums"]["audit_actor_type"]
+          buyer_session_id?: string | null
+          created_at?: string
+          event: Database["public"]["Enums"]["checkout_event"]
+          from_status?: Database["public"]["Enums"]["checkout_status"] | null
+          id?: string
+          merchant_id: string
+          order_id?: string | null
+          policy_decision?: Json
+          reason?: string | null
+          to_status?: Database["public"]["Enums"]["checkout_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_type?: Database["public"]["Enums"]["audit_actor_type"]
+          buyer_session_id?: string | null
+          created_at?: string
+          event?: Database["public"]["Enums"]["checkout_event"]
+          from_status?: Database["public"]["Enums"]["checkout_status"] | null
+          id?: string
+          merchant_id?: string
+          order_id?: string | null
+          policy_decision?: Json
+          reason?: string | null
+          to_status?: Database["public"]["Enums"]["checkout_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_audit_events_buyer_session_id_fkey"
+            columns: ["buyer_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_audit_events_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_audit_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       growth_recommendations: {
         Row: {
           accepted: boolean
@@ -562,6 +686,148 @@ export type Database = {
           },
         ]
       }
+      order_items: {
+        Row: {
+          created_at: string
+          discount_amount: number
+          final_unit_price: number
+          id: string
+          order_id: string
+          product_id: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          discount_amount?: number
+          final_unit_price: number
+          id?: string
+          order_id: string
+          product_id: string
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          discount_amount?: number
+          final_unit_price?: number
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          approval_reason: string | null
+          approval_required: boolean
+          approved_at: string | null
+          approved_by: string | null
+          buyer_session_id: string
+          created_at: string
+          currency: string
+          customer_request_summary: string | null
+          discount_amount: number
+          expires_at: string
+          final_amount: number
+          id: string
+          idempotency_key: string
+          merchant_id: string
+          negotiation_summary: string | null
+          policy_snapshot: Json
+          quote_id: string
+          rejected_at: string | null
+          status: Database["public"]["Enums"]["checkout_status"]
+          subtotal_amount: number
+          updated_at: string
+        }
+        Insert: {
+          approval_reason?: string | null
+          approval_required?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          buyer_session_id: string
+          created_at?: string
+          currency?: string
+          customer_request_summary?: string | null
+          discount_amount?: number
+          expires_at?: string
+          final_amount: number
+          id?: string
+          idempotency_key: string
+          merchant_id: string
+          negotiation_summary?: string | null
+          policy_snapshot?: Json
+          quote_id: string
+          rejected_at?: string | null
+          status?: Database["public"]["Enums"]["checkout_status"]
+          subtotal_amount: number
+          updated_at?: string
+        }
+        Update: {
+          approval_reason?: string | null
+          approval_required?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          buyer_session_id?: string
+          created_at?: string
+          currency?: string
+          customer_request_summary?: string | null
+          discount_amount?: number
+          expires_at?: string
+          final_amount?: number
+          id?: string
+          idempotency_key?: string
+          merchant_id?: string
+          negotiation_summary?: string | null
+          policy_snapshot?: Json
+          quote_id?: string
+          rejected_at?: string | null
+          status?: Database["public"]["Enums"]["checkout_status"]
+          subtotal_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_buyer_session_id_fkey"
+            columns: ["buyer_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_relations: {
         Row: {
           created_at: string
@@ -838,12 +1104,35 @@ export type Database = {
         }
         Returns: boolean
       }
+      owns_agent_session: { Args: { _session_id: string }; Returns: boolean }
       owns_merchant: { Args: { _merchant_id: string }; Returns: boolean }
       owns_product: { Args: { _product_id: string }; Returns: boolean }
     }
     Enums: {
       agent_status: "running" | "completed" | "failed" | "stopped"
       app_role: "merchant" | "admin" | "demo_buyer"
+      approval_status: "pending" | "approved" | "rejected"
+      audit_actor_type: "ai_agent" | "merchant" | "system" | "buyer"
+      checkout_event:
+        | "CHECKOUT_REQUESTED"
+        | "APPROVAL_REQUIRED"
+        | "APPROVED"
+        | "REJECTED"
+        | "ORDER_CREATED"
+        | "PAYMENT_PENDING"
+        | "CHECKOUT_FAILED"
+        | "CANCELLED"
+        | "EXPIRED"
+      checkout_status:
+        | "QUOTE_CREATED"
+        | "CHECKOUT_REQUESTED"
+        | "APPROVAL_REQUIRED"
+        | "APPROVED"
+        | "REJECTED"
+        | "ORDER_CREATED"
+        | "PAYMENT_PENDING"
+        | "CANCELLED"
+        | "EXPIRED"
       entity_status: "active" | "inactive"
       negotiation_status: "open" | "agreed" | "rejected" | "expired" | "closed"
       offer_status: "proposed" | "accepted" | "rejected" | "expired"
@@ -979,6 +1268,30 @@ export const Constants = {
     Enums: {
       agent_status: ["running", "completed", "failed", "stopped"],
       app_role: ["merchant", "admin", "demo_buyer"],
+      approval_status: ["pending", "approved", "rejected"],
+      audit_actor_type: ["ai_agent", "merchant", "system", "buyer"],
+      checkout_event: [
+        "CHECKOUT_REQUESTED",
+        "APPROVAL_REQUIRED",
+        "APPROVED",
+        "REJECTED",
+        "ORDER_CREATED",
+        "PAYMENT_PENDING",
+        "CHECKOUT_FAILED",
+        "CANCELLED",
+        "EXPIRED",
+      ],
+      checkout_status: [
+        "QUOTE_CREATED",
+        "CHECKOUT_REQUESTED",
+        "APPROVAL_REQUIRED",
+        "APPROVED",
+        "REJECTED",
+        "ORDER_CREATED",
+        "PAYMENT_PENDING",
+        "CANCELLED",
+        "EXPIRED",
+      ],
       entity_status: ["active", "inactive"],
       negotiation_status: ["open", "agreed", "rejected", "expired", "closed"],
       offer_status: ["proposed", "accepted", "rejected", "expired"],
