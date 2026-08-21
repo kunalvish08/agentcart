@@ -31,6 +31,8 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { acceptRecommendation, listAgentSessions } from "@/lib/agent.functions";
+import { getOrderStatus, requestBuyerCheckout } from "@/lib/checkout.functions";
+import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/buyer")({
@@ -110,6 +112,28 @@ type Recommendation = {
   policy?: { max_discount_percent?: number; allow_negotiation?: boolean } | null;
   negotiation?: NegotiationOutcome | null;
   growth?: GrowthPick[];
+  checkout?: CheckoutToolResult | null;
+};
+
+/** Exactly what the server's checkout tool returned — never model text. */
+type CheckoutToolResult = {
+  checkout_created: boolean;
+  idempotent_replay?: boolean;
+  error_code?: string;
+  reason?: string;
+  order?: {
+    order_id: string;
+    status: CheckoutState;
+    currency: string;
+    subtotal_amount: number;
+    discount_amount: number;
+    final_amount: number;
+    approval_required: boolean;
+    approval_reason: string | null;
+    quantity?: number;
+    product_name?: string | null;
+  };
+  trace?: Array<{ label: string; ok: boolean }>;
 };
 
 
@@ -340,7 +364,7 @@ function BuyerPage() {
                   </div>
                 </div>
               ) : (
-                <AssistantTurn key={turn.id} turn={turn} running={running} />
+                <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
               ),
             )}
             <div ref={bottomRef} />
@@ -417,7 +441,8 @@ function BuyerPage() {
               <p>· Model reaches the catalog only through 5 registered tools.</p>
               <p>· Every tool argument is re-validated server-side.</p>
               <p>· Prices, discounts and policy caps are computed by the quote API.</p>
-              <p>· No checkout, payments or negotiation in this phase.</p>
+              <p>· Checkout amounts are copied from the server quote; the agent cannot approve.</p>
+              <p>· No payment is captured in this phase — orders stop at payment pending.</p>
             </CardContent>
           </Card>
         </aside>
@@ -470,7 +495,15 @@ function AssistantText({ content }: { content: string }) {
   );
 }
 
-function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
+function AssistantTurn({
+  turn,
+  running,
+  sessionId,
+}: {
+  turn: Turn;
+  running: boolean;
+  sessionId: string | null;
+}) {
   const [open, setOpen] = useState(true);
   const rec = turn.recommendation;
   const quote = rec?.quote?.quote ?? rec?.quote ?? null;
@@ -625,6 +658,12 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
 
                 {rec.negotiation ? <NegotiationPanel outcome={rec.negotiation} /> : null}
 
+                <CheckoutSection
+                  result={rec.checkout ?? null}
+                  quoteId={quote?.quote_id ?? null}
+                  sessionId={sessionId}
+                />
+
                 {rec.growth && rec.growth.length > 0 ? (
                   <>
                     <Separator />
@@ -668,6 +707,189 @@ function AssistantTurn({ turn, running }: { turn: Turn; running: boolean }) {
           ) : null}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* -------------------------------- checkout --------------------------------- */
+
+const CHECKOUT_TIMELINE: CheckoutState[] = [
+  "CHECKOUT_REQUESTED",
+  "APPROVAL_REQUIRED",
+  "APPROVED",
+  "ORDER_CREATED",
+  "PAYMENT_PENDING",
+];
+
+/**
+ * Checkout affordance + live order state. The client sends only a quote id and
+ * an idempotency key: every amount, the approval requirement and the status come
+ * back from the server.
+ */
+function CheckoutSection({
+  result,
+  quoteId,
+  sessionId,
+}: {
+  result: CheckoutToolResult | null;
+  quoteId: string | null;
+  sessionId: string | null;
+}) {
+  const startCheckout = useServerFn(requestBuyerCheckout);
+  const fetchOrderStatus = useServerFn(getOrderStatus);
+  const [pending, setPending] = useState(false);
+  const [local, setLocal] = useState<CheckoutToolResult | null>(null);
+  const outcome = result ?? local;
+  const orderId = outcome?.order?.order_id ?? null;
+
+  const live = useQuery({
+    queryKey: ["order-status", orderId],
+    queryFn: () => fetchOrderStatus({ data: { orderId: orderId! } }),
+    enabled: Boolean(orderId),
+    refetchInterval: (query) =>
+      query.state.data?.status === "APPROVAL_REQUIRED" ? 4000 : false,
+  });
+
+  async function handleCheckout() {
+    if (!quoteId || !sessionId) return;
+    setPending(true);
+    try {
+      const response = await startCheckout({
+        data: {
+          quote_id: quoteId,
+          session_id: sessionId,
+          idempotency_key: `ui-${sessionId.replace(/-/g, "").slice(0, 12)}-${quoteId.replace(/-/g, "").slice(0, 12)}`,
+        },
+      });
+      setLocal(
+        response.ok
+          ? {
+              checkout_created: true,
+              idempotent_replay: response.idempotent_replay,
+              order: response.order as CheckoutToolResult["order"],
+              trace: response.trace,
+            }
+          : {
+              checkout_created: false,
+              error_code: response.error.code,
+              reason: response.error.message,
+              trace: response.trace,
+            },
+      );
+    } catch (error) {
+      setLocal({
+        checkout_created: false,
+        error_code: "checkout_failed",
+        reason: error instanceof Error ? error.message : "Checkout could not be completed.",
+      });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (!outcome) {
+    if (!quoteId) return null;
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-muted/30 p-3">
+        <p className="text-sm text-muted-foreground">
+          Ready to buy? The server re-checks stock, policy and the quote before creating an order.
+        </p>
+        <Button size="sm" onClick={handleCheckout} disabled={pending || !sessionId}>
+          {pending ? <Loader2 className="size-4 animate-spin" /> : <ShoppingBag className="size-4" />}
+          Proceed to checkout
+        </Button>
+      </div>
+    );
+  }
+
+  if (!outcome.checkout_created) {
+    return (
+      <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
+        <p className="font-medium text-foreground">Checkout refused by the server</p>
+        <p className="mt-1 text-muted-foreground">
+          {outcome.reason ?? "The server declined this checkout."}
+          {outcome.error_code ? ` (${outcome.error_code})` : ""}
+        </p>
+      </div>
+    );
+  }
+
+  const order = outcome.order!;
+  const status = (live.data?.status ?? order.status) as CheckoutState;
+  const currency = order.currency;
+  const activeIndex = CHECKOUT_TIMELINE.indexOf(status);
+  const terminal = status === "REJECTED" || status === "CANCELLED" || status === "EXPIRED";
+
+  return (
+    <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="flex items-center gap-2 font-medium text-foreground">
+          <PackageCheck className="size-4" /> Checkout
+        </p>
+        <Badge variant={terminal ? "outline" : "secondary"}>{CHECKOUT_STATE_LABELS[status]}</Badge>
+      </div>
+
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+        <dt>Product</dt>
+        <dd className="text-right text-foreground">
+          {live.data?.product_name ?? order.product_name ?? "—"}
+          {order.quantity ? ` × ${order.quantity}` : ""}
+        </dd>
+        <dt>Subtotal</dt>
+        <dd className="text-right text-foreground">{money(order.subtotal_amount, currency)}</dd>
+        <dt>Discount</dt>
+        <dd className="text-right text-foreground">−{money(order.discount_amount, currency)}</dd>
+        <dt className="font-medium text-foreground">Order total</dt>
+        <dd className="text-right font-semibold text-foreground">
+          {money(order.final_amount, currency)}
+        </dd>
+        <dt>Payment</dt>
+        <dd className="text-right text-foreground">Not started (Phase 06)</dd>
+      </dl>
+
+      {!terminal ? (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {CHECKOUT_TIMELINE.filter(
+            (state) => state !== "APPROVAL_REQUIRED" || order.approval_required,
+          ).map((state) => {
+            const reached = activeIndex >= CHECKOUT_TIMELINE.indexOf(state);
+            return (
+              <span
+                key={state}
+                className={
+                  reached
+                    ? "rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary"
+                    : "rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground"
+                }
+              >
+                {CHECKOUT_STATE_LABELS[state]}
+              </span>
+            );
+          })}
+        </div>
+      ) : null}
+
+      {status === "APPROVAL_REQUIRED" ? (
+        <p className="mt-3 flex items-start gap-2 text-muted-foreground">
+          <Clock className="mt-0.5 size-4 shrink-0" />
+          <span>
+            This checkout requires merchant approval because the order value exceeds the merchant&apos;s
+            automatic approval threshold. Waiting for the merchant to review.
+          </span>
+        </p>
+      ) : null}
+
+      {status === "REJECTED" ? (
+        <p className="mt-3 text-muted-foreground">
+          The merchant rejected this order{live.data?.approval_reason ? `: ${live.data.approval_reason}` : "."}
+        </p>
+      ) : null}
+
+      {outcome.idempotent_replay ? (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Idempotent replay — the existing order was returned instead of creating a duplicate.
+        </p>
+      ) : null}
     </div>
   );
 }
