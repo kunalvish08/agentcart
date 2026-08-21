@@ -16,6 +16,7 @@ import {
   IDEMPOTENCY_KEY_RE,
   type CheckoutState,
 } from "@/lib/checkout-state";
+import type { PaymentState } from "@/lib/payment-state";
 import { getPolicy } from "@/lib/public-api.server";
 
 export const ORDER_TTL_HOURS = 24;
@@ -45,7 +46,7 @@ export type OrderSnapshot = {
   created_at: string;
   expires_at: string;
   approved_at: string | null;
-  payment_state: "not_started";
+  payment_state: PaymentState | "not_started";
 };
 
 export type CheckoutResult =
@@ -119,7 +120,7 @@ async function snapshot(orderId: string): Promise<OrderSnapshot | null> {
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select(
-      "id, status, currency, quote_id, idempotency_key, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, expires_at, approved_at, merchant_id, merchants(slug), order_items(product_id, quantity, unit_price, discount_amount, final_unit_price, products(name)), checkout_approvals(status)",
+      "id, status, currency, quote_id, idempotency_key, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, expires_at, approved_at, merchant_id, merchants(slug), order_items(product_id, quantity, unit_price, discount_amount, final_unit_price, products(name)), checkout_approvals(status), payments(status)",
     )
     .eq("id", orderId)
     .maybeSingle();
@@ -153,7 +154,7 @@ async function snapshot(orderId: string): Promise<OrderSnapshot | null> {
     created_at: row["created_at"],
     expires_at: row["expires_at"],
     approved_at: row["approved_at"] ?? null,
-    payment_state: "not_started",
+    payment_state: ((row["payments"] ?? [])[0]?.status ?? "not_started") as PaymentState | "not_started",
   };
 }
 
@@ -525,7 +526,7 @@ async function finalizeApprovedOrder(args: {
     actorType: "system",
     fromStatus: "ORDER_CREATED",
     toStatus: "PAYMENT_PENDING",
-    reason: "Awaiting payment. Payment capture is not part of this phase.",
+    reason: "Awaiting payment. A Razorpay test-mode payment can now be initialized by the buyer.",
   });
   args.add?.("Payment pending");
   return state;

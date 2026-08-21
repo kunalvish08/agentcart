@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { CheckoutState } from "@/lib/checkout-state";
+import type { PaymentState } from "@/lib/payment-state";
 
 const requestCheckoutSchema = z.object({
   quote_id: z.string().uuid(),
@@ -57,7 +58,7 @@ export const getOrderStatus = createServerFn({ method: "GET" })
     const { data: order, error } = await context.supabase
       .from("orders")
       .select(
-        "id, status, currency, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, approved_at, expires_at, order_items(product_id, quantity, unit_price, final_unit_price, products(name))",
+        "id, status, currency, subtotal_amount, discount_amount, final_amount, approval_required, approval_reason, created_at, approved_at, expires_at, order_items(product_id, quantity, unit_price, final_unit_price, products(name)), payments(status, razorpay_order_id, razorpay_payment_id, verified_at)",
       )
       .eq("id", data.orderId)
       .maybeSingle();
@@ -78,7 +79,9 @@ export const getOrderStatus = createServerFn({ method: "GET" })
       quantity: Number(item?.["quantity"] ?? 0),
       unit_price: Number(item?.["unit_price"] ?? 0),
       product_name: (item?.["products"] as { name?: string } | null)?.name ?? null,
-      payment_state: "not_started" as const,
+      payment: ((order.payments ?? [])[0] as Record<string, any> | undefined) ?? null,
+      payment_state: (((order.payments ?? [])[0] as { status?: string } | undefined)?.status ??
+        "not_started") as PaymentState | "not_started",
     };
   });
 

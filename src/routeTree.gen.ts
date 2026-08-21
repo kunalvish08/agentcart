@@ -23,6 +23,7 @@ import { Route as ApiAgentBuyerRouteImport } from './routes/api/agent/buyer'
 import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
 import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
+import { Route as ApiPublicRazorpayWebhookRouteImport } from './routes/api/public/razorpay-webhook'
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
 import { Route as ApiPublicProductsIdRouteImport } from './routes/api/public/products/$id'
 
@@ -96,6 +97,12 @@ const ApiPublicQuoteRoute = ApiPublicQuoteRouteImport.update({
   path: '/api/public/quote',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicRazorpayWebhookRoute =
+  ApiPublicRazorpayWebhookRouteImport.update({
+    id: '/api/public/razorpay-webhook',
+    path: '/api/public/razorpay-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSearchRoute = ApiPublicSearchRouteImport.update({
   id: '/api/public/search',
   path: '/api/public/search',
@@ -121,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -138,6 +146,7 @@ export interface FileRoutesByTo {
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -157,6 +166,7 @@ export interface FileRoutesById {
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
 }
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
+    | '/api/public/razorpay-webhook'
     | '/api/public/search'
     | '/api/public/products/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
+    | '/api/public/razorpay-webhook'
     | '/api/public/search'
     | '/api/public/products/$id'
   id:
@@ -211,6 +223,7 @@ export interface FileRouteTypes {
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
+    | '/api/public/razorpay-webhook'
     | '/api/public/search'
     | '/api/public/products/$id'
   fileRoutesById: FileRoutesById
@@ -225,6 +238,7 @@ export interface RootRouteChildren {
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
+  ApiPublicRazorpayWebhookRoute: typeof ApiPublicRazorpayWebhookRoute
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
   ApiPublicProductsIdRoute: typeof ApiPublicProductsIdRoute
 }
@@ -329,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicQuoteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/razorpay-webhook': {
+      id: '/api/public/razorpay-webhook'
+      path: '/api/public/razorpay-webhook'
+      fullPath: '/api/public/razorpay-webhook'
+      preLoaderRoute: typeof ApiPublicRazorpayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/search': {
       id: '/api/public/search'
       path: '/api/public/search'
@@ -375,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicQuoteRoute: ApiPublicQuoteRoute,
+  ApiPublicRazorpayWebhookRoute: ApiPublicRazorpayWebhookRoute,
   ApiPublicSearchRoute: ApiPublicSearchRoute,
   ApiPublicProductsIdRoute: ApiPublicProductsIdRoute,
 }

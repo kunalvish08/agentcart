@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
+import { PaymentPanel } from "@/components/PaymentPanel";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -719,7 +721,10 @@ const CHECKOUT_TIMELINE: CheckoutState[] = [
   "APPROVED",
   "ORDER_CREATED",
   "PAYMENT_PENDING",
+  "PAYMENT_CAPTURED",
+  "COMPLETED",
 ];
+
 
 /**
  * Checkout affordance + live order state. The client sends only a quote id and
@@ -746,9 +751,14 @@ function CheckoutSection({
     queryKey: ["order-status", orderId],
     queryFn: () => fetchOrderStatus({ data: { orderId: orderId! } }),
     enabled: Boolean(orderId),
-    refetchInterval: (query) =>
-      query.state.data?.status === "APPROVAL_REQUIRED" ? 4000 : false,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status === "APPROVAL_REQUIRED" || status === "PAYMENT_PENDING" || status === "PAYMENT_CAPTURED"
+        ? 4000
+        : false;
+    },
   });
+
 
   async function handleCheckout() {
     if (!quoteId || !sessionId) return;
@@ -843,9 +853,10 @@ function CheckoutSection({
         <dd className="text-right font-semibold text-foreground">
           {money(order.final_amount, currency)}
         </dd>
-        <dt>Payment</dt>
-        <dd className="text-right text-foreground">Not started (Phase 06)</dd>
       </dl>
+
+
+
 
       {!terminal ? (
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -885,11 +896,21 @@ function CheckoutSection({
         </p>
       ) : null}
 
+      {["PAYMENT_PENDING", "PAYMENT_CAPTURED", "COMPLETED"].includes(status) ? (
+        <PaymentPanel
+          orderId={order.order_id}
+          orderStatus={status}
+          amount={live.data?.final_amount ?? order.final_amount}
+          currency={currency}
+        />
+      ) : null}
+
       {outcome.idempotent_replay ? (
         <p className="mt-2 text-xs text-muted-foreground">
           Idempotent replay — the existing order was returned instead of creating a duplicate.
         </p>
       ) : null}
+
     </div>
   );
 }

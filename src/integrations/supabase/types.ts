@@ -828,6 +828,87 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          amount_minor: number
+          authorized_at: string | null
+          captured_at: string | null
+          created_at: string
+          currency: string
+          failed_at: string | null
+          failure_reason: string | null
+          id: string
+          merchant_id: string
+          method: string | null
+          mode: string
+          order_id: string
+          provider: string
+          razorpay_order_id: string
+          razorpay_payment_id: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount: number
+          amount_minor: number
+          authorized_at?: string | null
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          failed_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          merchant_id: string
+          method?: string | null
+          mode?: string
+          order_id: string
+          provider?: string
+          razorpay_order_id: string
+          razorpay_payment_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount?: number
+          amount_minor?: number
+          authorized_at?: string | null
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          failed_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          merchant_id?: string
+          method?: string | null
+          mode?: string
+          order_id?: string
+          provider?: string
+          razorpay_order_id?: string
+          razorpay_payment_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_relations: {
         Row: {
           created_at: string
@@ -1088,6 +1169,69 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_events: {
+        Row: {
+          created_at: string
+          error: string | null
+          event_id: string
+          event_type: string
+          id: string
+          order_id: string | null
+          payload_hash: string
+          payment_id: string | null
+          processed_at: string | null
+          provider: string
+          received_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          event_id: string
+          event_type: string
+          id?: string
+          order_id?: string | null
+          payload_hash: string
+          payment_id?: string | null
+          processed_at?: string | null
+          provider?: string
+          received_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          event_id?: string
+          event_type?: string
+          id?: string
+          order_id?: string | null
+          payload_hash?: string
+          payment_id?: string | null
+          processed_at?: string | null
+          provider?: string
+          received_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhook_events_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1097,6 +1241,7 @@ export type Database = {
         Args: { _full_name?: string; _store_name?: string }
         Returns: string
       }
+      can_view_order: { Args: { _order_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1123,6 +1268,17 @@ export type Database = {
         | "CHECKOUT_FAILED"
         | "CANCELLED"
         | "EXPIRED"
+        | "PAYMENT_INITIALIZED"
+        | "RAZORPAY_ORDER_CREATED"
+        | "PAYMENT_AUTHORIZED"
+        | "PAYMENT_CAPTURED"
+        | "PAYMENT_VERIFIED"
+        | "PAYMENT_FAILED"
+        | "WEBHOOK_RECEIVED"
+        | "WEBHOOK_DUPLICATE"
+        | "WEBHOOK_REJECTED"
+        | "ORDER_COMPLETED"
+        | "RECONCILIATION_RUN"
       checkout_status:
         | "QUOTE_CREATED"
         | "CHECKOUT_REQUESTED"
@@ -1133,9 +1289,20 @@ export type Database = {
         | "PAYMENT_PENDING"
         | "CANCELLED"
         | "EXPIRED"
+        | "PAYMENT_CAPTURED"
+        | "COMPLETED"
       entity_status: "active" | "inactive"
       negotiation_status: "open" | "agreed" | "rejected" | "expired" | "closed"
       offer_status: "proposed" | "accepted" | "rejected" | "expired"
+      payment_status:
+        | "CREATED"
+        | "PENDING"
+        | "AUTHORIZED"
+        | "CAPTURED"
+        | "VERIFIED"
+        | "FAILED"
+        | "REFUNDED"
+        | "CANCELLED"
       policy_decision: "accept" | "counter" | "reject"
       recommendation_type: "upsell" | "cross_sell"
       relation_type: "upsell" | "cross_sell" | "alternative"
@@ -1280,6 +1447,17 @@ export const Constants = {
         "CHECKOUT_FAILED",
         "CANCELLED",
         "EXPIRED",
+        "PAYMENT_INITIALIZED",
+        "RAZORPAY_ORDER_CREATED",
+        "PAYMENT_AUTHORIZED",
+        "PAYMENT_CAPTURED",
+        "PAYMENT_VERIFIED",
+        "PAYMENT_FAILED",
+        "WEBHOOK_RECEIVED",
+        "WEBHOOK_DUPLICATE",
+        "WEBHOOK_REJECTED",
+        "ORDER_COMPLETED",
+        "RECONCILIATION_RUN",
       ],
       checkout_status: [
         "QUOTE_CREATED",
@@ -1291,10 +1469,22 @@ export const Constants = {
         "PAYMENT_PENDING",
         "CANCELLED",
         "EXPIRED",
+        "PAYMENT_CAPTURED",
+        "COMPLETED",
       ],
       entity_status: ["active", "inactive"],
       negotiation_status: ["open", "agreed", "rejected", "expired", "closed"],
       offer_status: ["proposed", "accepted", "rejected", "expired"],
+      payment_status: [
+        "CREATED",
+        "PENDING",
+        "AUTHORIZED",
+        "CAPTURED",
+        "VERIFIED",
+        "FAILED",
+        "REFUNDED",
+        "CANCELLED",
+      ],
       policy_decision: ["accept", "counter", "reject"],
       recommendation_type: ["upsell", "cross_sell"],
       relation_type: ["upsell", "cross_sell", "alternative"],

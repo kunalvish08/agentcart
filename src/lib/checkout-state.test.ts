@@ -23,11 +23,14 @@ describe("checkout state machine", () => {
     expect(canTransition("APPROVED", "PAYMENT_PENDING")).toBe(false);
   });
 
-  it("has no COMPLETED state in this phase", () => {
-    expect(CHECKOUT_STATES).not.toContain("COMPLETED" as never);
+  it("only reaches COMPLETED through a captured payment (Phase 06)", () => {
+    expect(CHECKOUT_STATES).toContain("COMPLETED" as never);
     expect(canTransition("PAYMENT_PENDING", "COMPLETED")).toBe(false);
     expect(() => assertTransition("PAYMENT_PENDING", "COMPLETED")).toThrow(/not allowed/);
+    expect(canTransition("PAYMENT_PENDING", "PAYMENT_CAPTURED")).toBe(true);
+    expect(canTransition("PAYMENT_CAPTURED", "COMPLETED")).toBe(true);
   });
+
 
   it("treats rejection, cancellation and expiry as terminal", () => {
     for (const state of ["REJECTED", "CANCELLED", "EXPIRED"] as const) {

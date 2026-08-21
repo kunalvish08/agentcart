@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCheckoutMetrics } from "@/lib/checkout.functions";
 import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
+import { getPaymentMetrics } from "@/lib/payments.functions";
 
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -48,6 +49,12 @@ function DashboardPage() {
   const { data: checkout } = useQuery({
     queryKey: ["checkout-metrics"],
     queryFn: () => fetchCheckout(),
+    refetchInterval: 15_000,
+  });
+  const fetchPayments = useServerFn(getPaymentMetrics);
+  const { data: payments } = useQuery({
+    queryKey: ["payment-metrics"],
+    queryFn: () => fetchPayments(),
     refetchInterval: 15_000,
   });
 
@@ -168,7 +175,9 @@ function DashboardPage() {
               Negotiation {data?.policy.allow_negotiation ? "enabled" : "disabled"}
             </Badge>
             <Badge variant="outline">Upsell {data?.policy.allow_upsell ? "enabled" : "disabled"}</Badge>
-            <Badge variant="outline">Checkout &amp; payments: later phase</Badge>
+            <Badge variant={payments?.configured ? "secondary" : "outline"}>
+              Razorpay test mode {payments?.configured ? "configured" : "not configured"}
+            </Badge>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
@@ -276,14 +285,28 @@ function DashboardPage() {
               }
             />
           </div>
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <Field label="Payments pending" value={payments ? String(payments.pending) : "—"} />
+            <Field label="Payments verified" value={payments ? String(payments.verified) : "—"} />
+            <Field label="Failed payments" value={payments ? String(payments.failed) : "—"} />
+            <Field
+              label="Completed orders"
+              value={
+                payments
+                  ? `${payments.completedOrders} · ${inr.format(payments.verifiedValue)}`
+                  : "—"
+              }
+            />
+          </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild size="sm" variant="outline">
-              <Link to="/approvals">Open approval queue</Link>
+              <Link to="/approvals">Open approval queue &amp; payments</Link>
             </Button>
             <p className="text-xs text-muted-foreground">
               Orders above your{" "}
               {data ? inr.format(data.policy.approval_required_above) : ""} approval threshold wait for
-              your decision. The AI agent can request checkout but can never approve one.
+              your decision. The AI agent can request checkout but can never approve one, and an
+              order is only COMPLETED after a server-verified Razorpay test-mode payment.
             </p>
           </div>
         </CardContent>
