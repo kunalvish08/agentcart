@@ -1151,7 +1151,109 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
   return { order_id: order.id, currency: order.currency, rows, policy: base };
 }
 
-/* ----------------------- 6. user-scoped entry points ---------------------- */
+/* ------------------------------ 6. reset ---------------------------------- */
+
+export type ResetResult = {
+  ok: boolean;
+  timestamp: string;
+  counts: {
+    sessions: number;
+    runs: number;
+    steps: number;
+    tool_calls: number;
+    negotiations: number;
+    orders: number;
+    payments: number;
+    webhooks: number;
+  };
+  preserved: string[];
+};
+
+/**
+ * Surgically removes ONLY records marked as "Judge Mode" demo transactions
+ * for the owner's merchant.
+ */
+export async function resetJudgeDemo(args: { userId: string }): Promise<ResetResult> {
+  const merchant = await ownedMerchant(args.userId);
+  if (!merchant) throw new Error("Unauthorized or merchant not found.");
+
+  // 1. Identify demo sessions and runs
+  const { data: sessions } = await supabaseAdmin
+    .from("agent_sessions")
+    .select("id")
+    .eq("merchant_id", merchant.id)
+    .eq("title", DEMO_TITLE);
+
+  const sessionIds = (sessions ?? []).map((s) => s.id);
+
+  const { data: runs } = await supabaseAdmin
+    .from("agent_runs")
+    .select("id")
+    .in("session_id", sessionIds.length > 0 ? sessionIds : ["none"]);
+
+  const runIds = (runs ?? []).map((r) => r.id);
+
+  // 2. Identify demo orders
+  const { data: orders } = await supabaseAdmin
+    .from("orders")
+    .select("id")
+    .eq("merchant_id", merchant.id)
+    .ilike("customer_request_summary", "%Judge Mode deterministic demo checkout%");
+
+  const orderIds = (orders ?? []).map((o) => o.id);
+
+  // 3. Identify payments linked to those orders
+  const { data: payments } = await supabaseAdmin
+    .from("payments")
+    .select("id")
+    .in("order_id", orderIds.length > 0 ? orderIds : ["none"]);
+
+  const paymentIds = (payments ?? []).map((p) => p.id);
+
+  // Perform deletions in reverse relational order where possible, or rely on cascade if configured.
+  // Note: We use individual calls because a multi-table transaction in Supabase JS
+  // is actually multiple requests unless using an RPC. For simplicity and safety
+  // in this environment, we'll perform them sequentially.
+
+  // Deletions
+  const [
+    { count: webhooksCount },
+    { count: paymentsCount },
+    { count: ordersCount },
+    { count: toolCallsCount },
+    { count: stepsCount },
+    { count: runsCount },
+    { count: sessionsCount },
+    { count: negCount },
+  ] = await Promise.all([
+    supabaseAdmin.from("webhook_events").delete({ count: "exact" }).in("payment_id", paymentIds.length > 0 ? paymentIds : ["none"]),
+    supabaseAdmin.from("payments").delete({ count: "exact" }).in("id", paymentIds.length > 0 ? paymentIds : ["none"]),
+    supabaseAdmin.from("orders").delete({ count: "exact" }).in("id", orderIds.length > 0 ? orderIds : ["none"]),
+    supabaseAdmin.from("tool_calls").delete({ count: "exact" }).in("run_id", runIds.length > 0 ? runIds : ["none"]),
+    supabaseAdmin.from("agent_steps").delete({ count: "exact" }).in("run_id", runIds.length > 0 ? runIds : ["none"]),
+    supabaseAdmin.from("agent_runs").delete({ count: "exact" }).in("id", runIds.length > 0 ? runIds : ["none"]),
+    supabaseAdmin.from("agent_sessions").delete({ count: "exact" }).in("id", sessionIds.length > 0 ? sessionIds : ["none"]),
+    supabaseAdmin.from("negotiation_sessions").delete({ count: "exact" }).in("buyer_session_id", sessionIds.length > 0 ? sessionIds : ["none"]),
+  ]);
+
+  return {
+    ok: true,
+    timestamp: new Date().toISOString(),
+    counts: {
+      sessions: sessionsCount ?? 0,
+      runs: runsCount ?? 0,
+      steps: stepsCount ?? 0,
+      tool_calls: toolCallsCount ?? 0,
+      negotiations: negCount ?? 0,
+      orders: ordersCount ?? 0,
+      payments: paymentsCount ?? 0,
+      webhooks: webhooksCount ?? 0,
+    },
+    preserved: ["Merchants", "Products", "Policies", "Evaluation Runs (Phase 09)", "Evaluation Results (Phase 10)"],
+  };
+}
+
+/* ----------------------- 7. user-scoped entry points ---------------------- */
 
 /** Evidence for the demo merchant the caller owns (falls back to an empty set). */
 export async function judgeEvidenceForUser(userId: string): Promise<JudgeEvidence | null> {

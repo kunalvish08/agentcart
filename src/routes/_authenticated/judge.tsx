@@ -15,6 +15,8 @@ import {
   Play,
   Repeat,
   ShieldCheck,
+  RefreshCcw,
+  CheckCircle2,
 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
@@ -23,6 +25,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   ARCHITECTURE_LAYERS,
   CHAOS_SCENARIOS,
@@ -37,8 +50,9 @@ import {
   getMoneyAuthorityProof,
   runJudgeChaos,
   runJudgeDemoRun,
+  performJudgeDemoReset,
 } from "@/lib/judge.functions";
-import type { ChaosResult, JudgeDemoResult } from "@/lib/judge.server";
+import type { ChaosResult, JudgeDemoResult, ResetResult } from "@/lib/judge.server";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/judge")({
@@ -99,10 +113,12 @@ function JudgePage() {
   const fetchReplay = useServerFn(getJudgeReplay);
   const demoFn = useServerFn(runJudgeDemoRun);
   const chaosFn = useServerFn(runJudgeChaos);
+  const resetFn = useServerFn(performJudgeDemoReset);
 
   const [demo, setDemo] = useState<JudgeDemoResult | null>(null);
   const [chaos, setChaos] = useState<Record<string, ChaosResult>>({});
   const [replayId, setReplayId] = useState<string | null>(null);
+  const [resetSummary, setResetSummary] = useState<ResetResult | null>(null);
 
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const evidence = useQuery({ queryKey: ["judge", "evidence"], queryFn: () => fetchEvidence() });
@@ -133,6 +149,18 @@ function JudgePage() {
       else if (result.status === "skipped") toast.info(result.observed);
       else toast.error("Protection did NOT hold — see the drill output.");
       void queryClient.invalidateQueries({ queryKey: ["judge", "evidence"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const demoReset = useMutation({
+    mutationFn: () => resetFn(),
+    onSuccess: (result) => {
+      setResetSummary(result);
+      setDemo(null);
+      setReplayId(null);
+      toast.success("Judge demo state reset successfully.");
+      void queryClient.invalidateQueries({ queryKey: ["judge"] });
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -206,14 +234,67 @@ function JudgePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button onClick={() => demoRun.mutate()} disabled={demoRun.isPending}>
-                  {demoRun.isPending ? (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  ) : (
-                    <Play className="mr-2 size-4" />
-                  )}
-                  Run demo transaction
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={() => demoRun.mutate()} disabled={demoRun.isPending}>
+                    {demoRun.isPending ? (
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                    ) : (
+                      <Play className="mr-2 size-4" />
+                    )}
+                    Run demo transaction
+                  </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" disabled={demoReset.isPending}>
+                        {demoReset.isPending ? (
+                          <Loader2 className="mr-2 size-4 animate-spin" />
+                        ) : (
+                          <RefreshCcw className="mr-2 size-4" />
+                        )}
+                        Reset Judge Demo
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Reset Judge Demo?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This removes only designated TechNova demo transaction data.
+                          Evaluation history and merchant configuration are preserved.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => demoReset.mutate()}>Confirm Reset</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+
+                {resetSummary && (
+                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm">
+                    <div className="flex items-center gap-2 font-medium text-emerald-600">
+                      <CheckCircle2 className="size-4" />
+                      Demo state reset at {new Intl.DateTimeFormat('en-IN', { timeStyle: 'medium' }).format(new Date(resetSummary.timestamp))}
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-x-8 gap-y-1 font-mono text-[10px] text-muted-foreground uppercase tracking-tight">
+                      <div>Sessions removed: {resetSummary.counts.sessions}</div>
+                      <div>Runs removed: {resetSummary.counts.runs}</div>
+                      <div>Steps removed: {resetSummary.counts.steps}</div>
+                      <div>Tool calls removed: {resetSummary.counts.tool_calls}</div>
+                      <div>Negotiations removed: {resetSummary.counts.negotiations}</div>
+                      <div>Orders removed: {resetSummary.counts.orders}</div>
+                      <div>Payments/Webhooks: {resetSummary.counts.payments}/{resetSummary.counts.webhooks}</div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {resetSummary.preserved.map(item => (
+                        <Badge key={item} variant="secondary" className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/10 border-emerald-500/20">
+                          Preserved: {item}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {demo?.summary ? (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
