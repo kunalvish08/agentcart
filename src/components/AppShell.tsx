@@ -3,12 +3,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Bot,
   ClipboardCheck,
+  Gavel,
   LayoutDashboard,
   LogOut,
   Package,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+
 import type { ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
