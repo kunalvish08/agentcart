@@ -416,6 +416,9 @@ function collect(toolName: string, result: ExternalToolResult, state: BuyerState
         currency: String(p["currency"] ?? "INR"),
       };
       state.no_match = false;
+    } else {
+      // If a specific product was requested but not found, this is a no_match condition.
+      state.no_match = true;
     }
     return;
   }
