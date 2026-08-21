@@ -1,6 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bot, LayoutDashboard, LogOut, Package, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  Bot,
+  ClipboardCheck,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +17,7 @@ import { Button } from "@/components/ui/button";
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/buyer", label: "AI Buyer", icon: Bot },
+  { to: "/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/products", label: "Products", icon: Package },
   { to: "/policies", label: "Policies", icon: ShieldCheck },
 ] as const;
@@ -67,7 +76,7 @@ export function AppShell({
         </div>
 
         <div className="space-y-3 px-2">
-          <p className="text-xs text-sidebar-foreground/60">Phase 04 · Negotiation &amp; growth</p>
+          <p className="text-xs text-sidebar-foreground/60">Phase 05 · Agentic checkout</p>
         </div>
       </aside>
 
