@@ -1035,3 +1035,83 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
   );
 }
 
+
+/* --------------------------- persisted buyer orders ------------------------ */
+
+/**
+ * Chat turns live in component state, so a buyer who leaves the page (e.g. to watch
+ * the merchant approve) loses the in-memory checkout card. This card reads the
+ * buyer's persisted orders back from the server so payment can always be resumed.
+ */
+function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
+  const fetchOrders = useServerFn(getMyActiveOrders);
+  const orders = useQuery({
+    queryKey: ["buyer-active-orders"],
+    queryFn: () => fetchOrders(),
+    refetchInterval: 10_000,
+  });
+
+  const rows = orders.data ?? [];
+  if (rows.length === 0) return null;
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Receipt className="size-4 text-primary" /> Your orders
+          <Badge variant="secondary">{rows.length}</Badge>
+        </CardTitle>
+        <CardDescription>
+          Persisted server-side, so you can leave this page and come back to finish paying.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {rows.map((row: BuyerActiveOrder) => (
+          <div key={row.order_id} className="rounded-lg border border-border p-3 text-sm">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-medium text-foreground">
+                  {row.product_name ?? "Product"}
+                  {row.quantity ? ` × ${row.quantity}` : ""}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Order {row.order_id.slice(0, 8)} ·{" "}
+                  {new Date(row.created_at).toLocaleString("en-IN")}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold text-foreground">
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: row.currency,
+                    maximumFractionDigits: 0,
+                  }).format(row.final_amount)}
+                </p>
+                <Badge variant="outline" className="mt-1">
+                  {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
+                </Badge>
+              </div>
+            </div>
+
+            {row.status === "APPROVAL_REQUIRED" ? (
+              <p className="mt-2 flex items-start gap-2 text-muted-foreground">
+                <Clock className="mt-0.5 size-4 shrink-0" />
+                <span>Waiting for the merchant to review this checkout.</span>
+              </p>
+            ) : null}
+
+            {["PAYMENT_PENDING", "PAYMENT_CAPTURED", "COMPLETED"].includes(row.status) ? (
+              <PaymentPanel
+                orderId={row.order_id}
+                orderStatus={row.status}
+                amount={row.final_amount}
+                currency={row.currency}
+                {...(buyerName ? { buyerName } : {})}
+              />
+            ) : null}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
