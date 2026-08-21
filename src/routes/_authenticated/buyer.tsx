@@ -33,7 +33,12 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { acceptRecommendation, listAgentSessions } from "@/lib/agent.functions";
-import { getOrderStatus, requestBuyerCheckout } from "@/lib/checkout.functions";
+import {
+  getMyActiveOrders,
+  getOrderStatus,
+  requestBuyerCheckout,
+  type BuyerActiveOrder,
+} from "@/lib/checkout.functions";
 import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
 import { getWorkspace } from "@/lib/merchant.functions";
 
