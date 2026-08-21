@@ -719,7 +719,10 @@ const CHECKOUT_TIMELINE: CheckoutState[] = [
   "APPROVED",
   "ORDER_CREATED",
   "PAYMENT_PENDING",
+  "PAYMENT_CAPTURED",
+  "COMPLETED",
 ];
+
 
 /**
  * Checkout affordance + live order state. The client sends only a quote id and
@@ -746,9 +749,14 @@ function CheckoutSection({
     queryKey: ["order-status", orderId],
     queryFn: () => fetchOrderStatus({ data: { orderId: orderId! } }),
     enabled: Boolean(orderId),
-    refetchInterval: (query) =>
-      query.state.data?.status === "APPROVAL_REQUIRED" ? 4000 : false,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status === "APPROVAL_REQUIRED" || status === "PAYMENT_PENDING" || status === "PAYMENT_CAPTURED"
+        ? 4000
+        : false;
+    },
   });
+
 
   async function handleCheckout() {
     if (!quoteId || !sessionId) return;
