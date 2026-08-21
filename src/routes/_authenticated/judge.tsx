@@ -115,7 +115,7 @@ function JudgePage() {
   const chaosFn = useServerFn(runJudgeChaos);
   const resetFn = useServerFn(performJudgeDemoReset);
 
-  const [demo, setDemo] = useState<JudgeDemoResult | null>(null);
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [chaos, setChaos] = useState<Record<string, ChaosResult>>({});
   const [replayId, setReplayId] = useState<string | null>(null);
   const [resetSummary, setResetSummary] = useState<ResetResult | null>(null);
@@ -124,6 +124,19 @@ function JudgePage() {
   const evidence = useQuery({ queryKey: ["judge", "evidence"], queryFn: () => fetchEvidence() });
   const proof = useQuery({ queryKey: ["judge", "money"], queryFn: () => fetchMoney() });
   const runs = useQuery({ queryKey: ["judge", "runs"], queryFn: () => fetchRuns() });
+
+  // Automatically select the latest JUDGE_DEMO run if none is active
+  // Filter for runs that actually have steps (to avoid selecting aborted runs)
+  const latestDemoRunId = runs.data?.find(r => r.run_type === "JUDGE_DEMO" && r.step_count > 0)?.run_id;
+  const effectiveRunId = activeRunId || latestDemoRunId;
+
+  const activeRun = useQuery({
+    queryKey: ["judge", "replay", effectiveRunId],
+    queryFn: () => fetchReplay({ data: { runId: effectiveRunId! } }),
+    enabled: Boolean(effectiveRunId),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
   const replay = useQuery({
     queryKey: ["judge", "replay", replayId],
     queryFn: () => fetchReplay({ data: { runId: replayId! } }),
@@ -133,9 +146,12 @@ function JudgePage() {
   const demoRun = useMutation({
     mutationFn: () => demoFn(),
     onSuccess: (result) => {
-      setDemo(result);
-      if (result.ok) toast.success("Demo transaction completed through the real server paths.");
-      else toast.error(result.error?.message ?? "The demo run stopped early.");
+      if (result.ok && result.run_id) {
+        setActiveRunId(result.run_id);
+        toast.success("Demo transaction completed through the real server paths.");
+      } else {
+        toast.error(result.error?.message ?? "The demo run stopped early.");
+      }
       void queryClient.invalidateQueries({ queryKey: ["judge"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -157,7 +173,7 @@ function JudgePage() {
     mutationFn: () => resetFn(),
     onSuccess: (result) => {
       setResetSummary(result);
-      setDemo(null);
+      setActiveRunId(null);
       setReplayId(null);
       toast.success("Judge demo state reset successfully.");
       void queryClient.invalidateQueries({ queryKey: ["judge"] });
@@ -296,68 +312,73 @@ function JudgePage() {
                   </div>
                 )}
 
-                {demo?.summary ? (
+                {activeRun.data?.run ? (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Metric label="List price" value={money(demo.summary.list_amount, demo.currency)} />
-                    <Metric
-                      label="Negotiated total"
-                      value={money(demo.summary.negotiated_amount, demo.currency)}
-                      hint={`${demo.summary.discount_percent}% granted · cap ${demo.summary.policy_cap_percent}%`}
+                    {/* Note: The summary data for the specific run would ideally be enriched, 
+                        but we'll map existing fields for now */}
+                    <Metric 
+                      label="Run status" 
+                      value={activeRun.data.run.status} 
+                      hint={activeRun.data.run.model}
                     />
                     <Metric
-                      label="Order status"
-                      value={demo.summary.order_status ?? "—"}
-                      hint={demo.summary.approval_required ? "Human approval was required" : "Straight-through"}
+                      label="Steps"
+                      value={String(activeRun.data.run.step_count)}
+                      hint={`${activeRun.data.run.tool_call_count} tool calls`}
+                    />
+                    <Metric
+                      label="Start time"
+                      value={new Intl.DateTimeFormat('en-IN', { timeStyle: 'short' }).format(new Date(activeRun.data.run.started_at))}
+                      hint="Persisted record"
                     />
                     <Metric
                       label="Run duration"
-                      value={`${demo.summary.duration_ms} ms`}
-                      hint={demo.summary.payment_next_action}
+                      value={`${activeRun.data.run.duration_ms ?? 0} ms`}
                     />
                   </div>
                 ) : null}
 
-                {demo ? (
+                {activeRun.data?.steps && activeRun.data.steps.length > 0 ? (
                   <ol className="space-y-3">
-                    {demo.steps.map((step) => (
+                    {activeRun.data.steps.map((step: any) => (
                       <li
-                        key={step.number}
+                        key={step.step_number}
                         className="flex gap-3 rounded-lg border border-border bg-muted/30 p-3"
                       >
-                        <StatusDot status={step.status} />
+                        <StatusDot status={step.status === 'completed' ? 'ok' : step.status} />
                         <div className="min-w-0 space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="text-sm font-medium text-foreground">
-                              {step.number}. {step.title}
+                              {step.step_number}. {step.tool_name || step.step_type}
                             </span>
                             <Badge variant="outline" className="text-xs">
-                              {step.phase}
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs">
-                              authority: {step.authority}
+                              {step.step_type}
                             </Badge>
                             <span className="text-xs tabular-nums text-muted-foreground">
                               {step.latency_ms} ms
                             </span>
                           </div>
-                          <p className="break-words font-mono text-xs text-muted-foreground">
-                            in · {step.input_summary}
-                          </p>
-                          <p className="break-words text-sm text-foreground/90">
-                            out · {step.output_summary}
-                          </p>
-                          {step.entity ? (
-                            <p className="break-all font-mono text-xs text-muted-foreground">
-                              {step.entity.label}: {step.entity.id}
+                          {step.input_summary && (
+                            <p className="break-words font-mono text-xs text-muted-foreground">
+                              in · {step.input_summary}
                             </p>
-                          ) : null}
+                          )}
+                          {step.output_summary && (
+                            <p className="break-words text-sm text-foreground/90">
+                              out · {step.output_summary}
+                            </p>
+                          )}
                         </div>
                       </li>
                     ))}
                   </ol>
+                ) : activeRun.isLoading ? (
+                  <div className="flex items-center justify-center p-8">
+                    <Loader2 className="size-8 animate-spin text-muted-foreground" />
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    No run yet. The trace will show every tool call, policy decision and database id.
+                    No run yet or selected. The trace will show every tool call, policy decision and database id.
                   </p>
                 )}
               </CardContent>
