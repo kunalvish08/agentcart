@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AgentApiRouteImport } from './routes/agent-api'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
+import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedBuyerRouteImport } from './routes/_authenticated/buyer'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
@@ -50,6 +51,11 @@ const DotwellKnownAgentManifestRoute =
     path: '/.well-known/agent-manifest',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBuyerRoute = AuthenticatedBuyerRouteImport.update({
   id: '/buyer',
   path: '/buyer',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/approvals': typeof AuthenticatedApprovalsRoute
   '/buyer': typeof AuthenticatedBuyerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/buyer': typeof AuthenticatedBuyerRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/approvals'
     | '/buyer'
     | '/dashboard'
     | '/policies'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/approvals'
     | '/buyer'
     | '/dashboard'
     | '/policies'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/_authenticated/approvals'
     | '/_authenticated/buyer'
     | '/_authenticated/dashboard'
     | '/_authenticated/policies'
@@ -253,6 +265,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/.well-known/agent-manifest'
       preLoaderRoute: typeof DotwellKnownAgentManifestRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/approvals': {
+      id: '/_authenticated/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof AuthenticatedApprovalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/buyer': {
       id: '/_authenticated/buyer'
@@ -328,6 +347,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedBuyerRoute: typeof AuthenticatedBuyerRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPoliciesRoute: typeof AuthenticatedPoliciesRoute
@@ -335,6 +355,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedBuyerRoute: AuthenticatedBuyerRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPoliciesRoute: AuthenticatedPoliciesRoute,
