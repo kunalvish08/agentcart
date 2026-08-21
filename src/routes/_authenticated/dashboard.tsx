@@ -312,6 +312,223 @@ function DashboardPage() {
         </CardContent>
       </Card>
 
+      <Card className="mt-6 border-primary/30 bg-primary/[0.03]">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ClipboardCheck className="size-4 text-primary" />
+            Judge Mode & Phase 11
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div className="rounded-md border border-border bg-card p-4 font-mono text-[10px] leading-relaxed whitespace-pre-wrap">
+            {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+
+                                        
+                                        Phase 11 — Final Judge & Demo Readiness
+
+Phase 01–10 are now frozen. Do not change existing commerce,
+
+payment, security, evaluation, or agent authority logic.
+
+Before implementing anything, audit the current application and
+
+prepare it for a final competition judge/demo.
+
+Goal:
+
+Make the existing Agentic Commerce system demonstrable in a
+
+single 5–7 minute end-to-end flow.
+
+Create a Judge Demo Mode that clearly demonstrates:
+
+1. BUYER DISCOVERY
+
+Buyer asks:
+
+"I need a coding laptop under ₹60,000."
+
+Show:
+
+Agent → catalog search → product selection → server quote.
+
+2. NEGOTIATION
+
+Buyer asks for 30% discount.
+
+Show:
+
+30% requested → policy cap 12% → server-authoritative quote
+
+₹55,000 → ₹48,400.
+
+The agent must never calculate or authorize the discount.
+
+3. CHECKOUT
+
+Buyer explicitly requests checkout.
+
+Show:
+
+quote → checkout request → APPROVAL_REQUIRED.
+
+4. HUMAN-IN-THE-LOOP
+
+Open merchant Approvals.
+
+Show:
+
+pending approval → merchant approves → order created →
+
+PAYMENT_PENDING.
+
+5. PAYMENT
+
+Open buyer payment.
+
+Use Razorpay TEST MODE.
+
+Show:
+
+payment → server-side signature verification →
+
+PAYMENT_VERIFIED → ORDER_COMPLETED.
+
+6. SECURITY / CHAOS DEMO
+
+Provide quick demo actions for:
+
+- 30/40% discount request → capped at 12%
+
+- inventory overshoot → rejected
+
+- duplicate checkout → prevented
+
+- forged webhook → rejected
+
+- illegal payment/order state transition → blocked
+
+Every result must come from the existing server-authoritative
+
+logic. Do not create fake demo results.
+
+7. JUDGE EVIDENCE
+
+Make Judge Mode clearly show:
+
+Agent request
+
+↓
+
+Validated tool
+
+↓
+
+Public API
+
+↓
+
+Server policy
+
+↓
+
+Quote
+
+↓
+
+Checkout
+
+↓
+
+Human approval
+
+↓
+
+Razorpay
+
+↓
+
+Webhook/signature verification
+
+↓
+
+Completed order
+
+Also show:
+
+- trace ID
+
+- tool calls
+
+- policy decisions
+
+- order state transitions
+
+- payment state
+
+- security decisions
+
+8. FINAL DEMO RESET
+
+Add a safe "Reset Demo State" action that only resets
+
+designated demo/test records and never deletes merchant,
+
+security, payment credentials, or production data.
+
+9. UI
+
+Do not redesign the entire application.
+
+Only improve the screens necessary for the final demo:
+
+- Dashboard
+
+- AI Buyer
+
+- Approvals
+
+- Judge Mode
+
+- Evaluation Lab
+
+Use existing visual language.
+
+10. IMPORTANT
+
+Do not modify:
+
+- Razorpay verification
+
+- webhook verification
+
+- payment state machine
+
+- order state machine
+
+- public Agent API contract
+
+- RLS
+
+- Phase 09 historical results
+
+- Phase 10 evaluation results
+
+- server-side pricing/policy authority
+
+First audit the existing implementation.
+
+Then implement only the minimum changes needed for a reliable
+
+5–7 minute judge demonstration.
+
+Before completion, verify the entire golden path end-to-end
+
+using real persisted records and Razorpay TEST MODE.`}
+          </div>
+        </CardContent>
+      </Card>
+
     </AppShell>
   );
 }
