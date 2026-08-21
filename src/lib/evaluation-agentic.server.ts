@@ -151,6 +151,7 @@ export async function runAgenticArm(args: {
       negotiation: null,
       checkout: null,
       no_match: false,
+      optimization_trace: {},
     } as BuyerState);
 
   const checkout = state.checkout;
