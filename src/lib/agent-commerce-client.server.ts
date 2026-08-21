@@ -19,7 +19,10 @@ export type ApiCall = {
   request_id: string | null;
   request_summary: string;
   response_summary: string;
+  /** Machine-readable error code returned by the API (null on success). */
+  error_code: string | null;
 };
+
 
 export type ApiError = { code: string; message: string; details?: unknown };
 
@@ -114,6 +117,7 @@ export class AgentCommerceClient {
         parsed = null;
       }
 
+      const raw = (parsed as { error?: ApiError } | null)?.error;
       const call = record({
         method: args.method,
         path: tracePath,
@@ -123,10 +127,10 @@ export class AgentCommerceClient {
         request_id: response.headers.get("x-request-id"),
         request_summary: args.body ? safeSummary(args.body) : summarize(url.search || "no query"),
         response_summary: safeSummary(parsed),
+        error_code: response.ok ? null : String(raw?.code ?? `http_${response.status}`),
       });
 
       if (!response.ok) {
-        const raw = (parsed as { error?: ApiError } | null)?.error;
         return {
           ok: false,
           error: {
@@ -138,6 +142,7 @@ export class AgentCommerceClient {
         };
       }
       return { ok: true, data: parsed as T, call };
+
     } catch (error) {
       const aborted = error instanceof Error && error.name === "AbortError";
       const call = record({
@@ -149,7 +154,9 @@ export class AgentCommerceClient {
         request_id: null,
         request_summary: args.body ? safeSummary(args.body) : summarize(url.search || "no query"),
         response_summary: aborted ? "timeout" : "network error",
+        error_code: aborted ? "timeout" : "network_error",
       });
+
       return {
         ok: false,
         error: {
