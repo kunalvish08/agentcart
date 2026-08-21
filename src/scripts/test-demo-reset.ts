@@ -20,7 +20,7 @@ async function testReset() {
   const userId = merchant.owner_id;
 
   // 2. Create a dummy evaluation run to ensure it's preserved
-  const { data: evalRun } = await supabaseAdmin
+  const { data: evalRun, error: evalError } = await supabaseAdmin
     .from("evaluation_runs")
     .insert({
       merchant_id: merchant.id,
@@ -30,6 +30,11 @@ async function testReset() {
     } as any)
     .select("id")
     .single();
+
+  if (evalError) {
+    console.error("Failed to create test evaluation run:", evalError);
+    process.exit(1);
+  }
 
   // 3. Run a demo transaction to create demo records
   console.log("Creating demo data...");
