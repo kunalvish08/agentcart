@@ -275,3 +275,99 @@ export const updatePolicy = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
+export type GrowthMetrics = {
+  negotiations: number;
+  openNegotiations: number;
+  rounds: number;
+  countered: number;
+  avgApprovedDiscount: number;
+  offers: number;
+  offerValue: number;
+  listValue: number;
+  discountGiven: number;
+  recommendations: number;
+  acceptedRecommendations: number;
+};
+
+/**
+ * Phase 04 revenue foundation. Every figure is aggregated from server-persisted
+ * negotiation rounds and offers (RLS-scoped to the caller's merchant).
+ */
+export const getGrowthMetrics = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<GrowthMetrics> => {
+    const { supabase, userId } = context;
+
+    const { data: merchant, error: merchantError } = await supabase
+      .from("merchants")
+      .select("id")
+      .eq("owner_id", userId)
+      .order("created_at")
+      .limit(1)
+      .maybeSingle();
+    if (merchantError) throw new Error(merchantError.message);
+    const empty: GrowthMetrics = {
+      negotiations: 0,
+      openNegotiations: 0,
+      rounds: 0,
+      countered: 0,
+      avgApprovedDiscount: 0,
+      offers: 0,
+      offerValue: 0,
+      listValue: 0,
+      discountGiven: 0,
+      recommendations: 0,
+      acceptedRecommendations: 0,
+    };
+    if (!merchant) return empty;
+
+    const sessions = await supabase
+      .from("negotiation_sessions")
+      .select("id, status")
+      .eq("merchant_id", merchant.id);
+    if (sessions.error) throw new Error(sessions.error.message);
+    const sessionIds = (sessions.data ?? []).map((s) => s.id);
+
+    const [rounds, offers, recs] = await Promise.all([
+      sessionIds.length
+        ? supabase
+            .from("negotiation_rounds")
+            .select("id, policy_decision, allowed_discount_percent")
+            .in("session_id", sessionIds)
+        : Promise.resolve({ data: [], error: null }),
+      sessionIds.length
+        ? supabase
+            .from("offers")
+            .select("id, base_amount, final_amount")
+            .in("negotiation_session_id", sessionIds)
+        : Promise.resolve({ data: [], error: null }),
+      supabase.from("growth_recommendations").select("id, accepted").eq("merchant_id", merchant.id),
+    ]);
+    for (const r of [rounds, offers, recs]) {
+      if (r.error) throw new Error(r.error.message);
+    }
+
+    const roundRows = rounds.data ?? [];
+    const offerRows = offers.data ?? [];
+    const approved = roundRows.map((r) => Number(r.allowed_discount_percent ?? 0));
+    const listValue = offerRows.reduce((sum, o) => sum + Number(o.base_amount ?? 0), 0);
+    const offerValue = offerRows.reduce((sum, o) => sum + Number(o.final_amount ?? 0), 0);
+
+    return {
+      negotiations: (sessions.data ?? []).length,
+      openNegotiations: (sessions.data ?? []).filter((s) => s.status === "open").length,
+      rounds: roundRows.length,
+      countered: roundRows.filter((r) => r.policy_decision === "counter").length,
+
+      avgApprovedDiscount: approved.length
+        ? Math.round((approved.reduce((a, b) => a + b, 0) / approved.length) * 100) / 100
+        : 0,
+      offers: offerRows.length,
+      offerValue,
+      listValue,
+      discountGiven: Math.max(0, listValue - offerValue),
+      recommendations: (recs.data ?? []).length,
+      acceptedRecommendations: (recs.data ?? []).filter((r) => r.accepted).length,
+    };
+  });

@@ -11,7 +11,7 @@
 //   policies, inventory or payments.
 import { z } from "zod";
 
-import { DEFAULT_MERCHANT_SLUG } from "@/lib/public-api.server";
+import { DEFAULT_MERCHANT_SLUG, resolveMerchant, type PublicMerchant } from "@/lib/public-api.server";
 
 export const TOOL_TIMEOUT_MS = 12_000;
 
@@ -34,6 +34,29 @@ const quoteToolSchema = z.object({
   requested_discount_percent: z.number().min(0).max(100).optional(),
 });
 
+const currentQuoteSchema = z.object({
+  product_id: z.string().uuid("product_id must be a catalog product UUID"),
+  quantity: z.number().int().min(1).max(100),
+});
+
+const proposeDiscountSchema = z.object({
+  product_id: z.string().uuid("product_id must be a catalog product UUID"),
+  quantity: z.number().int().min(1).max(100),
+  requested_discount_percent: z.number().min(0).max(100),
+  customer_request_summary: z.string().trim().max(300).optional(),
+});
+
+const validateOfferSchema = z.object({
+  product_id: z.string().uuid("product_id must be a catalog product UUID"),
+  quantity: z.number().int().min(1).max(100),
+  discount_percent: z.number().min(0).max(100),
+});
+
+const relatedGrowthSchema = z.object({
+  product_id: z.string().uuid("product_id must be a catalog product UUID"),
+  limit: z.number().int().min(1).max(2).optional(),
+});
+
 const emptySchema = z.object({}).strip();
 
 /* ------------------------------ tool registry ----------------------------- */
@@ -43,12 +66,25 @@ export type ToolName =
   | "get_product"
   | "get_related_products"
   | "get_quote"
-  | "get_merchant_info";
+  | "get_merchant_info"
+  | "get_merchant_policy"
+  | "get_current_quote"
+  | "get_eligible_related_products"
+  | "propose_discount"
+  | "validate_offer";
 
 export type ToolResult = {
   ok: boolean;
   data?: unknown;
   error?: { code: string; message: string; details?: unknown };
+  /** Optional deterministic trace label override (observable actions only). */
+  label?: string;
+};
+
+export type ToolContext = {
+  baseUrl: string;
+  merchant?: PublicMerchant | null;
+  buyerSessionId?: string | null;
 };
 
 type ToolDefinition = {
@@ -57,12 +93,17 @@ type ToolDefinition = {
   parameters: Record<string, unknown>;
   schema: z.ZodTypeAny;
   label: (args: Record<string, unknown>) => string;
-  run: (args: any, ctx: { baseUrl: string }) => Promise<ToolResult>;
+  run: (args: any, ctx: ToolContext) => Promise<ToolResult>;
 };
 
 function jsonSchema(properties: Record<string, unknown>, required: string[]) {
   return { type: "object", properties, required, additionalProperties: false };
 }
+
+async function contextMerchant(ctx: ToolContext): Promise<PublicMerchant | null> {
+  return ctx.merchant ?? (await resolveMerchant(DEFAULT_MERCHANT_SLUG));
+}
+
 
 async function callPublicApi(
   baseUrl: string,
@@ -235,7 +276,230 @@ export const TOOL_REGISTRY: Record<ToolName, ToolDefinition> = {
     run: async (_args: unknown, { baseUrl }) =>
       callPublicApi(baseUrl, `/api/public/agent-manifest?merchant=${DEFAULT_MERCHANT_SLUG}`),
   },
+
+  /* --------------------------- Phase 04 negotiation -------------------------- */
+
+  get_merchant_policy: {
+    name: "get_merchant_policy",
+    description:
+      "Read the merchant's live commercial policy: whether negotiation is allowed, the maximum discount percent, the maximum order value and the approval threshold. Never assume these numbers — always read them. Takes no arguments.",
+    parameters: jsonSchema({}, []),
+    schema: emptySchema,
+    label: () => "Merchant policy checked",
+    run: async (_args: unknown, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return {
+          ok: false,
+          error: { code: "merchant_unavailable", message: "No public merchant is available." },
+        };
+      }
+      const { getPolicy } = await import("@/lib/public-api.server");
+      const { MAX_NEGOTIATION_ROUNDS } = await import("@/lib/negotiation.server");
+      const policy = await getPolicy(merchant.id);
+      return {
+        ok: true,
+        label: `Merchant policy checked — max discount ${policy.max_discount_percent}%`,
+        data: {
+          merchant: merchant.slug,
+          currency: merchant.currency,
+          allow_negotiation: policy.allow_negotiation,
+          max_discount_percent: policy.max_discount_percent,
+          max_order_value: policy.max_order_value,
+          approval_required_above: policy.approval_required_above,
+          allow_upsell: policy.allow_upsell,
+          max_negotiation_rounds: MAX_NEGOTIATION_ROUNDS,
+          policy_authority: "server",
+        },
+      };
+    },
+  },
+
+  get_current_quote: {
+    name: "get_current_quote",
+    description:
+      "Get the current server-calculated list-price quote (no discount) for a product and quantity. Use before negotiating so you know the starting order value.",
+    parameters: jsonSchema(
+      { product_id: { type: "string" }, quantity: { type: "integer", description: "Units, 1-100." } },
+      ["product_id", "quantity"],
+    ),
+    schema: currentQuoteSchema,
+    label: () => "Requesting current server quote",
+    run: async (args: z.infer<typeof currentQuoteSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return {
+          ok: false,
+          error: { code: "merchant_unavailable", message: "No public merchant is available." },
+        };
+      }
+      const { requestServerQuote } = await import("@/lib/negotiation.server");
+      const outcome = await requestServerQuote({
+        baseUrl: ctx.baseUrl,
+        merchantSlug: merchant.slug,
+        productId: args.product_id,
+        quantity: args.quantity,
+        discountPercent: 0,
+      });
+      if (!outcome.ok) return { ok: false, error: outcome.error };
+      return { ok: true, data: outcome.quote };
+    },
+  },
+
+  propose_discount: {
+    name: "propose_discount",
+    description:
+      "Ask the merchant-side negotiation engine for a decision on a customer discount request. The server decides accept / counter / reject from live merchant policy, inventory and order value, and returns the authoritative recalculated quote. You must report exactly what it returns and never invent a different discount or price.",
+    parameters: jsonSchema(
+      {
+        product_id: { type: "string" },
+        quantity: { type: "integer", description: "Units, 1-100." },
+        requested_discount_percent: {
+          type: "number",
+          description: "The discount percent the customer actually asked for, 0-100.",
+        },
+        customer_request_summary: {
+          type: "string",
+          description: "Short factual summary of the customer's request.",
+        },
+      },
+      ["product_id", "quantity", "requested_discount_percent"],
+    ),
+    schema: proposeDiscountSchema,
+    label: () => "Negotiating with merchant policy engine",
+    run: async (args: z.infer<typeof proposeDiscountSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return {
+          ok: false,
+          error: { code: "merchant_unavailable", message: "No public merchant is available." },
+        };
+      }
+      const { runNegotiationRound } = await import("@/lib/negotiation.server");
+      const outcome = await runNegotiationRound({
+        merchant,
+        buyerSessionId: ctx.buyerSessionId ?? null,
+        baseUrl: ctx.baseUrl,
+        productId: args.product_id,
+        quantity: args.quantity,
+        requestedDiscountPercent: args.requested_discount_percent,
+        customerRequestSummary: args.customer_request_summary,
+      });
+      const label = !outcome.negotiation_available
+        ? "Negotiation unavailable by merchant policy"
+        : outcome.decision === "counter"
+          ? `Counter-offer generated at ${outcome.approved_discount_percent}%`
+          : outcome.decision === "accept"
+            ? `Discount ${outcome.approved_discount_percent}% approved by policy`
+            : `Negotiation rejected (${outcome.quote_error?.code ?? "policy"})`;
+      return { ok: true, label, data: outcome };
+    },
+  },
+
+  validate_offer: {
+    name: "validate_offer",
+    description:
+      "Final deterministic server validation of an offer before you present it. Confirms the discount is within policy, inventory covers the quantity and the order value is allowed, and returns the server-calculated amounts.",
+    parameters: jsonSchema(
+      {
+        product_id: { type: "string" },
+        quantity: { type: "integer" },
+        discount_percent: { type: "number", description: "Discount percent you intend to present." },
+      },
+      ["product_id", "quantity", "discount_percent"],
+    ),
+    schema: validateOfferSchema,
+    label: () => "Validating offer against merchant policy",
+    run: async (args: z.infer<typeof validateOfferSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return {
+          ok: false,
+          error: { code: "merchant_unavailable", message: "No public merchant is available." },
+        };
+      }
+      const { getPolicy } = await import("@/lib/public-api.server");
+      const { decideDiscount, requestServerQuote } = await import("@/lib/negotiation.server");
+      const policy = await getPolicy(merchant.id);
+      const decision = decideDiscount({
+        requestedPercent: args.discount_percent,
+        policy,
+      });
+      const outcome = await requestServerQuote({
+        baseUrl: ctx.baseUrl,
+        merchantSlug: merchant.slug,
+        productId: args.product_id,
+        quantity: args.quantity,
+        discountPercent: decision.approved_discount_percent,
+      });
+      if (!outcome.ok) {
+        return {
+          ok: true,
+          label: `Offer rejected by server validation (${outcome.error.code})`,
+          data: {
+            valid: false,
+            reason: outcome.error.message,
+            error_code: outcome.error.code,
+            policy_limit_percent: decision.policy_limit_percent,
+            policy_authority: "server",
+          },
+        };
+      }
+      const valid = decision.approved_discount_percent === args.discount_percent;
+      return {
+        ok: true,
+        label: valid
+          ? `Offer validated at ${decision.approved_discount_percent}%`
+          : `Offer corrected to policy maximum ${decision.policy_limit_percent}%`,
+        data: {
+          valid,
+          policy_limit_percent: decision.policy_limit_percent,
+          approved_discount_percent: outcome.quote.allowed_discount_percent,
+          policy_reason: decision.reason,
+          quote: outcome.quote,
+          policy_authority: "server",
+        },
+      };
+    },
+  },
+
+  get_eligible_related_products: {
+    name: "get_eligible_related_products",
+    description:
+      "Get at most 2 policy-eligible growth recommendations (upsell / cross-sell) for a selected product. Only merchant-curated, active, in-stock products are returned, each with a factual reason. If the list is empty, recommend nothing.",
+    parameters: jsonSchema(
+      {
+        product_id: { type: "string", description: "The selected product_id." },
+        limit: { type: "integer", description: "1 or 2." },
+      },
+      ["product_id"],
+    ),
+    schema: relatedGrowthSchema,
+    label: () => "Checking eligible growth recommendations",
+    run: async (args: z.infer<typeof relatedGrowthSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return {
+          ok: false,
+          error: { code: "merchant_unavailable", message: "No public merchant is available." },
+        };
+      }
+      const { eligibleGrowthRecommendations } = await import("@/lib/negotiation.server");
+      const data = await eligibleGrowthRecommendations({
+        merchant,
+        buyerSessionId: ctx.buyerSessionId ?? null,
+        productId: args.product_id,
+        ...(args.limit !== undefined ? { limit: args.limit } : {}),
+      });
+      return {
+        ok: true,
+        label: `Eligible recommendations: ${data.count}`,
+        data,
+      };
+    },
+  },
 };
+
 
 export const TOOL_NAMES = Object.keys(TOOL_REGISTRY) as ToolName[];
 
@@ -253,7 +517,7 @@ export function openAiToolSpecs() {
 export async function executeTool(
   name: string,
   rawArgs: unknown,
-  ctx: { baseUrl: string },
+  ctx: ToolContext,
 ): Promise<{ result: ToolResult; label: string }> {
   if (!TOOL_NAMES.includes(name as ToolName)) {
     return {
@@ -302,7 +566,7 @@ export async function executeTool(
   const args = validated.data as Record<string, unknown>;
   try {
     const result = await tool.run(args, ctx);
-    return { label: tool.label(args), result };
+    return { label: result.label ?? tool.label(args), result };
   } catch (error) {
     console.error(`[agent-tools] ${tool.name} failed`, error);
     return {

@@ -3,6 +3,22 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+/** Buyer accepts a merchant growth recommendation (the only buyer-writable flag). */
+export const acceptRecommendation = createServerFn({ method: "POST" })
+  .inputValidator((data: { recommendationId: string }) =>
+    z.object({ recommendationId: z.string().uuid() }).parse(data),
+  )
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context, data }): Promise<{ accepted: true }> => {
+    const { error } = await context.supabase
+      .from("growth_recommendations")
+      .update({ accepted: true })
+      .eq("id", data.recommendationId);
+    if (error) throw new Error(error.message);
+    return { accepted: true };
+  });
+
+
 export type AgentSessionSummary = {
   id: string;
   title: string | null;

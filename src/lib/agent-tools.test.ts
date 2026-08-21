@@ -5,15 +5,54 @@ import { executeTool, TOOL_NAMES } from "./agent-tools.server";
 const ctx = { baseUrl: "http://127.0.0.1:9/" }; // unreachable on purpose
 
 describe("controlled tool layer", () => {
-  it("exposes exactly the five registered tools", () => {
+  it("exposes exactly the registered tools", () => {
     expect(TOOL_NAMES).toEqual([
       "search_catalog",
       "get_product",
       "get_related_products",
       "get_quote",
       "get_merchant_info",
+      "get_merchant_policy",
+      "get_current_quote",
+      "propose_discount",
+      "validate_offer",
+      "get_eligible_related_products",
     ]);
+
   });
+
+  it("rejects invalid negotiation arguments before any policy work", async () => {
+    const id = "33333333-3333-4333-8333-000000000001";
+    for (const args of [
+      { product_id: "not-a-uuid", quantity: 1, requested_discount_percent: 5 },
+      { product_id: id, quantity: 0, requested_discount_percent: 5 },
+      { product_id: id, quantity: 1, requested_discount_percent: 150 },
+      { product_id: id, quantity: 1, requested_discount_percent: -1 },
+      { product_id: id, quantity: 1 },
+    ]) {
+      const { result } = await executeTool("propose_discount", args, ctx);
+      expect(result.error?.code).toBe("invalid_tool_arguments");
+    }
+  });
+
+  it("rejects invalid offer validation arguments", async () => {
+    const { result } = await executeTool(
+      "validate_offer",
+      { product_id: "33333333-3333-4333-8333-000000000001", quantity: 1, discount_percent: 999 },
+      ctx,
+    );
+    expect(result.error?.code).toBe("invalid_tool_arguments");
+  });
+
+  it("caps growth recommendation requests at two", async () => {
+    const { result } = await executeTool(
+      "get_eligible_related_products",
+      { product_id: "33333333-3333-4333-8333-000000000001", limit: 25 },
+      ctx,
+    );
+    expect(result.error?.code).toBe("invalid_tool_arguments");
+  });
+
 
   it("rejects unregistered tools", async () => {
     const { result } = await executeTool("run_sql", { query: "select 1" }, ctx);
