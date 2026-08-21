@@ -183,12 +183,12 @@ export function PaymentPanel({
   return (
     <div className="mt-3 rounded-md border border-border bg-background/60 p-3">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <CreditCard className="size-4" /> Payment
           <Badge variant="outline" className="text-[10px] uppercase">
             Razorpay test mode
           </Badge>
-        </p>
+        </div>
         <div className="flex items-center gap-2">
           {state ? (
             <Badge variant={verified ? "default" : state === "FAILED" ? "outline" : "secondary"}>
