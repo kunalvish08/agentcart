@@ -342,7 +342,7 @@ function BuyerPage() {
             </CardContent>
           </Card>
 
-          <ActiveOrdersCard buyerName={workspace.data?.profile.full_name ?? undefined} />
+          <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
 
 
 
