@@ -5,8 +5,9 @@
 // so neither the client, the AI model nor a buggy handler can push an order
 // into a state the business rules do not allow.
 //
-// Phase 05 deliberately ends at PAYMENT_PENDING: there is no COMPLETED state,
-// because payment verification belongs to a later phase.
+// Phase 06 extends the machine with the payment path:
+// PAYMENT_PENDING -> PAYMENT_CAPTURED -> COMPLETED. Only server-verified payment
+// events may drive those transitions (see @/lib/payments.server).
 
 export const CHECKOUT_STATES = [
   "QUOTE_CREATED",
@@ -16,6 +17,8 @@ export const CHECKOUT_STATES = [
   "REJECTED",
   "ORDER_CREATED",
   "PAYMENT_PENDING",
+  "PAYMENT_CAPTURED",
+  "COMPLETED",
   "CANCELLED",
   "EXPIRED",
 ] as const;
@@ -31,11 +34,14 @@ export const ALLOWED_TRANSITIONS: Record<CheckoutState, readonly CheckoutState[]
   APPROVAL_REQUIRED: ["APPROVED", "REJECTED", "CANCELLED", "EXPIRED"],
   APPROVED: ["ORDER_CREATED", "CANCELLED", "EXPIRED"],
   ORDER_CREATED: ["PAYMENT_PENDING", "CANCELLED", "EXPIRED"],
-  PAYMENT_PENDING: ["CANCELLED", "EXPIRED"],
+  PAYMENT_PENDING: ["PAYMENT_CAPTURED", "CANCELLED", "EXPIRED"],
+  PAYMENT_CAPTURED: ["COMPLETED"],
+  COMPLETED: [],
   REJECTED: [],
   CANCELLED: [],
   EXPIRED: [],
 };
+
 
 export function isCheckoutState(value: unknown): value is CheckoutState {
   return typeof value === "string" && (CHECKOUT_STATES as readonly string[]).includes(value);
@@ -70,7 +76,9 @@ export const CHECKOUT_STATE_LABELS: Record<CheckoutState, string> = {
   APPROVED: "Approved",
   REJECTED: "Rejected by merchant",
   ORDER_CREATED: "Order created",
-  PAYMENT_PENDING: "Checkout ready — payment pending",
+  PAYMENT_PENDING: "Payment pending",
+  PAYMENT_CAPTURED: "Payment captured",
+  COMPLETED: "Completed",
   CANCELLED: "Cancelled",
   EXPIRED: "Expired",
 };
@@ -78,3 +86,4 @@ export const CHECKOUT_STATE_LABELS: Record<CheckoutState, string> = {
 export function isTerminal(state: CheckoutState): boolean {
   return ALLOWED_TRANSITIONS[state].length === 0;
 }
+
