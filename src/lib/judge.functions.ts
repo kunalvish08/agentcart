@@ -78,3 +78,10 @@ export const getJudgeReplay = createServerFn({ method: "GET" })
     const { replayJudgeRun } = await import("@/lib/judge.server");
     return replayJudgeRun({ runId: data.runId, userId: context.userId });
   });
+
+export const performJudgeDemoReset = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<ResetResult> => {
+    const { resetJudgeDemo } = await import("@/lib/judge.server");
+    return resetJudgeDemo({ userId: context.userId });
+  });
