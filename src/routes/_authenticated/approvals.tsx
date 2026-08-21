@@ -216,6 +216,8 @@ function ApprovalsPage() {
         </div>
 
         <aside className="space-y-6">
+          <PaymentLedgerCard />
+
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
@@ -256,8 +258,6 @@ function ApprovalsPage() {
               )}
             </CardContent>
           </Card>
-
-          <PaymentLedgerCard />
 
           <Card>
             <CardHeader className="pb-3">
