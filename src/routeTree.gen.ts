@@ -14,9 +14,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AgentApiRouteImport } from './routes/agent-api'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
+import { Route as AuthenticatedBuyerRouteImport } from './routes/_authenticated/buyer'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticated/policies'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as ApiAgentBuyerRouteImport } from './routes/api/agent/buyer'
 import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
 import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
@@ -48,6 +50,11 @@ const DotwellKnownAgentManifestRoute =
     path: '/.well-known/agent-manifest',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedBuyerRoute = AuthenticatedBuyerRouteImport.update({
+  id: '/buyer',
+  path: '/buyer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -62,6 +69,11 @@ const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   id: '/products',
   path: '/products',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiAgentBuyerRoute = ApiAgentBuyerRouteImport.update({
+  id: '/api/agent/buyer',
+  path: '/api/agent/buyer',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicAgentManifestRoute = ApiPublicAgentManifestRouteImport.update({
   id: '/api/public/agent-manifest',
@@ -94,9 +106,11 @@ export interface FileRoutesByFullPath {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/buyer': typeof AuthenticatedBuyerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -108,9 +122,11 @@ export interface FileRoutesByTo {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/buyer': typeof AuthenticatedBuyerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/policies': typeof AuthenticatedPoliciesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -124,9 +140,11 @@ export interface FileRoutesById {
   '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
+  '/_authenticated/buyer': typeof AuthenticatedBuyerRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/policies': typeof AuthenticatedPoliciesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -140,9 +158,11 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/buyer'
     | '/dashboard'
     | '/policies'
     | '/products'
+    | '/api/agent/buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
@@ -154,9 +174,11 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/buyer'
     | '/dashboard'
     | '/policies'
     | '/products'
+    | '/api/agent/buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
@@ -169,9 +191,11 @@ export interface FileRouteTypes {
     | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
+    | '/_authenticated/buyer'
     | '/_authenticated/dashboard'
     | '/_authenticated/policies'
     | '/_authenticated/products'
+    | '/api/agent/buyer'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/quote'
@@ -185,6 +209,7 @@ export interface RootRouteChildren {
   AgentApiRoute: typeof AgentApiRoute
   LoginRoute: typeof LoginRoute
   DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
+  ApiAgentBuyerRoute: typeof ApiAgentBuyerRoute
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
@@ -229,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotwellKnownAgentManifestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/buyer': {
+      id: '/_authenticated/buyer'
+      path: '/buyer'
+      fullPath: '/buyer'
+      preLoaderRoute: typeof AuthenticatedBuyerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -249,6 +281,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products'
       preLoaderRoute: typeof AuthenticatedProductsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/agent/buyer': {
+      id: '/api/agent/buyer'
+      path: '/api/agent/buyer'
+      fullPath: '/api/agent/buyer'
+      preLoaderRoute: typeof ApiAgentBuyerRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/agent-manifest': {
       id: '/api/public/agent-manifest'
@@ -289,12 +328,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBuyerRoute: typeof AuthenticatedBuyerRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPoliciesRoute: typeof AuthenticatedPoliciesRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBuyerRoute: AuthenticatedBuyerRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPoliciesRoute: AuthenticatedPoliciesRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
@@ -309,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgentApiRoute: AgentApiRoute,
   LoginRoute: LoginRoute,
   DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
+  ApiAgentBuyerRoute: ApiAgentBuyerRoute,
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicQuoteRoute: ApiPublicQuoteRoute,
