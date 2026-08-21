@@ -1,10 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Boxes, CheckCircle2, IndianRupee, Package, Percent, Store } from "lucide-react";
+import {
+  Bot,
+  Boxes,
+  CheckCircle2,
+  ExternalLink,
+  IndianRupee,
+  Package,
+  Percent,
+  Store,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getWorkspace } from "@/lib/merchant.functions";
@@ -25,6 +35,12 @@ function DashboardPage() {
     queryKey: ["workspace"],
     queryFn: () => fetchWorkspace(),
   });
+
+  const manifestUrl =
+    typeof window === "undefined"
+      ? "/.well-known/agent-manifest"
+      : `${window.location.origin}/.well-known/agent-manifest`;
+
 
   const metrics = [
     { label: "Total products", value: data ? String(data.stats.totalProducts) : "—", icon: Package },
@@ -110,9 +126,65 @@ function DashboardPage() {
           <Field label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} />
         </CardContent>
       </Card>
+
+      <Card className="mt-6">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Bot className="size-4" /> AI Commerce
+          </CardTitle>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/agent-api">
+              View Agent API
+              <ExternalLink className="ml-2 size-4" />
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant={data?.merchant.agent_commerce_enabled ? "default" : "outline"}>
+              AI Commerce {data?.merchant.agent_commerce_enabled ? "enabled" : "disabled"}
+            </Badge>
+            <Badge variant={data?.merchant.status === "active" ? "secondary" : "outline"}>
+              Public catalog {data?.merchant.status === "active" ? "live" : "offline"}
+            </Badge>
+            <Badge variant="secondary">Public API operational</Badge>
+            <Badge variant="outline">
+              Negotiation {data?.policy.allow_negotiation ? "enabled" : "disabled"}
+            </Badge>
+            <Badge variant="outline">Upsell {data?.policy.allow_upsell ? "enabled" : "disabled"}</Badge>
+            <Badge variant="outline">Checkout &amp; payments: later phase</Badge>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field
+              label="Discovery manifest"
+              value={manifestUrl ?? "/.well-known/agent-manifest"}
+            />
+            <Field
+              label="Public API calls (24h)"
+              value={data ? `${data.agentApi.requests24h} (${data.agentApi.failures24h} failed)` : "—"}
+            />
+            <Field
+              label="Last agent request"
+              value={
+                data?.agentApi.lastRequestAt
+                  ? new Date(data.agentApi.lastRequestAt).toLocaleString("en-IN")
+                  : "No requests yet"
+              }
+            />
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Public endpoints: <code>/api/public/catalog</code>, <code>/api/public/products/:id</code>,{" "}
+            <code>/api/public/search</code>, <code>/api/public/quote</code>. Prices, inventory and
+            discounts are always computed server-side against your merchant policy.
+          </p>
+        </CardContent>
+      </Card>
     </AppShell>
   );
 }
+
 
 function Field({ label, value }: { label: string; value: string }) {
   return (

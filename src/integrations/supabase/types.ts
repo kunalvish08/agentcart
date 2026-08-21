@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_request_logs: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: string
+          latency_ms: number
+          merchant_id: string | null
+          method: string
+          status_code: number
+          success: boolean
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: string
+          latency_ms: number
+          merchant_id?: string | null
+          method: string
+          status_code: number
+          success: boolean
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: string
+          latency_ms?: number
+          merchant_id?: string | null
+          method?: string
+          status_code?: number
+          success?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_request_logs_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       merchant_policies: {
         Row: {
           allow_negotiation: boolean
@@ -60,32 +101,38 @@ export type Database = {
       }
       merchants: {
         Row: {
+          agent_commerce_enabled: boolean
           created_at: string
           currency: string
           description: string | null
           id: string
           name: string
           owner_id: string
+          slug: string | null
           status: Database["public"]["Enums"]["entity_status"]
           updated_at: string
         }
         Insert: {
+          agent_commerce_enabled?: boolean
           created_at?: string
           currency?: string
           description?: string | null
           id?: string
           name: string
           owner_id: string
+          slug?: string | null
           status?: Database["public"]["Enums"]["entity_status"]
           updated_at?: string
         }
         Update: {
+          agent_commerce_enabled?: boolean
           created_at?: string
           currency?: string
           description?: string | null
           id?: string
           name?: string
           owner_id?: string
+          slug?: string | null
           status?: Database["public"]["Enums"]["entity_status"]
           updated_at?: string
         }
@@ -209,6 +256,72 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      quotes: {
+        Row: {
+          allowed_discount_percent: number
+          base_amount: number
+          created_at: string
+          currency: string
+          expires_at: string
+          final_amount: number
+          id: string
+          merchant_id: string
+          policy_applied: boolean
+          policy_reason: string | null
+          product_id: string
+          quantity: number
+          requested_discount_percent: number
+          unit_price: number
+        }
+        Insert: {
+          allowed_discount_percent?: number
+          base_amount: number
+          created_at?: string
+          currency: string
+          expires_at: string
+          final_amount: number
+          id?: string
+          merchant_id: string
+          policy_applied?: boolean
+          policy_reason?: string | null
+          product_id: string
+          quantity: number
+          requested_discount_percent?: number
+          unit_price: number
+        }
+        Update: {
+          allowed_discount_percent?: number
+          base_amount?: number
+          created_at?: string
+          currency?: string
+          expires_at?: string
+          final_amount?: number
+          id?: string
+          merchant_id?: string
+          policy_applied?: boolean
+          policy_reason?: string | null
+          product_id?: string
+          quantity?: number
+          requested_discount_percent?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
