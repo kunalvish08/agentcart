@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AgentApiRouteImport } from './routes/agent-api'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DotwellKnownAgentManifestRouteImport } from './routes/[.]well-known/agent-manifest'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentApiRoute = AgentApiRouteImport.update({
+  id: '/agent-api',
+  path: '/agent-api',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -85,6 +91,7 @@ const ApiPublicProductsIdRoute = ApiPublicProductsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/agent-api': typeof AgentApiRoute
   '/login': typeof LoginRoute
   '/.well-known/agent-manifest': typeof DotwellKnownAgentManifestRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
     | '/dashboard'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
     | '/dashboard'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/agent-api'
     | '/login'
     | '/.well-known/agent-manifest'
     | '/_authenticated/dashboard'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AgentApiRoute: typeof AgentApiRoute
   LoginRoute: typeof LoginRoute
   DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent-api': {
+      id: '/agent-api'
+      path: '/agent-api'
+      fullPath: '/agent-api'
+      preLoaderRoute: typeof AgentApiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -286,6 +306,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AgentApiRoute: AgentApiRoute,
   LoginRoute: LoginRoute,
   DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
