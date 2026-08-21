@@ -25,7 +25,11 @@ export type BuyerCheckoutResult =
     }
   | {
       ok: false;
-      error: { code: string; message: string; details?: unknown };
+      error: {
+        code: string;
+        message: string;
+        details?: Record<string, string | number | boolean>;
+      };
       trace: Array<{ label: string; ok: boolean }>;
     };
 

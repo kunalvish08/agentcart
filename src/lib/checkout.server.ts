@@ -22,6 +22,8 @@ export const ORDER_TTL_HOURS = 24;
 
 export type CheckoutTraceEntry = { label: string; ok: boolean };
 
+export type CheckoutErrorDetails = Record<string, string | number | boolean>;
+
 export type OrderSnapshot = {
   order_id: string;
   status: CheckoutState;
@@ -50,7 +52,7 @@ export type CheckoutResult =
   | { ok: true; idempotent_replay: boolean; order: OrderSnapshot; trace: CheckoutTraceEntry[] }
   | {
       ok: false;
-      error: { code: string; message: string; details?: unknown };
+      error: { code: string; message: string; details?: CheckoutErrorDetails };
       trace: CheckoutTraceEntry[];
     };
 
@@ -252,7 +254,7 @@ export async function requestCheckout(args: {
   const merchantId = quote.merchant_id;
   const merchantSlug = (quote as unknown as Record<string, any>)["merchants"]?.slug ?? "";
 
-  const failWith = async (code: string, message: string, details?: unknown) => {
+  const failWith = async (code: string, message: string, details?: CheckoutErrorDetails) => {
     add(`Checkout failed (${code})`, false);
     await writeAudit({
       orderId: null,
