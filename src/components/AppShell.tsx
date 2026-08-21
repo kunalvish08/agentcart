@@ -66,7 +66,7 @@ export function AppShell({
         </div>
 
         <div className="space-y-3 px-2">
-          <p className="text-xs text-sidebar-foreground/60">Phase 01 · Secure foundation</p>
+          <p className="text-xs text-sidebar-foreground/60">Phase 02 · Agent discovery layer</p>
         </div>
       </aside>
 
