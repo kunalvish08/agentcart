@@ -58,9 +58,16 @@ const JSON_HEADERS = {
 export function jsonResponse(body: unknown, status = 200, cache = JSON_HEADERS["cache-control"]) {
   return new Response(JSON.stringify(body, null, 2), {
     status,
-    headers: { ...JSON_HEADERS, "cache-control": cache },
+    headers: {
+      ...JSON_HEADERS,
+      "cache-control": cache,
+      // Correlation id for agent-to-agent traces. Carries no user or secret data.
+      "x-request-id": crypto.randomUUID(),
+      "access-control-expose-headers": "x-request-id",
+    },
   });
 }
+
 
 export function errorResponse(status: number, code: string, message: string, details?: unknown) {
   return jsonResponse({ error: { code, message, ...(details ? { details } : {}) } }, status, "no-store");

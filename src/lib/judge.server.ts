@@ -909,6 +909,9 @@ export async function collectJudgeEvidence(merchantId: string): Promise<JudgeEvi
 export type JudgeRunSummary = {
   run_id: string;
   session_id: string;
+  /** Phase 08: distinguishes internal AI Buyer runs from external agent-to-agent runs. */
+  run_type: "EXTERNAL_AI_BUYER" | "JUDGE_DEMO" | "INTERNAL_AI_BUYER";
+  actor: string;
   title: string | null;
   model: string;
   status: string;
@@ -941,9 +944,24 @@ export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> 
     .limit(40);
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map((r) => ({
+  return (data ?? []).map((r) => {
+    const title = titles.get(r.session_id) ?? null;
+    const runType = r.model.startsWith("external-buyer/")
+      ? ("EXTERNAL_AI_BUYER" as const)
+      : (title ?? "").startsWith("Judge Mode")
+        ? ("JUDGE_DEMO" as const)
+        : ("INTERNAL_AI_BUYER" as const);
+    const actor =
+      runType === "EXTERNAL_AI_BUYER"
+        ? "External Buyer Agent"
+        : runType === "JUDGE_DEMO"
+          ? "Judge Mode (deterministic)"
+          : "Internal AI Buyer";
+    return {
     run_id: r.id,
     session_id: r.session_id,
+    run_type: runType,
+    actor,
     title: titles.get(r.session_id) ?? null,
     model: r.model,
     status: r.status,
@@ -953,7 +971,8 @@ export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> 
     step_count: r.step_count,
     tool_call_count: r.tool_call_count,
     total_tokens: r.total_tokens,
-  }));
+    };
+  });
 }
 
 export type JudgeReplayStep = {

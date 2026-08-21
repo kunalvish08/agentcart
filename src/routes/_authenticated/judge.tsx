@@ -468,11 +468,19 @@ function JudgePage() {
                         className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3"
                       >
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground">
-                            {run.title ?? "Agent run"}
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge
+                              variant={run.run_type === "EXTERNAL_AI_BUYER" ? "default" : "secondary"}
+                              className="font-mono text-[10px]"
+                            >
+                              {run.run_type}
+                            </Badge>
+                            <p className="text-sm font-medium text-foreground">
+                              {run.title ?? "Agent run"}
+                            </p>
+                          </div>
                           <p className="truncate text-xs text-muted-foreground">
-                            {run.user_request ?? "—"}
+                            Actor: {run.actor} · {run.user_request ?? "—"}
                           </p>
                           <p className="font-mono text-xs text-muted-foreground">
                             {run.model} · {run.status} · {run.step_count} steps ·{" "}
@@ -480,6 +488,7 @@ function JudgePage() {
                             {new Date(run.started_at).toLocaleString("en-IN")}
                           </p>
                         </div>
+
                         <Button
                           size="sm"
                           variant={replayId === run.run_id ? "secondary" : "outline"}
