@@ -52,6 +52,14 @@ const validateOfferSchema = z.object({
   discount_percent: z.number().min(0).max(100),
 });
 
+const requestCheckoutSchema = z.object({
+  quote_id: z.string().uuid("quote_id must be the quote_id returned by a quote tool"),
+  idempotency_key: z
+    .string()
+    .regex(/^[A-Za-z0-9_-]{8,128}$/, "idempotency_key must be 8-128 chars of A-Z, a-z, 0-9, '-' or '_'")
+    .optional(),
+});
+
 const relatedGrowthSchema = z.object({
   product_id: z.string().uuid("product_id must be a catalog product UUID"),
   limit: z.number().int().min(1).max(2).optional(),
@@ -71,7 +79,8 @@ export type ToolName =
   | "get_current_quote"
   | "get_eligible_related_products"
   | "propose_discount"
-  | "validate_offer";
+  | "validate_offer"
+  | "request_checkout";
 
 export type ToolResult = {
   ok: boolean;
@@ -85,6 +94,8 @@ export type ToolContext = {
   baseUrl: string;
   merchant?: PublicMerchant | null;
   buyerSessionId?: string | null;
+  /** Authenticated user that owns the buyer session; never model-supplied. */
+  userId?: string | null;
 };
 
 type ToolDefinition = {
@@ -495,6 +506,81 @@ export const TOOL_REGISTRY: Record<ToolName, ToolDefinition> = {
         ok: true,
         label: `Eligible recommendations: ${data.count}`,
         data,
+      };
+    },
+  },
+
+  /* ---------------------------- Phase 05 checkout --------------------------- */
+
+  request_checkout: {
+    name: "request_checkout",
+    description:
+      "Request checkout for a quote the server already produced. You must pass the quote_id exactly as returned by a quote tool. You never pass or compute any amount: the server reloads the authoritative quote, re-validates inventory and merchant policy, decides whether merchant approval is required and creates or returns the order. You cannot approve an order, change an amount or mark a payment as made.",
+    parameters: jsonSchema(
+      {
+        quote_id: { type: "string", description: "quote_id returned by get_quote / propose_discount." },
+        idempotency_key: {
+          type: "string",
+          description:
+            "Optional stable key for this checkout attempt. Reuse the same key when retrying the same checkout.",
+        },
+      },
+      ["quote_id"],
+    ),
+    schema: requestCheckoutSchema,
+    label: () => "Checkout requested",
+    run: async (args: z.infer<typeof requestCheckoutSchema>, ctx) => {
+      if (!ctx.buyerSessionId || !ctx.userId) {
+        return {
+          ok: false,
+          error: {
+            code: "checkout_unavailable",
+            message: "Checkout requires an authenticated buyer session.",
+          },
+        };
+      }
+      const { requestCheckout } = await import("@/lib/checkout.server");
+      const key =
+        args.idempotency_key ??
+        `co-${ctx.buyerSessionId.replace(/-/g, "").slice(0, 12)}-${args.quote_id.replace(/-/g, "").slice(0, 12)}`;
+      const result = await requestCheckout({
+        quoteId: args.quote_id,
+        idempotencyKey: key,
+        buyerSessionId: ctx.buyerSessionId,
+        userId: ctx.userId,
+        actorType: "ai_agent",
+      });
+      if (!result.ok) {
+        return {
+          ok: true,
+          label: `Checkout refused by server (${result.error.code})`,
+          data: {
+            checkout_created: false,
+            error_code: result.error.code,
+            reason: result.error.message,
+            trace: result.trace,
+            checkout_authority: "server",
+          },
+        };
+      }
+      const order = result.order;
+      return {
+        ok: true,
+        label:
+          order.status === "APPROVAL_REQUIRED"
+            ? "Approval required — waiting for merchant"
+            : `Order ${order.status.toLowerCase().replace(/_/g, " ")}`,
+        data: {
+          checkout_created: true,
+          idempotent_replay: result.idempotent_replay,
+          order,
+          trace: result.trace,
+          next_step:
+            order.status === "APPROVAL_REQUIRED"
+              ? "Tell the customer this checkout requires merchant approval because the order value exceeds the merchant's automatic approval threshold."
+              : "Tell the customer the order is created and payment is pending. Payment cannot be taken in this phase.",
+          checkout_authority: "server",
+        },
       };
     },
   },
