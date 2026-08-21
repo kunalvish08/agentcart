@@ -411,38 +411,6 @@ IMPORTANT:
 - Do not modify Phase 09/10 evaluation data
 
 - Do not implement a fix yet`}
-
-- confirmation that Phase 09/10 evaluation history remains
-
-- confirmation that merchant/catalog/policy remain unchanged
-
-8. Add tests covering:
-
-- demo records are removed
-
-- merchant remains
-
-- products remain
-
-- policies remain
-
-- Phase 09 evaluation records remain
-
-- Phase 10 evaluation records remain
-
-- non-demo records cannot be deleted
-
-- unauthorized users cannot invoke reset
-
-9. Run typecheck, build and relevant security tests.
-
-Do not add fake demo data or hardcoded results.
-
-Before implementation, identify exactly how demo records will be
-
-safely distinguished from historical/non-demo records.
-
-Return the proposed scope first, then implement.`}
           </div>
         </CardContent>
       </Card>
