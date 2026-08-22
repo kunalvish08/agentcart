@@ -523,10 +523,19 @@ function BuyerPage() {
 
               {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
               <motion.aside variants={itemReveal} className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
-                <div>
+                <motion.div
+                  initial={false}
+                  animate={turns.some(t => t.role === 'assistant' && (t.recommendation || t.steps.some(s => s.tool_name === 'get_quote'))) ? { scale: [1, 1.02, 1], backgroundColor: ["rgba(213, 155, 98, 0.05)", "transparent"] } : {}}
+                  transition={{ duration: 1 }}
+                >
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</span>
-                    <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                    <motion.div
+                      animate={turns.some(t => t.role === 'assistant' && t.recommendation) ? { opacity: [0.5, 1, 0.5] } : {}}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                    </motion.div>
                   </div>
                   
                   <div className="space-y-5">
@@ -539,14 +548,16 @@ function BuyerPage() {
 
                     <Separator className="bg-border/40" />
 
-                    <div>
+                    <motion.div
+                      animate={turns.some(t => t.role === 'assistant' && t.recommendation) ? { color: ["#D59B62", "#46B58A", "#D59B62"] } : {}}
+                    >
                       <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-2.5">Server Controls</p>
                       <p className="text-[11px] font-bold text-copper leading-relaxed">
                         Price · Discount · Inventory · Policy · State · Verification
                       </p>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
 
                 <div className="mt-auto pt-6 border-t border-border/40">
                   <h3 className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mb-3">Guardrails</h3>
