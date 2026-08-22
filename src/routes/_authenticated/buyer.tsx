@@ -717,7 +717,7 @@ Do not change anything else." */}
                       {s}
                     </motion.button>
                   ))}
-                </div>
+                </motion.div>
                 {running ? (
                   <Button 
                     variant="destructive" 
@@ -798,7 +798,7 @@ Do not change anything else." */}
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Time</th>
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity</th>
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
-                  </motion.tr>
+                  </tr>
                 </thead>
                 <tbody className="divide-y divide-border/40">
                   {sessions.isLoading ? (
@@ -1466,7 +1466,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Amount</th>
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Status</th>
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Date</th>
-              </motion.tr>
+              </tr>
             </thead>
             <tbody className="divide-y divide-border/20">
               {rows.map((row: BuyerActiveOrder) => (
@@ -1525,7 +1525,7 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
         <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-[11px]">
           {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
         </td>
-      </motion.tr>
+      </tr>
       {expanded && (
         <tr>
           <td colSpan={5} className="px-6 py-6 bg-muted/20 border-b border-border/40">
@@ -1578,7 +1578,7 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
               </div>
             </div>
           </td>
-        </motion.tr>
+        </tr>
       )}
     </>
   );
