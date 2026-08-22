@@ -392,7 +392,7 @@ function Landing() {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Make your store <br />legible to AI.</h2>
-              <p className="mt-8 text-[15px] leading-relaxed text-white/50">
+              <p className="mt-8 text-[15px] leading-relaxed text-[#B8C4D6]">
                 Start with your catalog. Define your commercial limits. Let external agents transact within them.
               </p>
               <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
