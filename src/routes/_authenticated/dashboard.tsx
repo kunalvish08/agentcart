@@ -101,13 +101,13 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
                                             For the code present, I get the error below.
 
 Please think step-by-step in order to resolve it.
-```
+\`\`\`
 Error: JWT issued at future
 
 {
@@ -116,10 +116,10 @@ Error: JWT issued at future
   "filename": "http://localhost:8080/_serverFn/eyJmaWxlIjoiL3NyYy9saWIvY2hlY2tvdXQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldENoZWNrb3V0QXVkaXRfY3JlYXRlU2VydmVyRm5faGFuZGxlciJ9",
   "lineno": 0,
   "colno": 0,
-  "stack": "Error: JWT issued at future\n    at Object.eval (/dev-server/src/lib/checkout.functions.ts:320:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async server (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:944:24)\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:322:24)\n    at async userNext (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:312:26)\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:322:24)\n    at async AsyncFunction.__executeServer (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:212:20)\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:148:18)\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:81:17)\n    at async handleServerAction (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:418:10)",
+  "stack": "Error: JWT issued at future\\n    at Object.eval (/dev-server/src/lib/checkout.functions.ts:320:22)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\\n    at async server (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:944:24)\\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:322:24)\\n    at async userNext (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:312:26)\\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:322:24)\\n    at async AsyncFunction.__executeServer (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:212:20)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:148:18)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:81:17)\\n    at async handleServerAction (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:418:10)",
   "has_blank_screen": true
 }
-```
+\`\`\``}
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
