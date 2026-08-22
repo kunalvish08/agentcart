@@ -1468,6 +1468,96 @@ export type Database = {
           },
         ]
       }
+      revenue_events: {
+        Row: {
+          amount: number
+          buyer_session_id: string | null
+          created_at: string
+          currency: string
+          detail: Json
+          event: Database["public"]["Enums"]["revenue_event"]
+          id: string
+          merchant_id: string
+          product_id: string | null
+          reason: string | null
+          recommendation_id: string | null
+          recommendation_type:
+            | Database["public"]["Enums"]["recommendation_type"]
+            | null
+          source_product_id: string | null
+        }
+        Insert: {
+          amount?: number
+          buyer_session_id?: string | null
+          created_at?: string
+          currency?: string
+          detail?: Json
+          event: Database["public"]["Enums"]["revenue_event"]
+          id?: string
+          merchant_id: string
+          product_id?: string | null
+          reason?: string | null
+          recommendation_id?: string | null
+          recommendation_type?:
+            | Database["public"]["Enums"]["recommendation_type"]
+            | null
+          source_product_id?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_session_id?: string | null
+          created_at?: string
+          currency?: string
+          detail?: Json
+          event?: Database["public"]["Enums"]["revenue_event"]
+          id?: string
+          merchant_id?: string
+          product_id?: string | null
+          reason?: string | null
+          recommendation_id?: string | null
+          recommendation_type?:
+            | Database["public"]["Enums"]["recommendation_type"]
+            | null
+          source_product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_events_buyer_session_id_fkey"
+            columns: ["buyer_session_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_events_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_events_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_events_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "growth_recommendations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revenue_events_source_product_id_fkey"
+            columns: ["source_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tool_calls: {
         Row: {
           created_at: string
@@ -1694,6 +1784,13 @@ export type Database = {
       policy_decision: "accept" | "counter" | "reject"
       recommendation_type: "upsell" | "cross_sell"
       relation_type: "upsell" | "cross_sell" | "alternative"
+      revenue_event:
+        | "REVENUE_OPPORTUNITY_DETECTED"
+        | "RECOMMENDATION_SHOWN"
+        | "RECOMMENDATION_ACCEPTED"
+        | "RECOMMENDATION_REJECTED"
+        | "UPSELL_ACCEPTED"
+        | "CROSS_SELL_ACCEPTED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1892,6 +1989,14 @@ export const Constants = {
       policy_decision: ["accept", "counter", "reject"],
       recommendation_type: ["upsell", "cross_sell"],
       relation_type: ["upsell", "cross_sell", "alternative"],
+      revenue_event: [
+        "REVENUE_OPPORTUNITY_DETECTED",
+        "RECOMMENDATION_SHOWN",
+        "RECOMMENDATION_ACCEPTED",
+        "RECOMMENDATION_REJECTED",
+        "UPSELL_ACCEPTED",
+        "CROSS_SELL_ACCEPTED",
+      ],
     },
   },
 } as const
