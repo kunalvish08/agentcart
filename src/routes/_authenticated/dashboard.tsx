@@ -125,7 +125,12 @@ function DashboardPage() {
               <FlowConnector />
               <FlowStep label="AI BUYER" icon={Bot} />
               <FlowConnector />
-              <FlowStep label="SERVER AUTHORITY" icon={ShieldCheck} active />
+              <FlowStep 
+                label="SERVER AUTHORITY" 
+                icon={ShieldCheck} 
+                active 
+                className="scale-125 mx-2 md:mx-4 ring-8 ring-primary/5 border-primary bg-primary text-primary-foreground"
+              />
               <FlowConnector />
               <FlowStep label="APPROVAL" icon={ClipboardCheck} />
               <FlowConnector />
@@ -169,14 +174,17 @@ function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* 5. NEGOTIATION & GROWTH */}
+            {/* 2. NEGOTIATION & GROWTH */}
             <Card className="border-border/60 shadow-none">
               <CardHeader className="pb-4 flex flex-row items-center justify-between">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                    <TrendingUp className="size-3.5" /> Negotiation & Growth
                 </CardTitle>
+                <div className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">
+                  POLICY CAP: 12%
+                </div>
               </CardHeader>
-              <CardContent className="space-y-8">
+              <CardContent className="space-y-6">
                 <div className="flex flex-col md:flex-row items-stretch gap-4">
                    <RevenueMetric label="List Value" value={growth ? inr.format(growth.listValue) : "—"} />
                    <div className="flex items-center justify-center px-2 text-muted-foreground/30">
@@ -191,14 +199,14 @@ function DashboardPage() {
                    <RevenueMetric label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} sub={`Avg ${growth?.avgApprovedDiscount}%`} />
                 </div>
                 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pt-4">
+                <div className="grid gap-6 grid-cols-2 md:grid-cols-4 pt-2">
                   <SmallMetric label="Negotiations" value={growth?.negotiations} sub={`${growth?.openNegotiations} open`} />
                   <SmallMetric label="Counter-offers" value={growth?.countered} sub="Policy enforced" />
                   <SmallMetric label="Offers Made" value={growth?.offers} />
-                  <SmallMetric label="Upsell Accpt." value={growth?.acceptedRecommendations} sub={`${growth?.recommendations} suggested`} />
+                  <SmallMetric label="Upsell" value={growth?.acceptedRecommendations} sub={`${growth?.recommendations} units`} />
                 </div>
 
-                <p className="text-[10px] text-muted-foreground italic font-medium">
+                <p className="text-[10px] text-muted-foreground italic font-medium pt-2 border-t border-border/40">
                   "Discount decisions are enforced by the server policy engine."
                 </p>
               </CardContent>
@@ -242,26 +250,28 @@ function DashboardPage() {
             <Card className="border-border/60 shadow-none bg-slate-50/50">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                   <Activity className="size-3.5" /> System Status
+                   <Activity className="size-3.5" /> AI Commerce Infrastructure
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <StatusRow label="Public catalog live" status="live" />
-                <StatusRow label="Public API operational" status="operational" />
-                <StatusRow label="Razorpay test mode" status={payments?.configured ? "configured" : "offline"} />
-                <StatusRow label="Negotiation Authority" status="enforced" />
-                <StatusRow label="Upsell Authority" status="enforced" />
+                <div className="space-y-3">
+                  <StatusRow label="Catalog" status="live" />
+                  <StatusRow label="Public API" status="operational" />
+                  <StatusRow label="Negotiation" status="enforced" />
+                  <StatusRow label="Upsell" status="enforced" />
+                  <StatusRow label="Razorpay" status={payments?.configured ? "test mode" : "offline"} />
+                </div>
                 
-                <div className="pt-4 border-t border-border/40 space-y-3">
+                <div className="pt-4 border-t border-border/40 space-y-3 opacity-80">
                   <div className="flex flex-col gap-1">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Discovery Manifest</p>
                     <code className="text-[10px] bg-white border border-border/60 rounded px-2 py-1 truncate text-slate-500">{manifestUrl}</code>
                   </div>
-                  <div className="flex justify-between items-center text-[11px] font-semibold">
+                  <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-tight">
                     <span className="text-muted-foreground">API Requests (24h)</span>
-                    <span>{data?.agentApi.requests24h ?? 0}</span>
+                    <span className="text-slate-700">{data?.agentApi.requests24h ?? 0}</span>
                   </div>
-                  <Button asChild variant="outline" className="w-full h-9 text-[11px] font-bold uppercase tracking-widest">
+                  <Button asChild variant="outline" className="w-full h-8 text-[10px] font-bold uppercase tracking-widest shadow-none">
                     <Link to="/agent-api">View Agent API Documentation</Link>
                   </Button>
                 </div>
@@ -302,15 +312,20 @@ function DashboardPage() {
                 <div className="space-y-4 relative">
                   <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-border/40" />
                   {audit && audit.length > 0 ? (
-                    audit.slice(0, 5).map((event) => (
-                      <div key={event.id} className="relative pl-6 space-y-1">
-                        <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
-                          <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
+                    audit
+                      .filter((event, index, self) => 
+                        index === self.findIndex((e) => e.event === event.event && e.created_at === event.created_at)
+                      )
+                      .slice(0, 5)
+                      .map((event) => (
+                        <div key={event.id} className="relative pl-6 space-y-1">
+                          <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
+                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
+                          </div>
+                          <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                          <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
                         </div>
-                        <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
-                        <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
-                      </div>
-                    ))
+                      ))
                   ) : (
                     <p className="text-[11px] text-muted-foreground italic pl-2">No transaction history yet.</p>
                   )}
@@ -324,16 +339,17 @@ function DashboardPage() {
   );
 }
 
-function FlowStep({ label, icon: Icon, active = false }: { label: string; icon: any; active?: boolean }) {
+function FlowStep({ label, icon: Icon, active = false, className }: { label: string; icon: any; active?: boolean; className?: string }) {
   return (
     <div className={cn("flex flex-col items-center gap-3 transition-all", active ? "scale-110" : "opacity-60")}>
       <div className={cn(
         "flex size-12 items-center justify-center rounded-xl border transition-all",
-        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border"
+        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border",
+        className
       )}>
         <Icon className="size-5" />
       </div>
-      <span className={cn("text-[10px] font-bold uppercase tracking-widest", active ? "text-primary" : "text-muted-foreground")}>{label}</span>
+      <span className={cn("text-[10px] font-bold uppercase tracking-widest text-center max-w-[80px]", active ? "text-primary" : "text-muted-foreground")}>{label}</span>
     </div>
   );
 }
