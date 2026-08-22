@@ -837,7 +837,7 @@ Do not change anything else." */}
               </li>
             ))}
           </ul>
-        </motion.section>
+        </section>
       </motion.div>
     </AppShell>
   );
