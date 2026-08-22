@@ -1171,26 +1171,26 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between border-b border-border/40 pb-2">
-        <h2 className="text-lg font-bold text-foreground">Orders</h2>
-        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+        <h2 className="text-sm font-bold text-foreground">Active Orders</h2>
+        <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
           <Clock className="size-3" />
-          <span>Persisted server-side · Continue unfinished payments anytime</span>
+          <span>Server-Side Persistence</span>
         </div>
       </div>
       
-      <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-card border border-border/40 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-[13px]">
             <thead>
-              <tr className="bg-muted/30 border-b border-border">
-                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Product</th>
-                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Order ID</th>
-                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Amount</th>
-                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
-                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date</th>
+              <tr className="bg-muted/30 border-b border-border/40">
+                <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Product</th>
+                <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Order</th>
+                <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Amount</th>
+                <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Status</th>
+                <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/40">
+            <tbody className="divide-y divide-border/20">
               {rows.map((row: BuyerActiveOrder) => (
                 <OrderRow key={row.order_id} row={row} buyerName={buyerName ?? undefined} />
               ))}
