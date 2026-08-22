@@ -178,6 +178,23 @@ function Landing() {
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">03 TRANSACTABLE</h3>
             <p className="mt-4 text-[11px] font-mono text-ice">Take the transaction to verified payment.</p>
             <p className="mt-8 text-sm text-steel">Every transaction flows through server-side Razorpay verification to ensure orders are completed safely.</p>
+            <div className="mt-8 flex gap-1">
+              {["QUOTE", "CHCKOUT", "PAY", "DONE"].map((s, i) => (
+                <motion.div 
+                  key={s}
+                  initial={{ opacity: 0.2 }}
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{ repeat: Infinity, duration: 4, delay: i * 1 }}
+                  className={cn(
+                    "flex-1 text-[8px] font-bold text-center py-1 border",
+                    i === 3 ? "border-verified-green text-verified-green" : "border-slate text-steel"
+                  )}
+                >
+                  {s}
+                </motion.div>
+              ))}
+            </div>
+
           </div>
         </section>
 
