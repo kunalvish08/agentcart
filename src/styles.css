@@ -113,30 +113,30 @@
 
 .dark {
   /* Obsidian Commerce Dark Theme */
-  --background: oklch(0.12 0.01 240); /* #0A0D12 Obsidian */
-  --foreground: oklch(0.97 0.005 240); /* #F5F7F8 */
-  --card: oklch(0.16 0.015 240); /* #121821 Graphite */
-  --card-foreground: oklch(0.97 0.005 240);
-  --popover: oklch(0.16 0.015 240);
-  --popover-foreground: oklch(0.97 0.005 240);
-  --primary: oklch(0.72 0.12 70); /* #D59B62 Copper */
-  --primary-foreground: oklch(0.12 0.01 240);
-  --secondary: oklch(0.22 0.025 240); /* #1B2430 Slate */
-  --secondary-foreground: oklch(0.8 0.015 240); /* #A5B0BD */
-  --muted: oklch(0.22 0.025 240);
-  --muted-foreground: oklch(0.6 0.015 240); /* #718091 */
-  --accent: oklch(0.22 0.025 240);
-  --accent-foreground: oklch(0.97 0.005 240);
-  --destructive: oklch(0.65 0.18 25); /* #D66B6B Error Coral */
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.28 0.02 240); /* #26313D */
-  --input: oklch(0.28 0.02 240);
-  --ring: oklch(0.72 0.12 70);
+  --background: #0B0F14;
+  --foreground: #F5F7FA;
+  --card: #11161D;
+  --card-foreground: #F5F7FA;
+  --popover: #161C24;
+  --popover-foreground: #F5F7FA;
+  --primary: #5B8DEF; /* Using the Blue Authority color as primary action */
+  --primary-foreground: #FFFFFF;
+  --secondary: #161C24;
+  --secondary-foreground: #A0A9B8;
+  --muted: #161C24;
+  --muted-foreground: #707B8C;
+  --accent: #161C24;
+  --accent-foreground: #F5F7FA;
+  --destructive: #D66B6B;
+  --destructive-foreground: #FFFFFF;
+  --border: #252D38;
+  --input: #161C24;
+  --ring: #5B8DEF;
 
   /* Status Colors Dark */
-  --verified-green: oklch(0.75 0.15 160); /* #46B58A */
-  --approval-amber: oklch(0.75 0.15 85); /* #D8A24A */
-  --copper: oklch(0.72 0.12 70);
+  --verified-green: #35C98A;
+  --approval-amber: #D9A441;
+  --copper: #5B8DEF; /* Re-using authority blue */
 
   --sidebar: oklch(0.12 0.01 240);
   --sidebar-foreground: oklch(0.8 0.015 240);
