@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AlertTriangle, Check, ClipboardCheck, Loader2, ScrollText, X } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, ClipboardCheck, Loader2, ScrollText, X } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentLedgerCard } from "@/components/PaymentLedgerCard";
@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
+import { cn } from "@/lib/utils";
 import {
   getApprovalQueue,
   getCheckoutAudit,
