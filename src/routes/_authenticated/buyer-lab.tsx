@@ -5,7 +5,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Activity,
   AlertTriangle,
@@ -32,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { CountUp } from "@/components/dashboard/CountUp";
 
 import {
   A2A_STAGES,
@@ -132,13 +134,20 @@ function inr(amount: number | null | undefined, currency = "INR") {
 
 /* ------------------------------- components -------------------------------- */
 
-function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Metric({ label, value, hint }: { label: string; value: string | number | undefined | null; hint?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-foreground">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
-    </div>
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="rounded-sm border border-border/60 bg-muted/5 p-4 transition-colors hover:bg-muted/10"
+    >
+      <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
+      <div className="text-xl font-bold text-foreground font-mono">
+        <CountUp value={value} />
+      </div>
+      {hint ? <p className="text-[8px] font-bold uppercase tracking-tighter text-muted-foreground/40 mt-1">{hint}</p> : null}
+    </motion.div>
   );
 }
 
@@ -163,14 +172,31 @@ function BuyerLabPage() {
   const [run, setRun] = useState<RunView>(emptyRun);
   const abortRef = useRef<AbortController | null>(null);
   const traceEndRef = useRef<HTMLDivElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    traceEndRef.current?.scrollIntoView({ block: "end" });
-  }, [run.calls.length, run.steps.length]);
+    traceEndRef.current?.scrollIntoView({ block: "end", behavior: shouldReduceMotion ? "auto" : "smooth" });
+  }, [run.calls.length, run.steps.length, shouldReduceMotion]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const running = run.status === "running";
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemReveal = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } as any,
+  };
 
   async function start(message: string, scenarioId?: string) {
     if (!message.trim() || running) return;
@@ -288,28 +314,32 @@ function BuyerLabPage() {
       subtitle="Benchmark external AI buyers transacting entirely through your public commercial API."
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <header className="flex flex-col gap-6 mb-8 border-b border-border/40 pb-8">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Simulator Console</h2>
-          <div className="flex flex-wrap gap-4 mt-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-              <Network className="size-3" /> External Agent Testing
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-              <Globe className="size-3" /> Public API
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-copper uppercase tracking-widest">
-              <ShieldCheck className="size-3 text-copper" /> Server-Authoritative
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="space-y-8"
+      >
+        <motion.header variants={itemReveal} className="flex flex-col gap-6 mb-8 border-b border-border/40 pb-8">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Simulator Console</h2>
+            <div className="flex flex-wrap gap-4 mt-2">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <Network className="size-3" /> External Agent Testing
+              </div>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <Globe className="size-3" /> Public API
+              </div>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-copper uppercase tracking-widest">
+                <ShieldCheck className="size-3 text-copper" /> Server-Authoritative
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </motion.header>
 
-      <div className="space-y-8">
-        {/* simulator two-column workspace */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* LEFT: Simulation configuration */}
-          <div className="space-y-6">
+          <motion.div variants={itemReveal} className="space-y-6">
             <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
               <CardHeader className="bg-muted/30 border-b border-border py-3">
                 <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -357,20 +387,25 @@ function BuyerLabPage() {
                   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenario Presets</Label>
                   <div className="flex flex-wrap gap-2">
                     {EXTERNAL_SCENARIOS.map((scenario) => (
-                      <Button
+                      <motion.div
                         key={scenario.id}
-                        size="sm"
-                        variant="outline"
-                        disabled={running}
-                        className="rounded-sm h-8 text-[9px] font-bold uppercase tracking-widest border-border/60 bg-muted/10 hover:bg-copper/10 hover:text-copper transition-colors"
-                        onClick={() => {
-                          setInput(scenario.prompt);
-                          void start(scenario.prompt, scenario.id);
-                        }}
-                        title={scenario.expectation}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {scenario.label}
-                      </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={running}
+                          className="rounded-sm h-8 text-[9px] font-bold uppercase tracking-widest border-border/60 bg-muted/10 hover:bg-copper/10 hover:text-copper transition-colors"
+                          onClick={() => {
+                            setInput(scenario.prompt);
+                            void start(scenario.prompt, scenario.id);
+                          }}
+                          title={scenario.expectation}
+                        >
+                          {scenario.label}
+                        </Button>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -398,18 +433,24 @@ function BuyerLabPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Button 
-                    onClick={() => void start(input)} 
-                    disabled={running || input.trim().length === 0}
-                    className="flex-1 rounded-sm bg-copper hover:bg-copper/90 text-white font-bold uppercase tracking-widest h-10 px-6 shadow-sm shadow-copper/20"
+                  <motion.div 
+                    className="flex-1"
+                    whileHover={!running && input.trim().length > 0 ? { y: -1 } : {}}
+                    whileTap={!running && input.trim().length > 0 ? { scale: 0.98 } : {}}
                   >
-                    {running ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    ) : (
-                      <Send className="mr-2 size-4" />
-                    )}
-                    {running ? "Simulating…" : "Launch Agent"}
-                  </Button>
+                    <Button 
+                      onClick={() => void start(input)} 
+                      disabled={running || input.trim().length === 0}
+                      className="w-full rounded-sm bg-copper hover:bg-copper/90 text-white font-bold uppercase tracking-widest h-10 px-6 shadow-sm shadow-copper/20"
+                    >
+                      {running ? (
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                      ) : (
+                        <Send className="mr-2 size-4" />
+                      )}
+                      {running ? "Simulating…" : "Launch Agent"}
+                    </Button>
+                  </motion.div>
                   {running ? (
                     <Button 
                       variant="outline" 
@@ -429,10 +470,10 @@ function BuyerLabPage() {
                 ) : null}
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
           {/* RIGHT: Agent execution / current run */}
-          <div className="space-y-6 flex flex-col">
+          <motion.div variants={itemReveal} className="space-y-6 flex flex-col">
             <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden h-full">
               <CardHeader className="bg-muted/30 border-b border-border py-3">
                 <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -460,8 +501,15 @@ function BuyerLabPage() {
                         : null;
                   const stageDone = note ? false : reached;
                   return (
-                    <div
+                    <motion.div
                       key={stage.key}
+                      layout
+                      initial={{ opacity: 0.5 }}
+                      animate={{ 
+                        opacity: reached ? 1 : 0.5,
+                        scale: reached ? 1 : 0.98,
+                        borderColor: reached ? "var(--verified-green)" : "rgba(var(--border), 0.6)"
+                      }}
                       className="flex items-center justify-between gap-3 rounded-sm border border-border/60 bg-muted/10 px-4 py-2.5 transition-colors"
                     >
                       <div className="min-w-0">
@@ -491,22 +539,23 @@ function BuyerLabPage() {
                           <span className="text-[8px] font-bold uppercase tracking-tight text-muted-foreground/40">{note ?? "Pending"}</span>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </div>
 
 
         {/* server-authoritative outcome */}
-        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border py-3">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <ShieldCheck className="size-3.5" /> Server-Authoritative Outcome
-            </CardTitle>
-          </CardHeader>
+        <motion.div variants={itemReveal}>
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border py-3">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <ShieldCheck className="size-3.5" /> Server-Authoritative Outcome
+              </CardTitle>
+            </CardHeader>
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4 mb-4">
               <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted/20 px-2 py-1 rounded border border-border/40 w-fit">
@@ -638,27 +687,32 @@ function BuyerLabPage() {
                 ))}
               </div>
             ) : null}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
 
         {/* API traffic */}
-        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border py-3">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Globe className="size-3.5" /> Public API Traffic
-            </CardTitle>
-          </CardHeader>
+        <motion.div variants={itemReveal}>
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border py-3">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <Globe className="size-3.5" /> Public API Traffic
+              </CardTitle>
+            </CardHeader>
           <CardContent className="pt-6">
             {run.calls.length === 0 ? (
               <p className="text-xs text-muted-foreground font-medium italic">No API calls yet.</p>
             ) : (
               <div className="space-y-1">
-                {run.calls.map((call, index) => (
-                  <div
-                    key={`${call.path}-${index}`}
-                    className="flex flex-col gap-1 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono"
-                  >
+                <AnimatePresence initial={false}>
+                  {run.calls.map((call, index) => (
+                    <motion.div
+                      key={`${call.request_id || call.path}-${index}`}
+                      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex flex-col gap-1 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono"
+                    >
                     <div className="flex flex-wrap items-center gap-3">
                       <div className={cn(
                         "px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px]",
@@ -682,16 +736,18 @@ function BuyerLabPage() {
                       <p className="text-muted-foreground break-all"><span className="text-blue-400/60 font-bold uppercase mr-1">REQ</span>{call.request_summary}</p>
                       <p className="text-muted-foreground break-all"><span className="text-copper/60 font-bold uppercase mr-1">RES</span>{call.response_summary}</p>
                     </div>
-                  </div>
-                ))}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
                 <div ref={traceEndRef} />
               </div>
             )}
           </CardContent>
         </Card>
+      </motion.div>
 
         {/* agent trace + final message */}
-        <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div variants={itemReveal} className="grid gap-6 lg:grid-cols-2">
           <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
             <CardHeader className="bg-muted/30 border-b border-border py-3">
               <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Execution Trace</CardTitle>
@@ -701,11 +757,14 @@ function BuyerLabPage() {
                 <p className="text-xs text-muted-foreground font-medium italic">No steps yet.</p>
               ) : (
                 <div className="space-y-1.5">
-                  {run.steps.map((step) => (
-                    <div
-                      key={step.step_number}
-                      className="flex items-start justify-between gap-3 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono transition-colors hover:bg-muted/10"
-                    >
+                  <AnimatePresence initial={false}>
+                    {run.steps.map((step) => (
+                      <motion.div
+                        key={step.step_number}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-start justify-between gap-3 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono transition-colors hover:bg-muted/10"
+                      >
                       <div className="min-w-0 space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="text-copper font-bold">{step.step_number}.</span>
@@ -721,8 +780,9 @@ function BuyerLabPage() {
                         <Badge variant="outline" className="text-[8px] font-bold py-0 h-4 border-border/60">{step.status.toUpperCase()}</Badge>
                         {step.latency_ms ? <span className="text-muted-foreground/40 text-[9px]">{step.latency_ms}ms</span> : null}
                       </div>
-                    </div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
               {run.summary ? (
@@ -753,17 +813,15 @@ function BuyerLabPage() {
               )}
             </CardContent>
           </Card>
-        </div>
-
-
-        {/* evaluation metrics */}
-        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border py-3">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Gauge className="size-4" /> Evaluation
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-8">
+        </motion.div>
+        <motion.div variants={itemReveal}>
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border py-3">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <Gauge className="size-4" /> Evaluation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-8">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { label: "External runs", value: m?.runs.total, hint: `${m?.runs.completed ?? 0} COMPLETED · ${m?.runs.avg_duration_ms ?? 0}MS AVG` },
@@ -771,11 +829,7 @@ function BuyerLabPage() {
                 { label: "Policy-capped offers", value: m?.safety.policy_capped_quotes, hint: `${m?.safety.approval_required_orders ?? 0} HELD FOR APPROVAL` },
                 { label: "Public API calls", value: m?.api.public_requests, hint: `${m?.api.error_responses ?? 0} ERR · ${m?.api.avg_latency_ms ?? 0}MS AVG` }
               ].map(stat => (
-                <div key={stat.label} className="rounded-sm border border-border/60 bg-muted/5 p-4 transition-colors hover:bg-muted/10">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{stat.label}</p>
-                  <p className="text-xl font-bold text-foreground font-mono">{stat.value ?? 0}</p>
-                  <p className="text-[8px] font-bold uppercase tracking-tighter text-muted-foreground/40 mt-1">{stat.hint}</p>
-                </div>
+                <Metric key={stat.label} label={stat.label} value={stat.value ?? 0} hint={stat.hint} />
               ))}
             </div>
 
@@ -842,7 +896,8 @@ function BuyerLabPage() {
             ) : null}
           </CardContent>
         </Card>
-      </div>
+        </motion.div>
+      </motion.div>
     </AppShell>
   );
 }

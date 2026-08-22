@@ -2,24 +2,20 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface CountUpProps {
-  value: string | number;
+  value: string | number | undefined | null;
   duration?: number;
+  className?: string;
 }
 
-export function CountUp({ value, duration = 600 }: CountUpProps) {
+export function CountUp({ value, duration = 600, className }: CountUpProps) {
   const shouldReduceMotion = useReducedMotion();
-  const [displayValue, setDisplayValue] = useState<string | number>(shouldReduceMotion ? value : 0);
+  const [displayValue, setDisplayValue] = useState<string | number>(shouldReduceMotion ? (value ?? "—") : 0);
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    if (shouldReduceMotion || hasAnimated) {
-      setDisplayValue(value);
+    if (shouldReduceMotion || hasAnimated || value === undefined || value === null || value === "—") {
+      setDisplayValue(value ?? "—");
       return;
-    }
-
-    if (value === undefined || value === null || value === "—") {
-       setDisplayValue("—");
-       return;
     }
 
     const stringValue = String(value);
@@ -57,5 +53,5 @@ export function CountUp({ value, duration = 600 }: CountUpProps) {
     requestAnimationFrame(animate);
   }, [value, duration, shouldReduceMotion, hasAnimated]);
 
-  return <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{displayValue}</motion.span>;
+  return <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={className}>{displayValue}</motion.span>;
 }
