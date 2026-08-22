@@ -98,10 +98,7 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            why are you injected everythng in dashboard ????? reveert last step
+             Authority Pipeline
            </h3>
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
              <div className="flex min-w-max md:min-w-0 md:w-full items-center justify-between gap-1 relative">
