@@ -352,31 +352,31 @@ function Landing() {
         </section>
 
         {/* 6. TECHNICAL TRUST STRIP */}
-        <section className="border-t border-border/60 bg-background py-16">
+        <section className="border-t border-border/40 bg-card py-20">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-8">
+            <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">SERVER AUTHORITY</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                   Pricing · Inventory · Policy
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">SERVER AUTHORITY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                   Price · Inventory · Policy
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">TENANT ISOLATION</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">TENANT ISOLATION</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
                    Merchant-scoped data
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AUDITABLE</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">AUDITABLE</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
                    Orders · Payments · Traces
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">RAZORPAY</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                   Test-mode verified payments
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">RAZORPAY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                   Verified payments
                 </div>
               </div>
             </div>
