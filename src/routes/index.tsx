@@ -40,20 +40,37 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-function SchematicNode({ title, items, className, delay = 0 }: { title: string, items: string[], className?: string, delay?: number }) {
+function SchematicNode({ title, items, className, delay = 0, isServerAuthority = false }: { title: string, items: string[], className?: string, delay?: number, isServerAuthority?: boolean }) {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.5 }}
-      className={cn("rounded border border-border bg-card p-3 shadow-sm", className)}
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={cn(
+        "relative rounded-sm border border-border/60 bg-card/50 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40",
+        isServerAuthority && "border-primary/40 bg-primary/[0.03] ring-1 ring-primary/20 shadow-[0_0_30px_-10px_rgba(49,87,255,0.2)]",
+        className
+      )}
     >
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{title}</p>
-      <div className="space-y-1.5">
+      {isServerAuthority && (
+        <div className="absolute -top-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      )}
+      <p className={cn(
+        "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
+        isServerAuthority ? "text-primary" : "text-muted-foreground/60"
+      )}>{title}</p>
+      <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <div className="h-1 w-1 rounded-full bg-primary/40" />
-            <span className="text-[11px] font-medium text-foreground/80">{item}</span>
+          <div key={i} className="flex items-center gap-2.5">
+            <div className={cn(
+              "h-[1px] w-2",
+              isServerAuthority ? "bg-primary/40" : "bg-border"
+            )} />
+            <span className={cn(
+              "text-[11px] font-medium tracking-tight",
+              isServerAuthority ? "text-foreground" : "text-foreground/80"
+            )}>{item}</span>
           </div>
         ))}
       </div>
@@ -61,44 +78,58 @@ function SchematicNode({ title, items, className, delay = 0 }: { title: string, 
   );
 }
 
-function Connector({ vertical = false, delay = 0 }: { vertical?: boolean, delay?: number }) {
+function Connector({ vertical = false, delay = 0, active = false }: { vertical?: boolean, delay?: number, active?: boolean }) {
   return (
-    <div className={cn("flex items-center justify-center", vertical ? "h-8 w-full" : "h-full w-8")}>
-      <motion.div 
-        initial={vertical ? { height: 0 } : { width: 0 }}
-        animate={vertical ? { height: "100%" } : { width: "100%" }}
-        transition={{ delay, duration: 0.5 }}
-        className={cn("bg-border relative", vertical ? "w-[1px]" : "h-[1px]")}
-      >
+    <div className={cn("flex items-center justify-center relative", vertical ? "h-12 w-full" : "h-full w-12")}>
+      <div className={cn(
+        "bg-border/40 relative", 
+        vertical ? "w-px h-full" : "h-px w-full"
+      )}>
         <motion.div 
-          animate={vertical ? { y: [0, 32], opacity: [0, 1, 0] } : { x: [0, 32], opacity: [0, 1, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "linear", delay: delay + 0.5 }}
-          className={cn("absolute bg-primary/40", vertical ? "left-[-1px] h-2 w-[3px]" : "top-[-1px] h-[3px] w-2")}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: delay + 0.3 }}
+          className={cn(
+            "absolute bg-primary/40",
+            vertical 
+              ? "left-[-1px] w-[3px] h-4 top-0" 
+              : "top-[-1px] h-[3px] w-4 left-0"
+          )}
+          style={{
+            animation: `flow-${vertical ? 'v' : 'h'} 3s linear infinite`,
+            animationDelay: `${delay}s`
+          }}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }
+
 
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/10">
       {/* 1. TOP NAVIGATION */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+        <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex flex-col items-start leading-none transition-opacity hover:opacity-90">
-              <span className="text-sm font-bold tracking-tight">Agentic Commerce</span>
-              <span className="mt-1 text-[10px] text-muted-foreground uppercase tracking-wider font-medium">AI-native commerce infrastructure</span>
+            <Link to="/" className="flex items-center gap-2 leading-none transition-opacity hover:opacity-90">
+              <span className="text-sm font-bold tracking-tight uppercase">Agentic Commerce</span>
+              <span className="h-3 w-[1px] bg-border/60 mx-1 hidden sm:block" />
+              <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
             </Link>
           </div>
           
-          <div className="flex items-center gap-6">
-            <Link to="/agent-api" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hidden sm:block">
+          <div className="flex items-center gap-8">
+            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground transition-all hover:text-primary relative group">
               Agent API
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
             </Link>
-            <Button asChild size="sm" className="h-9 px-4 text-xs font-semibold tracking-tight shadow-sm">
-              <Link to="/login">Merchant sign in</Link>
+            <Button asChild variant="link" size="sm" className="h-auto p-0 text-[11px] font-bold uppercase tracking-widest text-foreground hover:no-underline relative group">
+              <Link to="/login">
+                Merchant Console
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all group-hover:w-full" />
+              </Link>
             </Button>
           </div>
         </nav>
@@ -111,116 +142,101 @@ function Landing() {
             {/* LEFT SIDE */}
             <div className="max-w-2xl">
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6 inline-flex items-center rounded-full border border-[oklch(0.75_0.15_200)]/10 bg-[oklch(0.75_0.15_200)]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[oklch(0.75_0.15_200)]"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-8 inline-flex items-center gap-3"
               >
-                AI-NATIVE COMMERCE INFRASTRUCTURE
+                <div className="h-[1px] w-8 bg-primary/60" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                  AI COMMERCE INFRASTRUCTURE
+                </span>
               </motion.div>
               
               <motion.h1 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-5xl lg:text-6xl"
+                transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-6xl lg:text-7xl"
               >
-                Let AI buyers shop your store. <br />
-                <span className="text-muted-foreground">Keep the money under your control.</span>
+                Let AI buyers <br />shop your store.
               </motion.h1>
               
               <motion.p 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-8 text-lg leading-relaxed text-muted-foreground/90 md:text-xl"
+                transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10 text-lg leading-relaxed text-muted-foreground/80 md:text-xl max-w-xl"
               >
-                Expose your catalog to external AI agents, let them discover products and negotiate within your rules, and keep pricing, checkout and payment authority on the server.
+                Keep the money under your control. Expose your catalog to external agents while keeping pricing and payment authority on your server.
               </motion.p>
               
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
+                transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-12 flex flex-col items-center gap-6 sm:flex-row"
               >
-                <Button asChild size="lg" className="h-12 w-full px-8 text-sm font-semibold shadow-md sm:w-auto">
+                <Button asChild size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest shadow-none rounded-none sm:w-auto">
                   <Link to="/login">Open merchant console</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="h-12 w-full border-border bg-transparent px-8 text-sm font-semibold sm:w-auto">
-                  <Link to="/agent-api">Explore Agent API</Link>
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-colors sm:w-auto">
+                  <Link to="/agent-api" className="flex items-center gap-2">
+                    Explore Agent API <ArrowRight size={14} />
+                  </Link>
                 </Button>
               </motion.div>
             </div>
 
             {/* 3. RIGHT SIDE — CORE PRODUCT VISUAL */}
             <div className="relative order-first lg:order-last">
-              <div className="relative rounded-xl border border-border bg-muted/30 p-6 md:p-8">
-                <div className="flex flex-col gap-4">
+              <div className="relative rounded border border-border/60 bg-[#0B1220] p-8">
+                <div className="flex flex-col gap-2">
                   <SchematicNode 
                     title="MERCHANT" 
-                    items={["TechNova Store", "Products · Inventory", "Discount Policies"]} 
-                    className="border-primary/20 bg-primary/[0.02]"
-                    delay={0.4}
+                    items={["Catalog", "Policies"]} 
+                    delay={0.2}
                   />
                   
-                  <Connector vertical delay={0.6} />
+                  <Connector vertical delay={0.4} />
                   
+                  <SchematicNode 
+                    title="AI BUYER" 
+                    items={['"Laptop under ₹60k"']} 
+                    delay={0.6}
+                  />
+
+                  <Connector vertical delay={0.8} />
+
                   <SchematicNode 
                     title="PUBLIC AGENT API" 
                     items={["/search · /quote", "/negotiate · /checkout"]} 
-                    className="bg-card"
-                    delay={0.8}
+                    delay={1.0}
                   />
 
-                  <div className="flex items-center">
-                     <div className="flex-1">
-                        <Connector vertical delay={1.0} />
-                        <SchematicNode 
-                          title="AI BUYER" 
-                          items={['"Laptop under ₹60k"']} 
-                          className="border-dashed"
-                          delay={1.2}
-                        />
-                     </div>
-                     <div className="flex-none px-4 text-muted-foreground/30">
-                        <ArrowRight size={20} />
-                     </div>
-                     <div className="flex-1">
-                        <Connector vertical delay={1.4} />
-                        <SchematicNode 
-                          title="SERVER AUTHORITY" 
-                          items={["Price · Inventory", "Verified Order"]} 
-                          className="border-primary bg-primary/[0.03] ring-1 ring-primary/20"
-                          delay={1.6}
-                        />
-                     </div>
-                  </div>
+                  <Connector vertical delay={1.2} />
 
-                  <Connector vertical delay={1.8} />
+                  <SchematicNode 
+                    title="SERVER AUTHORITY" 
+                    items={["Price", "Inventory", "Policy"]} 
+                    isServerAuthority={true}
+                    delay={1.4}
+                  />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <Connector vertical delay={1.6} />
+
+                  <div className="grid grid-cols-2 gap-2">
                     <SchematicNode 
                       title="RAZORPAY" 
                       items={["Verified payment"]} 
-                      delay={2.0}
+                      delay={1.8}
+                      className="bg-[#0B1220]"
                     />
                     <SchematicNode 
                       title="STATUS" 
-                      items={["COMPLETED ORDER"]} 
-                      className="border-[oklch(0.65_0.15_160)]/20 bg-[oklch(0.65_0.15_160)]/[0.02]"
-                      delay={2.2}
+                      items={["COMPLETED"]} 
+                      className="border-[#18A878]/30 bg-[#0B1220] text-[#18A878]"
+                      delay={2.0}
                     />
-                  </div>
-                </div>
-
-                {/* Status indicators */}
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
-                    <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
-                    LIVE
-                  </div>
-                  <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary">
-                    ENFORCED
                   </div>
                 </div>
               </div>
@@ -229,83 +245,106 @@ function Landing() {
         </section>
 
         {/* 4. AUTHORITY MESSAGE */}
-        <section className="border-y border-border/60 bg-muted/20 py-24">
-          <div className="mx-auto max-w-5xl px-6 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-              AI decides what to ask. <br className="sm:hidden" />
-              <span className="text-muted-foreground">Your server decides what can happen.</span>
-            </h2>
-            
-            <div className="mt-16 grid gap-0 overflow-hidden rounded-xl border border-border bg-card shadow-sm md:grid-cols-2">
-              <div className="p-8 text-left md:border-r md:border-border">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AI BUYER</p>
-                <h3 className="mt-4 text-lg font-semibold">Can:</h3>
-                <ul className="mt-6 space-y-4">
-                  {["discover products", "search catalog", "request quote", "negotiate", "request checkout"].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
-                      <ChevronRight size={14} className="text-muted-foreground/40" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+        <section className="bg-[#0B1220] py-32 text-white overflow-hidden relative">
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-2 gap-24 items-center">
+              <div>
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-8 inline-flex items-center gap-3"
+                >
+                  <div className="h-[1px] w-8 bg-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                    AUTHORITY MODEL
+                  </span>
+                </motion.div>
+                
+                <h2 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]">
+                  AI decides what to ask. <br />
+                  <span className="text-white/40">Your server decides what can happen.</span>
+                </h2>
+                
+                <p className="mt-8 text-lg text-white/50 max-w-md leading-relaxed">
+                  Every commercial action is evaluated against merchant-defined policies before execution.
+                </p>
               </div>
-              <div className="bg-primary/[0.01] p-8 text-left">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">SERVER</p>
-                <h3 className="mt-4 text-lg font-semibold">Controls:</h3>
-                <ul className="mt-6 space-y-4">
-                  {["price authority", "inventory validation", "discount limits", "order state machine", "payment verification"].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm font-semibold text-foreground">
-                      <CheckCircle2 size={16} className="text-primary" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+
+              <div className="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-sm overflow-hidden">
+                <div className="bg-[#0B1220] p-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">AI BUYER</p>
+                  <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Capabilities</h3>
+                  <ul className="mt-8 space-y-5">
+                    {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item) => (
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-white/50 tracking-wide">
+                        <div className="h-px w-3 bg-white/20" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-primary/[0.03] p-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER</p>
+                  <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Controls</h3>
+                  <ul className="mt-8 space-y-5">
+                    {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item) => (
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-bold text-white tracking-wide">
+                        <CheckCircle2 size={12} className="text-primary" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* 5. THREE CAPABILITY BLOCKS */}
-        <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="grid gap-12 md:grid-cols-3">
+        <section className="mx-auto max-w-7xl px-6 py-32">
+          <div className="grid gap-px bg-border/40 border border-border/40 rounded-sm overflow-hidden md:grid-cols-3">
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <Search size={20} />
+              <div className="mb-8 text-primary">
+                <Search size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">DISCOVERABLE</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Make your catalog readable by machines."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">DISCOVERABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Make your catalog readable by machines."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 External AI buyers can discover products through a public machine-readable API designed for LLM tool-calling.
               </p>
             </motion.div>
 
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <Scale size={20} />
+              <div className="mb-8 text-primary">
+                <Scale size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">BOUNDED</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Let agents negotiate without giving them pricing authority."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">BOUNDED</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 Merchant policies determine discount limits and commercial decisions. The AI buyer requests, the server enforces.
               </p>
             </motion.div>
 
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <CreditCard size={20} />
+              <div className="mb-8 text-primary">
+                <CreditCard size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">TRANSACTABLE</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Take the transaction all the way to verified payment."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">TRANSACTABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 Checkout and payment remain server-authoritative and Razorpay-backed, ensuring secure financial completion.
               </p>
             </motion.div>
@@ -313,31 +352,31 @@ function Landing() {
         </section>
 
         {/* 6. TECHNICAL TRUST STRIP */}
-        <section className="border-t border-border/60 bg-background py-16">
+        <section className="border-t border-border/40 bg-card py-20">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-8">
+            <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">SERVER AUTHORITY</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                   Pricing · Inventory · Policy
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">SERVER AUTHORITY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                   Price · Inventory · Policy
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">TENANT ISOLATION</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">TENANT ISOLATION</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
                    Merchant-scoped data
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AUDITABLE</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">AUDITABLE</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
                    Orders · Payments · Traces
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">RAZORPAY</p>
-                <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                   Test-mode verified payments
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">RAZORPAY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                   Verified payments
                 </div>
               </div>
             </div>
@@ -345,20 +384,26 @@ function Landing() {
         </section>
 
         {/* 7. FINAL CTA */}
-        <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="rounded-2xl border border-border bg-muted/30 p-12 text-center md:p-20">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">Make your store legible to AI.</h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-              Start with your catalog. Define your limits. Let external agents transact within them.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild size="lg" className="h-12 w-full px-10 text-sm font-semibold sm:w-auto">
-                <Link to="/login">Open merchant console</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 w-full border-border bg-transparent px-10 text-sm font-semibold sm:w-auto">
-                <Link to="/agent-api">Explore Agent API</Link>
-              </Button>
-            </div>
+        <section className="bg-[#0B1220] py-32 text-white text-center">
+          <div className="mx-auto max-w-xl px-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Make your store <br />legible to AI.</h2>
+              <p className="mt-8 text-[15px] leading-relaxed text-white/50">
+                Start with your catalog. Define your commercial limits. Let external agents transact within them.
+              </p>
+              <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
+                <Button asChild size="lg" className="h-12 w-full px-10 text-[11px] font-bold uppercase tracking-widest bg-white text-[#0B1220] hover:bg-white/90 rounded-none sm:w-auto shadow-none">
+                  <Link to="/login">Open merchant console</Link>
+                </Button>
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-10 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-white/5 sm:w-auto">
+                  <Link to="/agent-api">Explore Agent API</Link>
+                </Button>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>
