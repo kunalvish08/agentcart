@@ -364,12 +364,68 @@ export async function requestCheckout(args: {
   // Authoritative server-side total recalculation (paise units).
   const { toMinor, fromMinor, applyDiscountMinor } = await import("@/lib/public-api.server");
   let subtotalMinor = toMinor(baseQuoteSubtotal);
-  let discountMinor = toMinor(baseQuoteDiscount);
+  const discountMinor = toMinor(baseQuoteDiscount);
 
-  // Add-ons are currently list-price (0% discount) in Phase 1.
-  for (const addOn of (addOns ?? [])) {
-    subtotalMinor += toMinor(Number(addOn.recommended_price ?? 0));
+  // Each accepted add-on is re-priced from server data only: the persisted
+  // server-issued quote row when one exists, otherwise the live catalog price.
+  // Nothing here ever trusts a client- or model-supplied amount.
+  type ResolvedAddOn = {
+    recommendationId: string;
+    productId: string;
+    sourceProductId: string | null;
+    recommendationType: "upsell" | "cross_sell";
+    quantity: number;
+    unitPrice: number;
+    quoteId: string | null;
+    currency: string;
+  };
+  const resolvedAddOns: ResolvedAddOn[] = [];
+
+  for (const addOn of addOns ?? []) {
+    const { data: addOnProduct, error: addOnProductError } = await supabaseAdmin
+      .from("products")
+      .select("id, price, status, stock_quantity, currency")
+      .eq("id", addOn.recommended_product_id)
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    if (addOnProductError) throw new Error(addOnProductError.message);
+    if (!addOnProduct || addOnProduct.status !== "active" || addOnProduct.stock_quantity < 1) {
+      add("Add-on skipped — unavailable", false);
+      continue;
+    }
+
+    const { data: addOnQuote, error: addOnQuoteError } = await supabaseAdmin
+      .from("quotes")
+      .select("id, final_amount, quantity, unit_price, expires_at")
+      .eq("merchant_id", merchantId)
+      .eq("product_id", addOn.recommended_product_id)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (addOnQuoteError) throw new Error(addOnQuoteError.message);
+
+    const quantity = Number(addOnQuote?.quantity ?? 1) || 1;
+    const unitPrice = addOnQuote
+      ? Number((Number(addOnQuote.final_amount) / quantity).toFixed(2))
+      : Number(addOnProduct.price);
+
+    subtotalMinor += toMinor(unitPrice) * quantity;
+    resolvedAddOns.push({
+      recommendationId: addOn.id,
+      productId: addOnProduct.id,
+      sourceProductId: addOn.source_product_id ?? null,
+      recommendationType: (addOn.recommendation_type ?? "cross_sell") as "upsell" | "cross_sell",
+      quantity,
+      unitPrice,
+      quoteId: addOnQuote?.id ?? null,
+      currency: String(addOnProduct.currency ?? quote.currency),
+    });
   }
+  if (resolvedAddOns.length > 0) {
+    add(`${resolvedAddOns.length} add-on(s) re-priced server-side`);
+  }
+
 
   const finalAmountMinor = subtotalMinor - discountMinor;
   const finalAmount = fromMinor(finalAmountMinor);
