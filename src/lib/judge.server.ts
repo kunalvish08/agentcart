@@ -96,6 +96,7 @@ const DEMO_TITLE = "Judge Mode · deterministic demo run";
 export async function runJudgeDemo(args: {
   userId: string;
   baseUrl: string;
+  chaosMode?: boolean;
 }): Promise<JudgeDemoResult> {
   const t0 = Date.now();
   const steps: JudgeStep[] = [];
