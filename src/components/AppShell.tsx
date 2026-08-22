@@ -118,7 +118,7 @@ export function AppShell({
           </div>
         </header>
 
-        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden no-scrollbar">
+        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden no-scrollbar w-full max-w-full">
           {NAV.map(({ to, label }) => (
             <Link
               key={to}
@@ -131,7 +131,7 @@ export function AppShell({
           ))}
         </nav>
 
-        <main className="flex-1 px-6 py-6">{children}</main>
+        <main className="flex-1 w-full max-w-full min-w-0 py-6">{children}</main>
       </div>
     </div>
   );
