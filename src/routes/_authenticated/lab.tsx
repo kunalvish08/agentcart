@@ -420,7 +420,10 @@ function LabPage() {
             </CardContent>
           </Card>
 
-          <div className="space-y-4">
+            </div>
+          </aside>
+
+          <div className="space-y-6">
             {run ? (
               <Card>
                 <CardHeader className="pb-3">
@@ -485,10 +488,7 @@ function LabPage() {
               </Card>
             )}
 
-            </aside>
-
-            <div className="space-y-6">
-              {metrics ? (
+            {metrics ? (
               <Tabs defaultValue="impact">
                 <TabsList>
                   <TabsTrigger value="impact">Merchant impact</TabsTrigger>
