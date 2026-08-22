@@ -417,14 +417,13 @@ function LabPage() {
                   ))
                 )}
               </div>
+              </div>
             </CardContent>
           </Card>
+        </aside>
 
-            </div>
-          </aside>
-
-          <div className="space-y-6">
-            {run ? (
+        <div className="space-y-6">
+          {run ? (
               <Card>
                 <CardHeader className="pb-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
@@ -821,6 +820,7 @@ function LabPage() {
                 </TabsContent>
               </Tabs>
             ) : null}
+          </div>
         </div>
       </div>
     </AppShell>
