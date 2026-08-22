@@ -310,7 +310,7 @@ function Landing() {
           <div className="grid gap-px bg-border/40 border border-border/40 rounded-sm overflow-hidden md:grid-cols-3">
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-white p-12 transition-all"
+              className="group bg-white p-12 transition-all border-none"
             >
               <div className="mb-8 text-primary">
                 <Search size={24} strokeWidth={1.5} />
