@@ -927,7 +927,7 @@ function AssistantTurn({
                 {running && !turn.meta?.status ? (
                   <Loader2 className="size-4 animate-spin text-muted-foreground" />
                 ) : null}
-              </motion.button>
+              </button>
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
