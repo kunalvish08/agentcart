@@ -305,46 +305,46 @@ function Landing() {
         </section>
 
         {/* 5. THREE CAPABILITY BLOCKS */}
-        <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="grid gap-12 md:grid-cols-3">
+        <section className="mx-auto max-w-7xl px-6 py-32">
+          <div className="grid gap-px bg-border/40 border border-border/40 rounded-sm overflow-hidden md:grid-cols-3">
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <Search size={20} />
+              <div className="mb-8 text-primary">
+                <Search size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">DISCOVERABLE</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Make your catalog readable by machines."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">DISCOVERABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Make your catalog readable by machines."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 External AI buyers can discover products through a public machine-readable API designed for LLM tool-calling.
               </p>
             </motion.div>
 
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <Scale size={20} />
+              <div className="mb-8 text-primary">
+                <Scale size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">BOUNDED</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Let agents negotiate without giving them pricing authority."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">BOUNDED</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 Merchant policies determine discount limits and commercial decisions. The AI buyer requests, the server enforces.
               </p>
             </motion.div>
 
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all"
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
+              className="group bg-card p-12 transition-all"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                <CreditCard size={20} />
+              <div className="mb-8 text-primary">
+                <CreditCard size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-base font-bold tracking-tight">TRANSACTABLE</h3>
-              <p className="mt-2 text-sm font-medium text-muted-foreground italic tracking-tight">"Take the transaction all the way to verified payment."</p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground/80">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">TRANSACTABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
                 Checkout and payment remain server-authoritative and Razorpay-backed, ensuring secure financial completion.
               </p>
             </motion.div>
