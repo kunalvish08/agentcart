@@ -137,11 +137,11 @@ function DashboardPage() {
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-6 flex items-center gap-2">
                         <TrendingUp className="size-4 text-copper" /> Negotiation & Growth
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                         <SmallStat label="List Value" value={growth ? inr.format(growth.listValue) : "—"} index={0} />
-                        <SmallStat label="Final Offer" value={growth ? inr.format(growth.offerValue) : "—"} index={1} />
-                        <SmallStat label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
-                        <SmallStat label="Negotiations" value={growth?.negotiations} index={3} />
+                        <SmallStat label="Offer" value={growth ? inr.format(growth.offerValue) : "—"} index={1} />
+                        <SmallStat label="Discount" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
+                        <SmallStat label="Count" value={growth?.negotiations} index={3} />
                     </div>
                     <motion.div 
                       initial={{ opacity: 0 }}
