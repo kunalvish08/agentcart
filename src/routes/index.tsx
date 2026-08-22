@@ -196,7 +196,14 @@ function Landing() {
             </div>
 
           </div>
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-steel/60">
+             <div>No client-side pricing</div>
+             <div>No AI-controlled discounts</div>
+             <div>No autonomous payment capture</div>
+             <div>No direct database access</div>
+          </div>
         </section>
+
 
         <section className="py-32 border-t border-slate">
           <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
