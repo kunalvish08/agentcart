@@ -254,39 +254,47 @@ function JudgePage() {
                   payment captured on its own.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="pt-8 space-y-6">
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => demoRun.mutate()} disabled={demoRun.isPending}>
+                  <Button 
+                    onClick={() => demoRun.mutate()} 
+                    disabled={demoRun.isPending}
+                    className="rounded-sm bg-primary text-primary-foreground font-bold uppercase tracking-widest h-9"
+                  >
                     {demoRun.isPending ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      <Loader2 className="mr-2 size-3.5 animate-spin" />
                     ) : (
-                      <Play className="mr-2 size-4" />
+                      <Play className="mr-2 size-3.5" />
                     )}
                     Run demo transaction
                   </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" disabled={demoReset.isPending}>
+                      <Button 
+                        variant="outline" 
+                        disabled={demoReset.isPending}
+                        className="rounded-sm border-border font-bold uppercase tracking-widest h-9"
+                      >
                         {demoReset.isPending ? (
-                          <Loader2 className="mr-2 size-4 animate-spin" />
+                          <Loader2 className="mr-2 size-3.5 animate-spin" />
                         ) : (
-                          <RefreshCcw className="mr-2 size-4" />
+                          <RefreshCcw className="mr-2 size-3.5" />
                         )}
                         Reset Judge Demo
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="rounded-sm border-border bg-card">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Reset Judge Demo?</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogTitle className="font-bold uppercase tracking-tight">Reset Judge Demo?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm">
                           This removes only designated TechNova demo transaction data.
                           Evaluation history and merchant configuration are preserved.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => demoReset.mutate()}>Confirm Reset</AlertDialogAction>
+                        <AlertDialogCancel className="rounded-sm">Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => demoReset.mutate()} className="rounded-sm bg-primary text-primary-foreground">Confirm Reset</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
