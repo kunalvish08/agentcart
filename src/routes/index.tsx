@@ -116,7 +116,7 @@ function Landing() {
             <Link to="/" className="flex items-center gap-2 leading-none transition-opacity hover:opacity-90">
               <span className="text-sm font-bold tracking-tight uppercase">Agentic Commerce</span>
               <span className="h-3 w-[1px] bg-border/60 mx-1 hidden sm:block" />
-              <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
+              <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
             </Link>
           </div>
           
