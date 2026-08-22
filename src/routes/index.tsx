@@ -124,7 +124,7 @@ function Landing() {
               AI decides what to ask. <br />
               <span className="text-muted-foreground">Your server decides what can happen.</span>
             </h2>
-            <div className="mt-12 flex items-center gap-16 border-t border-border pt-12">
+            <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-16 border-t border-border pt-8 sm:pt-12">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">AI BUYER</p>
                 <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
