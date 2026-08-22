@@ -322,7 +322,7 @@ function BuyerPage() {
   const merchant = workspace.data?.merchant;
   const shouldReduceMotion = useReducedMotion();
 
-  const staggerContainer = {
+  const staggerContainer: any = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -333,7 +333,7 @@ function BuyerPage() {
     }
   };
 
-  const itemReveal = {
+  const itemReveal: any = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 5 },
     show: { 
       opacity: 1, 
