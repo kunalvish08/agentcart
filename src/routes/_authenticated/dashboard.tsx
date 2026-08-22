@@ -15,6 +15,7 @@ import {
   History,
   TrendingUp,
   Search,
+  Sparkles,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
