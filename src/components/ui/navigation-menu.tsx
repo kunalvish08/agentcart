@@ -51,169 +51,55 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            FINAL MOBILE NAVIGATION IMPLEMENTATION — SURGICAL CHANGE ONLY.
+                                            STOP making any navigation redesign or content changes.
 
-The current mobile navigation is NOT implemented as intended. Fix ONLY the responsive navigation behavior.
+The existing navigation, routes, labels, sidebar, mobile menu, and page layouts are already correct. DO NOT restructure, rename, reorder, or recreate them.
 
-CRITICAL FILE RULE:
+Fix ONLY the current issue where the navigation menu component is causing unexpected changes/issues after the recent updates.
 
-DO NOT MODIFY \`navigation-menu.tsx\` UNDER ANY CIRCUMSTANCES.
+Requirements:
 
-\`navigation-menu.tsx\` is a protected/shared component and must remain completely unchanged:
+- Preserve the current navigation text exactly as it is.
 
-- Do not edit it.
+- Preserve all existing routes and links.
 
-- Do not rewrite it.
+- Preserve the current desktop sidebar.
 
-- Do not rename anything inside it.
+- Preserve the current mobile hamburger/dropdown behavior.
 
-- Do not change its routes, labels, icons, exports, styles, or structure.
+- Preserve active-route highlighting.
 
-- Do not replace it.
+- Preserve light/dark theme behavior.
 
-- Do not create a modified copy of it.
+- Do not add, remove, rename, or regroup navigation items.
 
-If responsive behavior is required, implement it ONLY in the existing AppShell/layout/mobile-navigation wrapper that consumes the navigation component.
+- Do not modify Agent Commerce API page content.
 
-DESKTOP (>=768px):
+- Do not modify any backend, API, database, authentication, or business logic.
 
-- Keep the existing desktop sidebar/navigation EXACTLY unchanged.
+- Do not modify other pages.
 
-MOBILE (<768px):
+Only inspect the navigation implementation for the regression introduced by the recent changes and fix that regression.
 
-Do NOT use a horizontal scrolling navbar.
+After the fix, verify:
 
-Create a proper mobile header:
+1. Desktop navigation works normally.
 
-┌─────────────────────────────────┐
+2. Mobile hamburger opens correctly.
 
-│ ☰  Agentic Commerce        👤  │
+3. Mobile menu closes after navigation.
 
-└─────────────────────────────────┘
+4. All existing links work.
 
-Tapping ☰ opens a dropdown/side-sheet navigation containing:
+5. No duplicate navigation appears.
 
-Infrastructure
+6. No unexpected text/content appears in the menu.
 
-- Dashboard
+7. No horizontal page overflow is introduced.
 
-- AI Buyer
+8. Both light and dark themes remain correct.
 
-- External AI Buyer
-
-- Approvals
-
-- Products
-
-- Policies
-
-Evaluation
-
-- Evaluation Lab
-
-- Judge Mode
-
-Developer
-
-- Agent Commerce API
-
-Mobile behavior:
-
-- Hamburger opens the menu.
-
-- Menu overlays the page.
-
-- Add subtle theme-aware backdrop.
-
-- Backdrop click closes menu.
-
-- Selecting a route navigates and closes menu.
-
-- Active route is highlighted.
-
-- Preserve existing icons and exact labels.
-
-- Keep account/sign-out accessible.
-
-- Touch targets >=44px.
-
-- Smooth subtle open/close animation.
-
-- No page-level horizontal overflow.
-
-- Must work from 320px to 767px.
-
-THEME:
-
-- Support existing light and dark themes.
-
-- Use existing design tokens/CSS variables.
-
-- Do NOT hardcode black/white colors.
-
-- Active, hover, border, background and backdrop must adapt to the theme.
-
-IMPLEMENTATION:
-
-1. Inspect the existing AppShell/layout and navigation usage.
-
-2. Reuse the existing route configuration and icons.
-
-3. Do NOT duplicate route definitions unnecessarily.
-
-4. Implement the mobile navigation outside \`navigation-menu.tsx\`.
-
-5. Do not modify unrelated pages/components.
-
-6. Ensure desktop and mobile navigation do not appear simultaneously at the same breakpoint.
-
-DO NOT CHANGE:
-
-- Backend
-
-- APIs
-
-- Database
-
-- Authentication
-
-- Routes
-
-- Page content
-
-- Business logic
-
-- Existing desktop navigation
-
-- \`navigation-menu.tsx\`
-
-FINAL VALIDATION:
-
-- \`navigation-menu.tsx\` remains untouched.
-
-- Desktop sidebar unchanged.
-
-- Mobile hamburger works.
-
-- All 9 navigation destinations work.
-
-- Active state works.
-
-- Menu closes after navigation.
-
-- Backdrop closes menu.
-
-- Light theme works.
-
-- Dark theme works.
-
-- 320px viewport has zero horizontal overflow.
-
-- No horizontal mobile navbar.
-
-- No duplicate navigation.
-
-This is a targeted responsive-navigation implementation. Do not perform any other redesign.`}
+This is a targeted bug fix only. Do not redesign anything.`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
