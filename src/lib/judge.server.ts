@@ -38,6 +38,7 @@ export type JudgeDemoResult = {
   merchant: string | null;
   currency: string;
   steps: JudgeStep[];
+  chaos_mode?: boolean;
   summary: {
     list_amount: number;
     negotiated_amount: number;
