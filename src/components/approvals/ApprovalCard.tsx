@@ -48,7 +48,7 @@ export function ApprovalCard({
       isPendingStatus ? "border-amber-500/20 shadow-[0_2px_10px_-4px_rgba(245,158,11,0.1)]" : "bg-muted/10 opacity-80"
     )}>
       {/* COMPACT ROW */}
-      <div className="grid gap-4 p-4 md:grid-cols-[1.5fr_1fr_1.5fr_auto] items-center">
+      <div className="grid gap-4 p-4 lg:grid-cols-[1.5fr_1fr_1.5fr_auto] items-center">
         {/* LEFT: Product + order information */}
         <div className="min-w-0 space-y-1">
           <h3 className="text-[11px] font-bold tracking-tight text-foreground truncate uppercase">
@@ -117,7 +117,7 @@ export function ApprovalCard({
       {/* EXPANDED DETAILS */}
       {isExpanded && (
         <div className="border-t border-border/40 bg-muted/5 p-6 animate-in fade-in slide-in-from-top-1 duration-200">
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 lg:grid-cols-2">
             <div className="space-y-6">
               {row.customer_request_summary && (
                 <div>

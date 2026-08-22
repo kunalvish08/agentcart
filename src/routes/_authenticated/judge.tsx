@@ -134,7 +134,7 @@ function JudgePage() {
         </header>
 
         {/* TELEMETRY ROW */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <TelemetryCard 
             label="Total Runs" 
             value={proof?.total_runs ?? 0} 
@@ -178,7 +178,9 @@ function JudgePage() {
               Deterministic Logic
             </Badge>
           </div>
-          <MoneyAuthorityChain />
+          <div className="overflow-x-auto no-scrollbar">
+            <MoneyAuthorityChain />
+          </div>
         </motion.section>
 
         <div className="grid lg:grid-cols-12 gap-8">

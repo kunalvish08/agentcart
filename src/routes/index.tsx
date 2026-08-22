@@ -64,8 +64,8 @@ function Landing() {
             <span className="text-sm font-bold tracking-tight text-foreground">Agentic Commerce</span>
             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">AI INFRASTRUCTURE</span>
           </div>
-          <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-            <Link to="/agent-api" className="hover:text-foreground transition-colors">Agent API</Link>
+          <div className="flex items-center gap-4 sm:gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            <Link to="/agent-api" className="hidden sm:block hover:text-foreground transition-colors">Agent API</Link>
             <Link to="/login" className="hover:text-foreground transition-colors">Merchant Console</Link>
             <button 
               onClick={toggleTheme}
@@ -77,18 +77,18 @@ function Landing() {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-7xl px-6 py-20">
-        <section className="grid lg:grid-cols-2 gap-20 items-center">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-20">
+        <section className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">AI COMMERCE INFRASTRUCTURE</span>
-            <h1 className="mt-6 text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
+            <h1 className="mt-6 text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
               Let AI buyers shop your store. <br />
               <span className="text-muted-foreground">Keep the money under your control.</span>
             </h1>
-            <p className="mt-10 text-lg text-muted-foreground leading-relaxed max-w-xl">
+            <p className="mt-6 sm:mt-10 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
               Expose your catalog to external AI agents while keeping pricing, policy, checkout and payment authority on your server.
             </p>
-            <div className="mt-12 flex items-center gap-4">
+            <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none">
                 <Link to="/login">Open Merchant Console</Link>
               </Button>
@@ -118,13 +118,13 @@ function Landing() {
 
         </section>
 
-        <section className="py-32 grid lg:grid-cols-2 gap-24 items-center">
+        <section className="py-20 sm:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           <div>
             <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
               AI decides what to ask. <br />
               <span className="text-muted-foreground">Your server decides what can happen.</span>
             </h2>
-            <div className="mt-12 flex items-center gap-16 border-t border-border pt-12">
+            <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-16 border-t border-border pt-8 sm:pt-12">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">AI BUYER</p>
                 <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
@@ -150,7 +150,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="py-32 grid md:grid-cols-3 gap-8">
+        <section className="py-20 sm:py-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="border border-border p-8 bg-card">
             <Search className="text-primary" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">01 DISCOVERABLE</h3>
@@ -205,7 +205,7 @@ function Landing() {
             </div>
 
           </div>
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <div className="mt-8 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
              <div>No client-side pricing</div>
              <div>No AI-controlled discounts</div>
              <div>No autonomous payment capture</div>
@@ -214,9 +214,9 @@ function Landing() {
         </section>
 
 
-        <section className="py-32 border-t border-border">
-          <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="py-20 sm:py-32 border-t border-border">
+          <h2 className="text-3xl sm:text-4xl font-semibold">Every money action has an authority.</h2>
+          <div className="mt-8 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
              {["AI REQUESTS", "MERCHANT POLICY BOUNDS", "SERVER DECIDES", "RAZORPAY VERIFIES"].map((title, i) => (
                 <motion.div 
                   key={title} 
@@ -246,7 +246,7 @@ function Landing() {
 
         </section>
  
-        <section className="py-20 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-border">
+        <section className="py-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 border-t border-border">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER AUTHORITY</p>
             <p className="mt-2 text-sm text-muted-foreground">Pricing · Inventory · Policy</p>
@@ -266,11 +266,11 @@ function Landing() {
         </section>
 
 
-        <section className="py-32 text-center bg-card border border-border">
+        <section className="py-20 sm:py-32 text-center bg-card border border-border px-6">
            <p className="text-[10px] font-bold uppercase text-primary tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
-           <h2 className="mt-6 text-5xl font-semibold">Make your store legible to AI.</h2>
-           <p className="mt-6 text-muted-foreground max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
-           <div className="mt-12 flex justify-center gap-4">
+           <h2 className="mt-6 text-3xl sm:text-5xl font-semibold">Make your store legible to AI.</h2>
+           <p className="mt-6 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
+           <div className="mt-12 flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-4">
               <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none"><Link to="/login">Open Merchant Console</Link></Button>
               <Button asChild variant="outline" className="h-12 border-border text-foreground hover:bg-accent rounded-none"><Link to="/agent-api">Explore Agent API</Link></Button>
            </div>

@@ -34,7 +34,7 @@ export function ProductsHeader({
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border border-border bg-graphite-900/50 font-mono">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-border bg-graphite-900/50 font-mono">
         <div>
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Products</p>
           <p className="text-lg font-bold text-foreground">{totalProducts}</p>

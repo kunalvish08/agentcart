@@ -82,11 +82,11 @@ function DashboardPage() {
         </motion.header>
 
         {/* SECTION 1: HEALTH */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <Stat label="Products" value={data?.stats.totalProducts} icon={Package} index={0} />
-          <Stat label="Inventory" value={data?.stats.totalInventoryUnits.toLocaleString("en-IN")} icon={Layers} index={1} />
+          <Stat label="Units" value={data?.stats.totalInventoryUnits} icon={Layers} index={1} />
           <Stat label="Active" value={data?.stats.activeProducts} icon={CheckCircle2} index={2} />
-          <Stat label="Inventory Value" value={data ? inr.format(data.stats.inventoryValue) : "—"} icon={Store} index={3} />
+          <Stat label="Value" value={data ? inr.format(data.stats.inventoryValue) : "—"} icon={Store} index={3} />
         </section>
 
         {/* SECTION 2: AUTHORITY PIPELINE */}
@@ -98,18 +98,13 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">Authority Pipeline</h3>
-           <div className="flex flex-wrap justify-between items-center gap-4">
-             <PipelineNode label="CATALOG" icon={Search} index={0} />
-             <Connector />
-             <PipelineNode label="AI BUYER" icon={Bot} index={1} />
-             <Connector />
-             <PipelineNode label="SERVER AUTHORITY" icon={ShieldCheck} active index={2} />
-             <Connector />
-             <PipelineNode label="APPROVAL" icon={ClipboardCheck} index={3} />
-             <Connector />
-             <PipelineNode label="RAZORPAY" icon={CreditCard} index={4} />
-             <Connector />
-             <PipelineNode label="COMPLETED" icon={CheckCircle2} index={5} />
+           <div className="flex flex-wrap gap-2 justify-center">
+             <PipelineNode label="CAT" icon={Search} index={0} />
+             <PipelineNode label="AI" icon={Bot} index={1} />
+             <PipelineNode label="AUTH" icon={ShieldCheck} active index={2} />
+             <PipelineNode label="APP" icon={ClipboardCheck} index={3} />
+             <PipelineNode label="RZP" icon={CreditCard} index={4} />
+             <PipelineNode label="FIN" icon={CheckCircle2} index={5} />
            </div>
         </motion.section>
 
@@ -120,12 +115,12 @@ function DashboardPage() {
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground flex items-center gap-2 mb-6">
                        <ShieldCheck className="size-4 text-copper" /> Commercial Rules
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
                         <Rule label="Max Discount" value={`${data?.policy.max_discount_percent}%`} index={0} />
                         <Rule label="Max Order" value={data ? inr.format(data.policy.max_order_value) : "—"} index={1} />
-                        <Rule label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} index={2} />
-                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "Enabled" : "Disabled"} index={3} />
-                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} index={4} />
+                        <Rule label="Approval" value={data ? inr.format(data.policy.approval_required_above) : "—"} index={2} />
+                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "ON" : "OFF"} index={3} />
+                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "ON" : "OFF"} index={4} />
                     </div>
                     <motion.div 
                       initial={{ opacity: 0 }}
@@ -142,11 +137,11 @@ function DashboardPage() {
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-6 flex items-center gap-2">
                         <TrendingUp className="size-4 text-copper" /> Negotiation & Growth
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                         <SmallStat label="List Value" value={growth ? inr.format(growth.listValue) : "—"} index={0} />
-                        <SmallStat label="Final Offer" value={growth ? inr.format(growth.offerValue) : "—"} index={1} />
-                        <SmallStat label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
-                        <SmallStat label="Negotiations" value={growth?.negotiations} index={3} />
+                        <SmallStat label="Offer" value={growth ? inr.format(growth.offerValue) : "—"} index={1} />
+                        <SmallStat label="Discount" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
+                        <SmallStat label="Count" value={growth?.negotiations} index={3} />
                     </div>
                     <motion.div 
                       initial={{ opacity: 0 }}

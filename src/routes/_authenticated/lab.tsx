@@ -250,7 +250,7 @@ function LabPage() {
 
       <div className="space-y-8">
         {/* Methodology Panel */}
-        <div className="grid gap-4 md:grid-cols-3 bg-muted/20 border border-border p-6 rounded-sm">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-3 bg-muted/20 border border-border p-6 rounded-sm">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Zap className="size-3.5 text-blue-500" />
@@ -275,7 +275,7 @@ function LabPage() {
         </div>
 
 
-        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+        <div className="grid gap-8 grid-cols-1 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-6">
             <div className="rounded-sm border border-border bg-card shadow-none">
               <div className="bg-muted/30 border-b border-border px-6 py-4">

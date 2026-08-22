@@ -356,28 +356,28 @@ function BuyerPage() {
       >
         {/* 1. COMPACT HERO & STATUS BAR */}
         <motion.header variants={itemReveal} className="flex flex-col gap-4 pb-4 border-b border-border/40">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <motion.p variants={itemReveal} className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</motion.p>
               <motion.h1 variants={itemReveal} className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</motion.h1>
             </div>
             
-            <motion.div variants={itemReveal} className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
+            <motion.div variants={itemReveal} className="flex flex-wrap items-center gap-3 md:gap-6 px-4 py-3 md:py-2 bg-muted/30 border border-border/40 rounded-md">
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
                   <span className="text-xs font-mono font-bold text-foreground"><CountUp value={7} /></span>
                 </div>
-                <div className="h-3 w-px bg-border/40" />
+                <div className="h-3 w-px bg-border/40 hidden xs:block" />
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Steps</span>
                   <span className="text-xs font-mono font-bold text-foreground"><CountUp value={10} /></span>
                 </div>
-                <div className="h-3 w-px bg-border/40" />
+                <div className="h-3 w-px bg-border/40 hidden xs:block" />
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Calls</span>
                   <span className="text-xs font-mono font-bold text-foreground"><CountUp value={20} /></span>
                 </div>
-                <div className="h-3 w-px bg-border/40" />
+                <div className="h-3 w-px bg-border/40 hidden xs:block" />
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
                   <motion.span 
@@ -478,9 +478,9 @@ function BuyerPage() {
             </motion.section>
 
             {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
-            <motion.div variants={itemReveal} className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+            <motion.div variants={itemReveal} className="flex flex-col lg:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
               {/* LEFT: AGENT WORKSPACE */}
-              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-5">
+              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-4 md:p-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
                   {sessionId && (
@@ -519,10 +519,10 @@ function BuyerPage() {
                 )}
               </motion.section>
 
-              <div className="hidden md:block w-px bg-border/40" />
+              <div className="hidden lg:block w-px bg-border/40" />
 
               {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
-              <motion.aside variants={itemReveal} className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+              <motion.aside variants={itemReveal} className="w-full lg:w-[280px] flex flex-col gap-6 p-4 md:p-5 bg-muted/10">
                 <motion.div
                   initial={false}
                   animate={turns.some(t => t.role === 'assistant' && (t.recommendation || t.steps.some(s => s.tool_name === 'get_quote'))) ? { scale: [1, 1.02, 1], backgroundColor: ["rgba(213, 155, 98, 0.05)", "transparent"] } : {}}

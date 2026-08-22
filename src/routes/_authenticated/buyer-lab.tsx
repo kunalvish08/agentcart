@@ -337,7 +337,7 @@ function BuyerLabPage() {
           </div>
         </motion.header>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           {/* LEFT: Simulation configuration */}
           <motion.div variants={itemReveal} className="space-y-6">
             <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
@@ -822,7 +822,7 @@ function BuyerLabPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-8">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { label: "External runs", value: m?.runs.total, hint: `${m?.runs.completed ?? 0} COMPLETED · ${m?.runs.avg_duration_ms ?? 0}MS AVG` },
                 { label: "Quotes issued", value: m?.funnel.quote_issued, hint: `${m?.funnel.checkout_requested ?? 0} CHECKOUT REQ` },
@@ -838,7 +838,7 @@ function BuyerLabPage() {
                 <p className="text-[10px] font-bold text-foreground uppercase tracking-widest border-b border-border/40 pb-2 flex items-center gap-2">
                   <Activity className="size-3" /> Tool Reliability
                 </p>
-                <div className="rounded-sm border border-border/40 overflow-hidden">
+                <div className="rounded-sm border border-border/40 overflow-x-auto no-scrollbar">
                   <table className="w-full text-[10px] font-mono">
                     <thead className="bg-muted/30 border-b border-border/40 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                       <tr>

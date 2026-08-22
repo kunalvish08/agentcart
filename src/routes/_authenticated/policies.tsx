@@ -127,7 +127,7 @@ function PoliciesPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Max Discount */}
             <div className="group rounded-sm border border-border bg-card/50 p-5 transition-colors hover:border-border/80">
               <div className="mb-4 space-y-1">
@@ -286,7 +286,7 @@ function PoliciesPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[1fr_350px]">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-[1fr_350px]">
             <div className="rounded-sm border border-border bg-card/50 p-6 space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
