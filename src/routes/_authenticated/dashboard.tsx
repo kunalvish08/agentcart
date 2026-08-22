@@ -160,8 +160,8 @@ function DashboardPage() {
                   <RuleItem label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} />
                 </div>
                 <div className="mt-8 pt-6 border-t border-border/40 flex flex-wrap items-center gap-x-8 gap-y-4">
-                  <StatusToggle label="Negotiation" enabled={data?.policy.allow_negotiation} />
-                  <StatusToggle label="Upsell" enabled={data?.policy.allow_upsell} />
+                  <StatusToggle label="Negotiation" enabled={data?.policy.allow_negotiation ?? false} />
+                  <StatusToggle label="Upsell" enabled={data?.policy.allow_upsell ?? false} />
                   <p className="text-[11px] font-bold text-primary uppercase tracking-widest italic ml-auto">
                     AI may request. Policy decides.
                   </p>
