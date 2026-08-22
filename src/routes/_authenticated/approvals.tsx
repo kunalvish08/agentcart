@@ -107,7 +107,7 @@ function ApprovalsPage() {
       subtitle="Human-in-the-loop review — the agent can request a checkout but never approve one"
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <div className="space-y-12 w-full max-w-full min-w-0 pb-24">
+      <div className="space-y-12 w-full max-w-full min-w-0 pb-24 px-4 sm:px-6">
         {/* HEADER & SUMMARY */}
         <ApprovalsHeader 
           pendingCount={pending.length} 
