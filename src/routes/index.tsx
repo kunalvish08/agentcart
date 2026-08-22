@@ -167,12 +167,7 @@ function Landing() {
                 transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-10 text-lg leading-relaxed text-slate-600 md:text-xl max-w-xl"
               >
-                '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            Remove the accidental instruction text from the public landing page hero description.
-
-Add a safeguard that prevents instruction-like strings from being rendered on the public landing page.
+                Expose your catalog to external AI agents, let them discover products and negotiate within your rules — while pricing, checkout and payment remain server-authoritative.
               </motion.p>
               
               <motion.div 
