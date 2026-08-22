@@ -371,3 +371,64 @@ export const getGrowthMetrics = createServerFn({ method: "GET" })
       acceptedRecommendations: (recs.data ?? []).filter((r) => r.accepted).length,
     };
   });
+
+export type RevenueAgentMetrics = {
+  opportunities: number;
+  shown: number;
+  accepted: number;
+  rejected: number;
+  upsellAccepted: number;
+  crossSellAccepted: number;
+  acceptedValue: number;
+};
+
+/**
+ * Phase 1 Revenue Agent summary. Read-only aggregation of server-recorded
+ * revenue events (RLS-scoped to the caller's merchant).
+ */
+export const getRevenueAgentMetrics = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<RevenueAgentMetrics> => {
+    const { supabase, userId } = context;
+    const empty: RevenueAgentMetrics = {
+      opportunities: 0,
+      shown: 0,
+      accepted: 0,
+      rejected: 0,
+      upsellAccepted: 0,
+      crossSellAccepted: 0,
+      acceptedValue: 0,
+    };
+
+    const { data: merchant, error: merchantError } = await supabase
+      .from("merchants")
+      .select("id")
+      .eq("owner_id", userId)
+      .order("created_at")
+      .limit(1)
+      .maybeSingle();
+    if (merchantError) throw new Error(merchantError.message);
+    if (!merchant) return empty;
+
+    const { data, error } = await supabase
+      .from("revenue_events")
+      .select("event, amount")
+      .eq("merchant_id", merchant.id)
+      .limit(5000);
+    if (error) throw new Error(error.message);
+
+    const rows = data ?? [];
+    const count = (event: string) => rows.filter((r) => r.event === event).length;
+
+    return {
+      opportunities: count("REVENUE_OPPORTUNITY_DETECTED"),
+      shown: count("RECOMMENDATION_SHOWN"),
+      accepted: count("RECOMMENDATION_ACCEPTED"),
+      rejected: count("RECOMMENDATION_REJECTED"),
+      upsellAccepted: count("UPSELL_ACCEPTED"),
+      crossSellAccepted: count("CROSS_SELL_ACCEPTED"),
+      acceptedValue: rows
+        .filter((r) => r.event === "RECOMMENDATION_ACCEPTED")
+        .reduce((sum, r) => sum + Number(r.amount ?? 0), 0),
+    };
+  });

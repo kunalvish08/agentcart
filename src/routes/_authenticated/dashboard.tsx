@@ -15,6 +15,7 @@ import {
   History,
   TrendingUp,
   Search,
+  Sparkles,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -22,7 +23,7 @@ import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCheckoutMetrics, getCheckoutAudit } from "@/lib/checkout.functions";
-import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
+import { getGrowthMetrics, getRevenueAgentMetrics, getWorkspace } from "@/lib/merchant.functions";
 import { cn } from "@/lib/utils";
 import { CountUp } from "@/components/dashboard/CountUp";
 
@@ -44,6 +45,8 @@ function DashboardPage() {
 
   const { data: data } = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const { data: growth } = useQuery({ queryKey: ["growth-metrics"], queryFn: () => fetchGrowth() });
+  const fetchRevenue = useServerFn(getRevenueAgentMetrics);
+  const { data: revenue } = useQuery({ queryKey: ["revenue-agent-metrics"], queryFn: () => fetchRevenue(), refetchInterval: 20_000 });
   const { data: checkout } = useQuery({ queryKey: ["checkout-metrics"], queryFn: () => fetchCheckout(), refetchInterval: 15_000 });
   const { data: audit } = useQuery({ queryKey: ["checkout-audit"], queryFn: () => fetchAudit(), refetchInterval: 15_000 });
 
@@ -206,6 +209,33 @@ function DashboardPage() {
                          </p>
                     </motion.div>
                 </section>
+
+                {/* SECTION 4B: REVENUE AGENT */}
+                <section className="border border-border p-6 rounded-sm">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-6 flex items-center gap-2">
+                        <Sparkles className="size-4 text-copper" /> Revenue Agent
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                        <SmallStat label="Opportunities" value={revenue?.opportunities} index={0} />
+                        <SmallStat label="Shown" value={revenue?.shown} index={1} />
+                        <SmallStat label="Accepted" value={revenue?.accepted} index={2} />
+                        <SmallStat label="Upsell" value={revenue?.upsellAccepted} index={3} />
+                        <SmallStat label="Cross-sell" value={revenue?.crossSellAccepted} index={4} />
+                        <SmallStat label="Accepted Value" value={revenue ? inr.format(revenue.acceptedValue) : "—"} index={5} />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="mt-6 pt-4 border-t border-border/40"
+                    >
+                         <p className="text-[9px] font-bold text-copper uppercase tracking-widest italic">
+                           AI recommends. Policy and server pricing decide.
+                         </p>
+                    </motion.div>
+                </section>
+
+
                 
                 {/* SECTION 5: CHECKOUT */}
                 <section className="border border-border p-6 rounded-sm">
