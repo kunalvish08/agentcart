@@ -26,14 +26,16 @@ const chaosSchema = z.object({
   ]),
 });
 
-export const runJudgeDemoRun = createServerFn({ method: "POST" })
+export const runJudgeDemo = createServerFn({ method: "POST" })
+  .inputValidator((data: { chaosMode?: boolean } | undefined) => z.object({ chaosMode: z.boolean().optional() }).optional().parse(data))
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<JudgeDemoResult> => {
+  .handler(async ({ context, data }): Promise<JudgeDemoResult> => {
     const { getRequest } = await import("@tanstack/react-start/server");
     const { runJudgeDemo } = await import("@/lib/judge.server");
     return runJudgeDemo({
       userId: context.userId,
       baseUrl: new URL(getRequest().url).origin,
+      chaosMode: data?.chaosMode
     });
   });
 
@@ -79,7 +81,7 @@ export const getJudgeReplay = createServerFn({ method: "GET" })
     return replayJudgeRun({ runId: data.runId, userId: context.userId });
   });
 
-export const performJudgeDemoReset = createServerFn({ method: "POST" })
+export const resetJudgeDemo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ResetResult> => {
     const { resetJudgeDemo } = await import("@/lib/judge.server");
