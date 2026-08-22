@@ -702,12 +702,12 @@ Do not change anything else." */}
                 disabled={running}
               />
               <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
-                <div className="flex flex-wrap gap-2">
-                  {SUGGESTIONS.map((s, idx) => (
+                <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} className="flex flex-wrap gap-2">
+                  {SUGGESTIONS.map((s) => (
                     <motion.button
                       key={s}
                       variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }}
-                      custom={idx}
+                      
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       type="button"
@@ -758,7 +758,7 @@ Do not change anything else." */}
                <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
              </div>
            ) : (
-             <div className="flex flex-col gap-6">
+             <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-6">
                {turns.map((turn) =>
                  turn.role === "user" ? (
                    <div key={turn.id} className="flex flex-col gap-2 opacity-60">
@@ -791,16 +791,16 @@ Do not change anything else." */}
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Time</th>
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity</th>
                     <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
-                  </tr>
+                  </motion.tr>
                 </thead>
                 <tbody className="divide-y divide-border/40">
                   {sessions.isLoading ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></motion.tr>
                   ) : (sessions.data?.length ?? 0) === 0 ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></motion.tr>
                   ) : (
-                    sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/10 transition-colors">
+                    sessions.data!.map((session, idx) => (
+                      <motion.tr initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} key={session.id} className="hover:bg-muted/10 transition-colors">
                         <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
                           {session.title ?? "General Request"}
                         </td>
@@ -817,7 +817,7 @@ Do not change anything else." */}
                             {session.status}
                           </Badge>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))
                   )}
                 </tbody>
@@ -932,7 +932,7 @@ function AssistantTurn({
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
-                    <div key={step.step_number} className="flex items-center gap-3 text-sm">
+                    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} key={step.step_number} className="flex items-center gap-3 text-sm">
                       {stepIcon(step)}
                       <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
                       {step.tool_name ? (
@@ -1459,7 +1459,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Amount</th>
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Status</th>
                 <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Date</th>
-              </tr>
+              </motion.tr>
             </thead>
             <tbody className="divide-y divide-border/20">
               {rows.map((row: BuyerActiveOrder) => (
@@ -1518,7 +1518,7 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
         <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-[11px]">
           {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
         </td>
-      </tr>
+      </motion.tr>
       {expanded && (
         <tr>
           <td colSpan={5} className="px-6 py-6 bg-muted/20 border-b border-border/40">
@@ -1571,7 +1571,7 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
               </div>
             </div>
           </td>
-        </tr>
+        </motion.tr>
       )}
     </>
   );
