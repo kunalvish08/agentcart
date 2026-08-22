@@ -196,9 +196,22 @@ function DashboardPage() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           whileInView={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.4, delay: 0.1 }}
-                          className="p-4 border border-border rounded-sm bg-approval-amber/5"
+                          className="p-4 border border-border rounded-sm bg-approval-amber/5 relative overflow-hidden"
                         >
-                            <p className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1">Payment Pending</p>
+                            <motion.div 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: [0, 0.4, 0] }}
+                              transition={{ duration: 2 }}
+                              className="absolute inset-0 bg-approval-amber/10"
+                            />
+                            <p className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1 flex items-center gap-2">
+                                Payment Pending
+                                <motion.div 
+                                  animate={{ scale: [1, 1.2, 1] }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                  className="size-1 rounded-full bg-approval-amber"
+                                />
+                            </p>
                             <p className="text-lg font-bold font-mono"><CountUp value={inr.format(checkout?.paymentPendingValue ?? 0)} /></p>
                         </motion.div>
                     </div>
