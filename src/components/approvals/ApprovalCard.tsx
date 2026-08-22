@@ -96,7 +96,7 @@ export function ApprovalCard({
               </p>
               {row.final_amount > threshold && (
                 <p className="text-[9px] font-mono text-amber-500/60 pt-1 border-t border-amber-500/10">
-                  {money(row.final_amount)} > {money(threshold)} (Diff: +{money(diff)})
+                  {money(row.final_amount)} {" > "} {money(threshold)} (Diff: +{money(diff)})
                 </p>
               )}
               <p className="text-[8px] text-amber-500/40 uppercase tracking-tighter">Amount comes from server quote</p>
