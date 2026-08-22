@@ -384,20 +384,26 @@ function Landing() {
         </section>
 
         {/* 7. FINAL CTA */}
-        <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="rounded-2xl border border-border bg-muted/30 p-12 text-center md:p-20">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">Make your store legible to AI.</h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-              Start with your catalog. Define your limits. Let external agents transact within them.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild size="lg" className="h-12 w-full px-10 text-sm font-semibold sm:w-auto">
-                <Link to="/login">Open merchant console</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 w-full border-border bg-transparent px-10 text-sm font-semibold sm:w-auto">
-                <Link to="/agent-api">Explore Agent API</Link>
-              </Button>
-            </div>
+        <section className="bg-[#0B1220] py-32 text-white text-center">
+          <div className="mx-auto max-w-xl px-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Make your store <br />legible to AI.</h2>
+              <p className="mt-8 text-[15px] leading-relaxed text-white/50">
+                Start with your catalog. Define your commercial limits. Let external agents transact within them.
+              </p>
+              <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
+                <Button asChild size="lg" className="h-12 w-full px-10 text-[11px] font-bold uppercase tracking-widest bg-white text-[#0B1220] hover:bg-white/90 rounded-none sm:w-auto shadow-none">
+                  <Link to="/login">Open merchant console</Link>
+                </Button>
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-10 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-white/5 sm:w-auto">
+                  <Link to="/agent-api">Explore Agent API</Link>
+                </Button>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>
