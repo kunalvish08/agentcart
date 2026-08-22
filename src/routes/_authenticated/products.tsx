@@ -157,113 +157,108 @@ function ProductsPage() {
   }
 
   return (
-    <AppShell
-      title="Products"
-      subtitle={workspace.data ? `Catalog for ${workspace.data.merchant.name}` : "Catalog"}
-      accountLabel={workspace.data?.profile.email ?? undefined}
-    >
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {products.data ? `${products.data.length} products` : "Loading catalog…"}
-        </p>
-        <Button size="sm" onClick={openCreate}>
-          <Plus className="mr-2 size-4" />
-          New product
-        </Button>
-      </div>
+    <AppShell title="Products" accountLabel={workspace.data?.profile.email ?? undefined}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        <ProductsHeader
+          merchantName={workspace.data?.merchant.name ?? "Merchant"}
+          totalProducts={products.data?.length ?? 0}
+          activeProducts={products.data?.filter(p => p.status === "active").length ?? 0}
+          inactiveProducts={products.data?.filter(p => p.status === "inactive").length ?? 0}
+          onNewProduct={openCreate}
+        />
 
-      <div className="rounded-lg border border-border bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Price</TableHead>
-              <TableHead className="w-56">Stock</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Edit</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.isPending ? (
-              <TableRow>
-                <TableCell colSpan={6}>
-                  <Skeleton className="h-6 w-full" />
-                </TableCell>
-              </TableRow>
-            ) : null}
+        <div className="border border-border bg-graphite-950 overflow-hidden">
+          <CatalogToolbar />
 
-            {products.data?.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>
-                  <p className="font-medium text-foreground">{product.name}</p>
-                  <p className="max-w-sm truncate text-xs text-muted-foreground">
-                    {product.description}
-                  </p>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline">{product.category ?? "—"}</Badge>
-                </TableCell>
-                <TableCell className="text-right font-medium">{inr.format(product.price)}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      className="h-8 w-20"
-                      type="number"
-                      min={0}
-                      value={stockDrafts[product.id] ?? String(product.stock_quantity)}
-                      onChange={(e) =>
-                        setStockDrafts((prev) => ({ ...prev, [product.id]: e.target.value }))
-                      }
-                    />
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={stockMutation.isPending}
-                      onClick={() =>
-                        stockMutation.mutate({
-                          id: product.id,
-                          stock_quantity: Number(
-                            stockDrafts[product.id] ?? product.stock_quantity,
-                          ),
-                        })
-                      }
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={product.status === "active"}
-                      onCheckedChange={(checked) =>
-                        statusMutation.mutate({
-                          id: product.id,
-                          status: checked ? "active" : "inactive",
-                        })
-                      }
-                    />
-                    <span className="text-xs text-muted-foreground">{product.status}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button size="icon" variant="ghost" onClick={() => openEdit(product)}>
-                    <Pencil className="size-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+          <div className="bg-graphite-900/20 px-4 py-2 border-b border-border flex items-center gap-2">
+            <ShieldCheck className="size-4 text-copper-500" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-copper-500">SERVER-AUTHORITATIVE</span>
+            <span className="text-[10px] text-muted-foreground">Prices and inventory controlled by merchant server.</span>
+          </div>
 
-            {products.data?.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
-                  No products yet. Create your first product.
-                </TableCell>
-              </TableRow>
-            ) : null}
-          </TableBody>
-        </Table>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-[10px] uppercase tracking-widest">Product</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">Category</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Price</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest w-40">Stock</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">Status</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">AI Commerce</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Updated</TableHead>
+                  <TableHead className="w-12" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {products.isPending ? (
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <Skeleton className="h-12 w-full" />
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+
+                {products.data?.map((product) => (
+                  <TableRow key={product.id} className="border-border hover:bg-graphite-900/40 transition-colors">
+                    <TableCell>
+                      <p className="font-bold text-foreground text-sm font-mono">{product.name}</p>
+                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">{product.description}</p>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="rounded-none bg-graphite-900 border-border text-[10px]">{product.category ?? "—"}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-mono font-medium">{inr.format(product.price)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          className="h-8 w-16 bg-graphite-950 border-border text-xs text-center font-mono"
+                          type="number"
+                          value={stockDrafts[product.id] ?? String(product.stock_quantity)}
+                          onChange={(e) => setStockDrafts((prev) => ({ ...prev, [product.id]: e.target.value }))}
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-8 text-[10px] hover:text-copper-500"
+                          onClick={() => stockMutation.mutate({ id: product.id, stock_quantity: Number(stockDrafts[product.id] ?? product.stock_quantity) })}
+                        >
+                          SAVE
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={cn("rounded-none text-[10px] px-2", product.status === "active" ? "bg-verified-500/10 text-verified-500 border-verified-500/20" : "bg-muted text-muted-foreground border-border")}>
+                        {product.status.toUpperCase()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="rounded-none bg-graphite-900 border-border text-[10px] text-copper-500">PUBLIC</Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-[10px] text-muted-foreground font-mono">
+                      {new Date(product.updated_at).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="ghost" className="size-8">
+                            <MoreHorizontal className="size-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-none border-border bg-graphite-950">
+                          <DropdownMenuItem onClick={() => openEdit(product)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => statusMutation.mutate({ id: product.id, status: product.status === "active" ? "inactive" : "active" })}>
+                            Toggle Status
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
