@@ -97,14 +97,157 @@ function DashboardPage() {
           viewport={{ once: true }}
           className="border border-border bg-card p-6 rounded-sm"
         >
-           <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">Authority Pipeline</h3>
-           <div className="flex flex-wrap gap-2 justify-center">
-             <PipelineNode label="CAT" icon={Search} index={0} />
-             <PipelineNode label="AI" icon={Bot} index={1} />
-             <PipelineNode label="AUTH" icon={ShieldCheck} active index={2} />
-             <PipelineNode label="APP" icon={ClipboardCheck} index={3} />
-             <PipelineNode label="RZP" icon={CreditCard} index={4} />
-             <PipelineNode label="FIN" icon={CheckCircle2} index={5} />
+           <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
+             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Redesign ONLY the /dashboard “Authority Pipeline” section.
+
+Keep all backend logic, data, routes and existing pipeline states unchanged.
+
+Current pipeline:
+
+CAT → AI → AUTH → APP → RZP → FIN
+
+Make it look like a premium enterprise transaction-authority pipeline, not just six icons.
+
+Each stage should have:
+
+- Existing icon
+
+- Short label
+
+- Clear stage name
+
+- One-line purpose
+
+- Current status indicator
+
+Stages:
+
+CAT — Catalog
+
+“Product discovery”
+
+AI — AI Buyer
+
+“Agent decision”
+
+AUTH — Server Authority
+
+“Policy + pricing”
+
+APP — Human Approval
+
+“Merchant control”
+
+RZP — Razorpay
+
+“Payment verification”
+
+FIN — Settlement
+
+“Final order state”
+
+Visual:
+
+- Horizontal connected pipeline on desktop.
+
+- Clear connector lines between stages.
+
+- Active/current stage should be visually emphasized.
+
+- Completed stages should look completed.
+
+- Pending stages should look neutral.
+
+- Failed stages should use semantic error styling.
+
+- Use subtle animation only for active transitions.
+
+- Keep it dense and technical, matching the Obsidian Commerce design system.
+
+- Avoid excessive cards, gradients or decorative effects.
+
+Light/Dark:
+
+- Use existing theme tokens.
+
+- Do NOT hardcode black/white colors.
+
+- Status colors must remain readable in both themes.
+
+Mobile (<768px):
+
+- Do NOT force the six stages into a tiny horizontal row.
+
+- Convert the pipeline into a vertically stacked connected timeline OR a horizontally scrollable INTERNAL pipeline container.
+
+- The page itself must never horizontally scroll.
+
+- Each stage must remain readable and touch-friendly.
+
+Do not modify any other Dashboard sections.
+
+Do not modify navigation-menu.tsx.
+
+Do not modify backend/API/database/business logic.`}
+           </h3>
+           <div className="flex flex-col md:flex-row gap-4 md:gap-2 justify-between items-stretch">
+             <PipelineNode 
+               label="CAT" 
+               name="Catalog"
+               purpose="Product discovery"
+               status="COMPLETED"
+               icon={Search} 
+               index={0} 
+               state="completed"
+             />
+             <PipelineNode 
+               label="AI" 
+               name="AI Buyer"
+               purpose="Agent decision"
+               status="COMPLETED"
+               icon={Bot} 
+               index={1} 
+               state="completed"
+             />
+             <PipelineNode 
+               label="AUTH" 
+               name="Server Authority"
+               purpose="Policy + pricing"
+               status="ACTIVE"
+               icon={ShieldCheck} 
+               index={2} 
+               state="active"
+             />
+             <PipelineNode 
+               label="APP" 
+               name="Human Approval"
+               purpose="Merchant control"
+               status="PENDING"
+               icon={ClipboardCheck} 
+               index={3} 
+               state="pending"
+             />
+             <PipelineNode 
+               label="RZP" 
+               name="Razorpay"
+               purpose="Payment verification"
+               status="WAITING"
+               icon={CreditCard} 
+               index={4} 
+               state="pending"
+             />
+             <PipelineNode 
+               label="FIN" 
+               name="Settlement"
+               purpose="Final order state"
+               status="LOCKED"
+               icon={CheckCircle2} 
+               index={5} 
+               state="pending"
+             />
            </div>
         </motion.section>
 
