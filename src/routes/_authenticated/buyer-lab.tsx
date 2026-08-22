@@ -640,61 +640,46 @@ function BuyerLabPage() {
         </Card>
 
 
-              {run.notices.length > 0 ? (
-                <div className="space-y-1">
-                  <Separator />
-                  {run.notices.map((n, i) => (
-                    <p key={`${n.code}-${i}`} className="text-xs text-muted-foreground">
-                      <span className="font-mono">{n.code}</span> · {n.message}
-                    </p>
-                  ))}
-                </div>
-              ) : null}
-            </CardContent>
-          </Card>
-        </div>
-
         {/* API traffic */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Globe className="size-4" /> Public API traffic
+        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border py-3">
+            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Globe className="size-3.5" /> Public API Traffic
             </CardTitle>
-            <CardDescription>
-              Live request log for this run: method, path, status, latency and correlation id.
-            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             {run.calls.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No API calls yet.</p>
+              <p className="text-xs text-muted-foreground font-medium italic">No API calls yet.</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {run.calls.map((call, index) => (
                   <div
                     key={`${call.path}-${index}`}
-                    className="rounded-md border border-border p-3 text-xs"
+                    className="flex flex-col gap-1 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono"
                   >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <StatusDot ok={call.ok} />
-                      <span className="font-mono font-medium text-foreground">
-                        {call.method} {call.path}
-                      </span>
-                      <Badge variant={call.ok ? "secondary" : "destructive"} className="text-[10px]">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className={cn(
+                        "px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px]",
+                        call.ok ? "text-emerald-400 bg-emerald-400/10 border border-emerald-400/20" : "text-destructive bg-destructive/10 border border-destructive/20"
+                      )}>
+                        {call.method}
+                      </div>
+                      <span className="text-foreground font-bold">{call.path}</span>
+                      <div className={cn(
+                        "px-1.5 py-0.5 rounded-sm border",
+                        call.status >= 200 && call.status < 300 ? "text-emerald-400 border-emerald-400/20" : "text-amber-400 border-amber-400/20"
+                      )}>
                         {call.status}
-                      </Badge>
-                      <span className="text-muted-foreground">{call.latency_ms} ms</span>
+                      </div>
+                      <span className="text-muted-foreground/60">{call.latency_ms}ms</span>
                       {call.request_id ? (
-                        <span className="font-mono text-muted-foreground">
-                          req {call.request_id.slice(0, 8)}
-                        </span>
+                        <span className="text-muted-foreground/40 ml-auto">CID: {call.request_id.slice(0, 8)}</span>
                       ) : null}
                     </div>
-                    <p className="mt-1 break-all font-mono text-muted-foreground">
-                      → {call.request_summary}
-                    </p>
-                    <p className="break-all font-mono text-muted-foreground">
-                      ← {call.response_summary}
-                    </p>
+                    <div className="grid gap-2 border-t border-border/20 pt-1.5 mt-1">
+                      <p className="text-muted-foreground break-all"><span className="text-blue-400/60 font-bold uppercase mr-1">REQ</span>{call.request_summary}</p>
+                      <p className="text-muted-foreground break-all"><span className="text-copper/60 font-bold uppercase mr-1">RES</span>{call.response_summary}</p>
+                    </div>
                   </div>
                 ))}
                 <div ref={traceEndRef} />
@@ -705,66 +690,69 @@ function BuyerLabPage() {
 
         {/* agent trace + final message */}
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Execution trace</CardTitle>
-              <CardDescription>
-                Persisted to the standard observability tables and replayable in Judge Mode.
-              </CardDescription>
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border py-3">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Execution Trace</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {run.steps.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No steps yet.</p>
+                <p className="text-xs text-muted-foreground font-medium italic">No steps yet.</p>
               ) : (
-                <ol className="space-y-2">
+                <div className="space-y-1.5">
                   {run.steps.map((step) => (
-                    <li
+                    <div
                       key={step.step_number}
-                      className="flex items-start justify-between gap-3 rounded-md border border-border p-3 text-sm"
+                      className="flex items-start justify-between gap-3 rounded-sm border border-border/40 bg-muted/5 p-2.5 text-[10px] font-mono transition-colors hover:bg-muted/10"
                     >
-                      <div className="min-w-0">
-                        <p className="font-medium text-foreground">
-                          {step.step_number}. {step.label}
-                        </p>
-                        <p className="font-mono text-xs text-muted-foreground">
-                          {step.step_type}
-                          {step.tool_name ? ` · ${step.tool_name}` : ""}
-                          {step.policy_decision ? ` · policy: ${step.policy_decision}` : ""}
-                        </p>
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-copper font-bold">{step.step_number}.</span>
+                          <p className="font-bold text-foreground uppercase tracking-tight">{step.label}</p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-[9px] text-muted-foreground/60 uppercase tracking-widest font-bold">
+                          <span>{step.step_type}</span>
+                          {step.tool_name ? <span className="text-blue-400/60 border border-blue-400/20 px-1 rounded-sm bg-blue-400/5">{step.tool_name}</span> : null}
+                          {step.policy_decision ? <span className="text-amber-400/60 border border-amber-400/20 px-1 rounded-sm bg-amber-400/5">DECISION: {step.policy_decision}</span> : null}
+                        </div>
                       </div>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {step.status}
-                        {step.latency_ms ? ` · ${step.latency_ms} ms` : ""}
-                      </span>
-                    </li>
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <Badge variant="outline" className="text-[8px] font-bold py-0 h-4 border-border/60">{step.status.toUpperCase()}</Badge>
+                        {step.latency_ms ? <span className="text-muted-foreground/40 text-[9px]">{step.latency_ms}ms</span> : null}
+                      </div>
+                    </div>
                   ))}
-                </ol>
+                </div>
               )}
               {run.summary ? (
-                <p className="mt-3 font-mono text-xs text-muted-foreground">
-                  stop: {run.summary.stop_reason} · {run.summary.tool_call_count} tool calls ·{" "}
-                  {run.summary.duration_ms} ms
-                </p>
+                <div className="mt-4 flex items-center justify-between border-t border-border/40 pt-3 text-[9px] font-bold font-mono text-muted-foreground/60 uppercase tracking-widest">
+                  <span>STOP: {run.summary.stop_reason}</span>
+                  <span>{run.summary.tool_call_count} CALLS · {run.summary.duration_ms}MS</span>
+                </div>
               ) : null}
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Buyer agent report</CardTitle>
-              <CardDescription>The agent's own summary of what the server decided.</CardDescription>
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border py-3">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Buyer Agent Report</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {run.text.trim().length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  {running ? "Waiting for the agent's report…" : "No report yet."}
-                </p>
+                <div className="py-8 flex flex-col items-center justify-center text-center border-2 border-dashed border-border/40 rounded-sm">
+                  <Bot className="size-6 text-muted-foreground/20 mb-2" />
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                    {running ? "Synthesizing report…" : "No report yet."}
+                  </p>
+                </div>
               ) : (
-                <p className="whitespace-pre-wrap text-sm text-foreground">{run.text}</p>
+                <div className="text-[11px] text-foreground font-medium leading-relaxed bg-muted/5 p-4 rounded-sm border border-border/40 whitespace-pre-wrap border-l-2 border-l-blue-400/40">
+                  {run.text}
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
+
 
         {/* evaluation metrics */}
         <Card>
