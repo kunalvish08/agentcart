@@ -440,6 +440,28 @@ export async function requestCheckout(args: {
       { quoted_discount_percent: baseQuoteDiscountPercent, policy_limit_percent: policyCap },
     );
   }
+
+  // A negotiated (discounted) quote can only be checked out after the buyer has
+  // explicitly accepted the server's offer. Rejected/unaccepted negotiations
+  // must never become an order or a payment.
+  if (baseQuoteDiscountPercent > 1e-9) {
+    const { data: offerRows, error: offerError } = await supabaseAdmin
+      .from("offers")
+      .select("id, status, negotiation_sessions!inner(buyer_session_id, merchant_id)")
+      .eq("quote_id", quote.id)
+      .eq("negotiation_sessions.buyer_session_id", args.buyerSessionId)
+      .eq("negotiation_sessions.merchant_id", merchantId);
+    if (offerError) throw new Error(offerError.message);
+    const accepted = (offerRows ?? []).some((row) => row.status === "accepted");
+    if (!accepted) {
+      return failWith(
+        "offer_not_accepted",
+        "This negotiated discount has not been accepted by the buyer, so checkout is refused.",
+        { quoted_discount_percent: baseQuoteDiscountPercent },
+      );
+    }
+    add("Negotiated offer acceptance confirmed");
+  }
   if (policy.max_order_value > 0 && finalAmount > policy.max_order_value) {
     return failWith(
       "order_value_exceeded",
