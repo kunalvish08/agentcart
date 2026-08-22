@@ -277,16 +277,16 @@ function ProductsPage() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl rounded-none border-border bg-graphite-950 p-0 overflow-hidden font-mono">
-          <DialogHeader className="p-6 border-b border-border bg-graphite-900/50">
-            <div className="flex items-center gap-2 mb-1 text-copper-500">
+        <DialogContent className="max-w-2xl rounded-none border-[#252D38] bg-[#0B0F14] p-0 overflow-hidden font-mono text-[#F5F7FA]">
+          <DialogHeader className="p-6 border-b border-[#252D38] bg-[#11161D]">
+            <div className="flex items-center gap-2 mb-1 text-[#5B8DEF]">
               <Database className="size-4" />
               <span className="text-[10px] font-bold tracking-widest uppercase">Infrastructure Node</span>
             </div>
-            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-foreground">
+            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-[#F5F7FA]">
               {form.id ? "Edit Product" : "New Product"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground uppercase tracking-widest">
+            <DialogDescription className="text-xs text-[#707B8C] uppercase tracking-widest">
               Commercial authority record for TechNova Store
             </DialogDescription>
           </DialogHeader>
@@ -301,28 +301,28 @@ function ProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2 space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Product Information</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Product Information</h3>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Name</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Name</Label>
                     <Input
                       required
-                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
+                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm text-[#F5F7FA]"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Description</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Description</Label>
                     <Textarea
-                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 min-h-[100px] text-sm"
+                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 min-h-[100px] text-sm text-[#F5F7FA]"
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Category</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Category</Label>
                     <Input
-                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
+                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm text-[#F5F7FA]"
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
                     />
@@ -331,28 +331,28 @@ function ProductsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Pricing</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Pricing</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Price (INR)</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Price (INR)</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
+                        className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm font-mono text-[#F5F7FA]"
                         value={form.price}
                         onChange={(e) => setForm({ ...form, price: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Inventory</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Inventory</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Stock Quantity</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Stock Quantity</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
+                        className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm font-mono text-[#F5F7FA]"
                         value={form.stock_quantity}
                         onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
                       />
@@ -363,10 +363,10 @@ function ProductsPage() {
 
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">AI Commerce</h3>
-                  <div className="p-4 border border-border bg-graphite-900 space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">AI Commerce</h3>
+                  <div className="p-4 border border-[#252D38] bg-[#11161D] space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Public Catalog</span>
+                      <span className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Public Catalog</span>
                       <Switch
                         checked={form.status === "active"}
                         onCheckedChange={(checked) =>
@@ -374,20 +374,20 @@ function ProductsPage() {
                         }
                       />
                     </div>
-                    <div className="space-y-2 pt-2 border-t border-border/50">
-                      <div className="flex items-center gap-2 text-verified-500">
+                    <div className="space-y-2 pt-2 border-t border-[#252D38]/50">
+                      <div className="flex items-center gap-2 text-[#35C98A]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Discovery</span>
                       </div>
-                      <div className="flex items-center gap-2 text-verified-500">
+                      <div className="flex items-center gap-2 text-[#35C98A]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Quote</span>
                       </div>
-                      <div className="flex items-center gap-2 text-verified-500">
+                      <div className="flex items-center gap-2 text-[#35C98A]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Negotiation</span>
                       </div>
-                      <div className="flex items-center gap-2 text-verified-500">
+                      <div className="flex items-center gap-2 text-[#35C98A]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Checkout</span>
                       </div>
