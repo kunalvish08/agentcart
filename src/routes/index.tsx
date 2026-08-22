@@ -39,7 +39,6 @@ function ObsidianNode({ title, subtitle, active = false, copper = false, delay =
     </motion.div>
   );
 }
-}
 
 function Signal() {
   return (
