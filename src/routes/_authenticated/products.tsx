@@ -176,7 +176,7 @@ function ProductsPage() {
             <span className="text-[10px] text-muted-foreground">Prices and inventory controlled by merchant server.</span>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent">
