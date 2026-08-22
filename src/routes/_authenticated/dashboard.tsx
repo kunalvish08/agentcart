@@ -14,6 +14,7 @@ import {
   Activity,
   History,
   TrendingUp,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
