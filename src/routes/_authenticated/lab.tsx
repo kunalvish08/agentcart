@@ -386,42 +386,118 @@ function LabPage() {
 
 
                 <TabsContent value="impact" className="space-y-6 pt-6">
+                  {/* Revenue / Conversion lift section */}
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="rounded-sm border border-border bg-card p-5">
-                       <p className="text-[10px] font-bold text-muted-foreground uppercase mb-4">TRADITIONAL STOREFRONT</p>
-                       <div className="text-3xl font-mono mb-6">{money(metrics.traditional.revenue + metrics.traditional.cross_sell_revenue)}</div>
-                       <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                          <div><p className="text-muted-foreground">Conversion</p>{pct(metrics.traditional.conversion_rate)}</div>
-                          <div><p className="text-muted-foreground">AOV</p>{money(metrics.traditional.aov)}</div>
+                    {/* Control Arm */}
+                    <div className="rounded-sm border border-border bg-card p-6">
+                       <div className="flex items-center gap-2 mb-4">
+                         <div className="size-2 rounded-full bg-slate-400" />
+                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">TRADITIONAL STOREFRONT</p>
+                       </div>
+                       <div className="space-y-6">
+                         <div>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Total measured revenue</p>
+                            <div className="text-3xl font-mono text-foreground">{money(metrics.traditional.revenue + metrics.traditional.cross_sell_revenue)}</div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-6 pt-6 border-t border-border/40">
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Conversion</p>
+                               <div className="text-xl font-mono text-foreground">{pct(metrics.traditional.conversion_rate)}</div>
+                            </div>
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">AOV</p>
+                               <div className="text-xl font-mono text-foreground">{money(metrics.traditional.aov)}</div>
+                            </div>
+                         </div>
                        </div>
                     </div>
-                    <div className="rounded-sm border border-blue-500/20 bg-blue-500/5 p-5">
-                       <p className="text-[10px] font-bold text-blue-500 uppercase mb-4">AGENTIC COMMERCE</p>
-                       <div className="text-3xl font-mono mb-6">{money(metrics.agentic.revenue + metrics.agentic.cross_sell_revenue)}</div>
-                       <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                          <div><p className="text-muted-foreground">Conversion</p>{pct(metrics.agentic.conversion_rate)}</div>
-                          <div><p className="text-muted-foreground">AOV</p>{money(metrics.agentic.aov)}</div>
+
+                    {/* Variant Arm */}
+                    <div className="rounded-sm border border-blue-500/20 bg-blue-500/5 p-6 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 p-3 opacity-10">
+                          <TrendingUp className="size-24 text-blue-500" />
+                       </div>
+                       <div className="flex items-center gap-2 mb-4">
+                         <div className="size-2 rounded-full bg-blue-500 animate-pulse" />
+                         <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">AGENTIC COMMERCE</p>
+                       </div>
+                       <div className="space-y-6">
+                         <div>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">Total measured revenue</p>
+                            <div className="text-3xl font-mono text-foreground">{money(metrics.agentic.revenue + metrics.agentic.cross_sell_revenue)}</div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-6 pt-6 border-t border-blue-500/20">
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">Conversion</p>
+                               <div className="text-xl font-mono text-foreground">{pct(metrics.agentic.conversion_rate)}</div>
+                            </div>
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">AOV</p>
+                               <div className="text-xl font-mono text-foreground">{money(metrics.agentic.aov)}</div>
+                            </div>
+                         </div>
                        </div>
                     </div>
                   </div>
 
-                  <div className="rounded-sm border border-border p-6">
-                    <h4 className="text-xs font-bold uppercase mb-4">Merchant Impact Evidence</h4>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                       {[
-                         {l: "Conversion delta", v: signed(metrics.lift.conversion_rate_pp, "pp")},
-                         {l: "Revenue/session delta", v: metrics.lift.revenue_per_session_pct !== null ? signed(metrics.lift.revenue_per_session_pct, "%") : "n/a"},
-                         {l: "Discount impact", v: signed(metrics.lift.discount_rate_pp, "pp")},
-                         {l: "Measured revenue delta", v: money(metrics.lift.revenue_delta)}
-                       ].map((m, i) => (
-                         <div key={i}>
-                           <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{m.l}</p>
-                           <p className={cn("text-lg font-mono font-medium", i !== 2 ? "text-emerald-500" : "text-muted-foreground")}>{m.v}</p>
-                         </div>
-                       ))}
+                  {/* Conversion lift viz bar */}
+                  <div className="rounded-sm border border-border bg-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Conversion Benchmark</p>
+                      <div className="text-[11px] font-bold text-emerald-500 flex items-center gap-1">
+                        {signed(metrics.lift.conversion_rate_pp, "pp")} <span className="text-[9px] font-normal uppercase opacity-60">improvement</span>
+                      </div>
+                    </div>
+                    <div className="h-4 w-full bg-muted/40 rounded-full overflow-hidden flex">
+                      <div 
+                        className="h-full bg-slate-400/40" 
+                        style={{ width: `${(metrics.traditional.conversion_rate / Math.max(metrics.traditional.conversion_rate, metrics.agentic.conversion_rate)) * 100}%` }} 
+                      />
+                      <div 
+                        className="h-full bg-blue-500" 
+                        style={{ width: `${((metrics.agentic.conversion_rate - metrics.traditional.conversion_rate) / Math.max(metrics.traditional.conversion_rate, metrics.agentic.conversion_rate)) * 100}%` }} 
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2 text-[10px] font-mono text-muted-foreground">
+                      <span>Storefront: {pct(metrics.traditional.conversion_rate)}</span>
+                      <span>Agentic: {pct(metrics.agentic.conversion_rate)}</span>
+                    </div>
+                  </div>
+
+                  {/* Merchant Impact Story */}
+                  <div className="rounded-sm border border-border bg-card overflow-hidden">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">The Merchant Story</p>
+                    </div>
+                    <div className="p-6">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                         {[
+                           {l: "Conversion delta", v: signed(metrics.lift.conversion_rate_pp, "pp")},
+                           {l: "Revenue/session delta", v: metrics.lift.revenue_per_session_pct !== null ? signed(metrics.lift.revenue_per_session_pct, "%") : "n/a"},
+                           {l: "Discount impact", v: signed(metrics.lift.discount_rate_pp, "pp")},
+                           {l: "Measured revenue delta", v: money(metrics.lift.revenue_delta)}
+                         ].map((m, i) => (
+                           <div key={i} className="space-y-1">
+                             <p className="text-[9px] text-muted-foreground uppercase tracking-widest">{m.l}</p>
+                             <p className={cn("text-lg font-mono font-medium", i !== 2 && !m.v.includes("-") ? "text-emerald-500" : "text-foreground")}>{m.v}</p>
+                           </div>
+                         ))}
+                      </div>
+                      <div className="space-y-3 text-[11px] text-muted-foreground leading-relaxed border-t border-border pt-6 italic">
+                        <p>
+                          Agentic commerce converted <span className="text-foreground font-bold">{pct(metrics.agentic.conversion_rate)}</span> of sessions against <span className="text-foreground font-bold">{pct(metrics.traditional.conversion_rate)}</span> on the storefront.
+                        </p>
+                        <p>
+                          Total measured revenue delta across this run: <span className="text-emerald-500 font-bold font-mono">{money(metrics.lift.revenue_delta, currency)}</span>.
+                        </p>
+                        <p>
+                          All amounts are sourced from the server's authoritative order and quote records, ensuring data integrity across the evaluation lifecycle.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </TabsContent>
+
                 <TabsContent value="ab" className="pt-6">
                   <div className="rounded-sm border border-border bg-card">
                     <div className="bg-muted/30 border-b border-border px-6 py-4 flex items-center justify-between">
