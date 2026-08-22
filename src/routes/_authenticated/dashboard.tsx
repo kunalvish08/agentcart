@@ -194,13 +194,35 @@ function DashboardPage() {
                 </section>
 
                 {/* SECTION 7: PROOF */}
-                <section className="border-l-4 border-copper bg-card p-6">
+                <motion.section 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="border-l-4 border-copper bg-card p-6"
+                >
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-2">Proof of Authority</h3>
                     <p className="text-[11px] text-muted-foreground mb-6">Run one complete transaction and inspect every server decision.</p>
-                    <Button asChild className="w-full h-10 font-bold uppercase tracking-widest text-[11px]">
+                    <div className="space-y-2 mb-6">
+                        {["11 STEPS", "5 TOOL CALLS", "SERVER PRICING", "VERIFIED PAYMENT"].map((text, idx) => (
+                           <motion.div 
+                             key={text}
+                             initial={{ opacity: 0, x: -10 }}
+                             whileInView={{ opacity: 1, x: 0 }}
+                             transition={{ duration: 0.3, delay: idx * 0.1 + 0.3 }}
+                             className={cn(
+                               "text-[9px] font-bold tracking-widest uppercase flex items-center gap-2",
+                               text === "VERIFIED PAYMENT" ? "text-verified-green" : "text-muted-foreground"
+                             )}
+                           >
+                             <div className={cn("size-1 rounded-full", text === "VERIFIED PAYMENT" ? "bg-verified-green" : "bg-muted-foreground/30")} />
+                             {text}
+                           </motion.div>
+                        ))}
+                    </div>
+                    <Button asChild className="w-full h-10 font-bold uppercase tracking-widest text-[11px] hover:-translate-y-0.5 transition-transform duration-200">
                          <Link to="/judge">Open Judge Mode</Link>
                     </Button>
-                </section>
+                </motion.section>
 
                 {/* SECTION 8: ACTIVITY */}
                 <motion.section 
