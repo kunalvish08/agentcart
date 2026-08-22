@@ -356,22 +356,33 @@ function Landing() {
         <section className="mx-auto max-w-7xl px-6 py-32">
           <div className="grid gap-px bg-border/40 border border-border/40 rounded-sm overflow-hidden md:grid-cols-3">
             <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.6 }}
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
               className="group bg-white p-12 transition-all border-none"
             >
-              <div className="mb-8 text-primary">
+              <motion.div 
+                whileHover={{ rotate: 5, scale: 1.1 }}
+                className="mb-8 text-primary w-fit"
+              >
                 <Search size={24} strokeWidth={1.5} />
-              </div>
+              </motion.div>
               <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-[#3157FF]">DISCOVERABLE</h3>
               <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Make your catalog readable by machines."</p>
               <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 External AI buyers can discover products through a public machine-readable API designed for LLM tool-calling.
               </p>
             </motion.div>
-
+ 
             <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-white p-12 transition-all border-none"
+              className="group bg-white p-12 transition-all border-none relative overflow-hidden"
             >
               <div className="mb-8 text-primary">
                 <Scale size={24} strokeWidth={1.5} />
@@ -381,15 +392,29 @@ function Landing() {
               <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 Merchant policies determine discount limits and commercial decisions. The AI buyer requests, the server enforces.
               </p>
+              {/* Subtle animation representing Policy Limit */}
+              <motion.div 
+                animate={{ x: [-20, 20, -20] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/5 w-1/2 mx-auto"
+              />
             </motion.div>
-
+ 
             <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
               className="group bg-white p-12 transition-all border-none"
             >
-              <div className="mb-8 text-primary">
+              <motion.div 
+                animate={{ y: [0, -3, 0] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                className="mb-8 text-primary w-fit"
+              >
                 <CreditCard size={24} strokeWidth={1.5} />
-              </div>
+              </motion.div>
               <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-[#3157FF]">TRANSACTABLE</h3>
               <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
               <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
