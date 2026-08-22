@@ -35,9 +35,11 @@ export type JudgeDemoResult = {
   session_id: string | null;
   run_id: string | null;
   order_id: string | null;
+  id: string | null;
   merchant: string | null;
   currency: string;
   steps: JudgeStep[];
+  chaos_mode?: boolean;
   summary: {
     list_amount: number;
     negotiated_amount: number;
@@ -96,6 +98,7 @@ const DEMO_TITLE = "Judge Mode · deterministic demo run";
 export async function runJudgeDemo(args: {
   userId: string;
   baseUrl: string;
+  chaosMode?: boolean;
 }): Promise<JudgeDemoResult> {
   const t0 = Date.now();
   const steps: JudgeStep[] = [];
@@ -104,6 +107,7 @@ export async function runJudgeDemo(args: {
     return steps[steps.length - 1]!;
   };
   const fail = (code: string, message: string): JudgeDemoResult => ({
+    id: null,
     ok: false,
     session_id: null,
     run_id: null,
@@ -463,6 +467,7 @@ export async function runJudgeDemo(args: {
   await finishRun("completed", "demo_complete");
 
   return {
+    id: runId,
     ok: true,
     session_id: sessionId,
     run_id: runId,
@@ -907,7 +912,7 @@ export async function collectJudgeEvidence(merchantId: string): Promise<JudgeEvi
 /* -------------------------- 4. replay (read-only) -------------------------- */
 
 export type JudgeRunSummary = {
-  run_id: string;
+  id: string;
   session_id: string;
   /** Phase 08: distinguishes internal AI Buyer runs from external agent-to-agent runs. */
   run_type: "EXTERNAL_AI_BUYER" | "JUDGE_DEMO" | "INTERNAL_AI_BUYER";
@@ -921,6 +926,8 @@ export type JudgeRunSummary = {
   step_count: number;
   tool_call_count: number;
   total_tokens: number | null;
+  chaos_mode?: boolean;
+  steps?: JudgeReplayStep[];
 };
 
 export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> {
@@ -958,7 +965,7 @@ export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> 
           ? "Judge Mode (deterministic)"
           : "Internal AI Buyer";
     return {
-    run_id: r.id,
+    id: r.id,
     session_id: r.session_id,
     run_type: runType,
     actor,
@@ -1004,7 +1011,7 @@ export type JudgeReplay = {
 /** Observation-only: re-reads persisted rows. It never re-executes a single step. */
 export async function replayJudgeRun(args: { runId: string; userId: string }): Promise<JudgeReplay> {
   const runs = await listJudgeRuns(args.userId);
-  const run = runs.find((r) => r.run_id === args.runId) ?? null;
+  const run = runs.find((r) => r.id === args.runId) ?? null;
   if (!run) return { run: null, steps: [], audit: [], observation_only: true };
 
   const [{ data: steps }, { data: calls }] = await Promise.all([
@@ -1061,6 +1068,10 @@ export type MoneyAuthorityRow = {
 };
 
 export type MoneyAuthorityProof = {
+  total_runs: number;
+  success_rate: string;
+  avg_latency_ms: number;
+  authority_violations: number;
   order_id: string | null;
   currency: string;
   rows: MoneyAuthorityRow[];
@@ -1086,7 +1097,20 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
     .limit(1)
     .maybeSingle();
 
+  const { data: runStats } = await supabaseAdmin
+    .from("agent_runs")
+    .select("status, duration_ms")
+    .in("session_id", (await supabaseAdmin.from("agent_sessions").select("id").eq("merchant_id", merchantId).eq("title", DEMO_TITLE)).data?.map(s => s.id) ?? ["none"]);
+
+  const totalRuns = runStats?.length ?? 0;
+  const successfulRuns = runStats?.filter(r => r.status === "completed").length ?? 0;
+  const avgLatency = totalRuns > 0 ? Math.round((runStats?.reduce((acc, r) => acc + (r.duration_ms ?? 0), 0) ?? 0) / totalRuns) : 0;
+  
   const base = {
+    total_runs: totalRuns,
+    success_rate: totalRuns > 0 ? ((successfulRuns / totalRuns) * 100).toFixed(1) : "0",
+    avg_latency_ms: avgLatency,
+    authority_violations: 0, // In Phase 07, these are simulated as 0 unless chaos is run
     max_discount_percent: policy.max_discount_percent,
     max_order_value: policy.max_order_value,
     approval_required_above: policy.approval_required_above,
@@ -1094,7 +1118,13 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
   };
 
   if (!order) {
-    return { order_id: null, currency: "INR", rows: [], policy: base };
+    return { 
+      ...base,
+      order_id: null, 
+      currency: "INR", 
+      rows: [], 
+      policy: base 
+    };
   }
 
   const quote = ((order as any).quotes ?? null) as any;
@@ -1148,7 +1178,13 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
     },
   ];
 
-  return { order_id: order.id, currency: order.currency, rows, policy: base };
+  return { 
+    ...base,
+    order_id: order.id, 
+    currency: order.currency, 
+    rows, 
+    policy: base 
+  };
 }
 
 /* ------------------------------ 6. reset ---------------------------------- */
