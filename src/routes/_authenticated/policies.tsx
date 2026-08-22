@@ -14,6 +14,8 @@ import { Switch } from "@/components/ui/switch";
 import { getWorkspace, updatePolicy } from "@/lib/merchant.functions";
 import { CountUp } from "@/components/dashboard/CountUp";
 
+const policyWorkspaceQueryKey = ["workspace", "policies"] as const;
+
 export const Route = createFileRoute("/_authenticated/policies")({
   component: PoliciesPage,
 });
@@ -51,11 +53,12 @@ function PoliciesPage() {
   const savePolicy = useServerFn(updatePolicy);
 
   const workspace = useQuery({
-    queryKey: ["workspace"],
+    queryKey: policyWorkspaceQueryKey,
     queryFn: () => fetchWorkspace(),
     // The database is the only source of truth for policy flags: always
     // re-read on mount so returning to this page never shows stale booleans.
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: "always",
   });
   const [form, setForm] = useState<PolicyForm | null>(null);
@@ -83,11 +86,16 @@ function PoliciesPage() {
           allow_upsell: state.allow_upsell,
         },
       }),
-    onSuccess: (result) => {
-      toast.success("Policies saved");
+    onSuccess: async (result) => {
       // Reflect the persisted server row, not the local form state.
       const saved = result?.policy;
       if (saved) {
+        queryClient.setQueryData(
+          policyWorkspaceQueryKey,
+          (current: typeof workspace.data) => current
+            ? { ...current, policy: { ...current.policy, ...saved } }
+            : current,
+        );
         setForm({
           max_discount_percent: String(saved.max_discount_percent),
           max_order_value: String(saved.max_order_value),
@@ -96,7 +104,12 @@ function PoliciesPage() {
           allow_upsell: saved.allow_upsell === true,
         });
       }
-      void queryClient.invalidateQueries({ queryKey: ["workspace"] });
+      await queryClient.refetchQueries({
+        queryKey: policyWorkspaceQueryKey,
+        type: "active",
+      });
+      await queryClient.invalidateQueries({ queryKey: ["workspace"] });
+      toast.success("Policies saved");
     },
     onError: (error) =>
       toast.error(error instanceof Error ? error.message : "Could not save policies"),
