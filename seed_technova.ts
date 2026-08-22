@@ -44,6 +44,8 @@ async function run() {
     await supabase.from('products').upsert(products);
     
     // 4. Policy
+    // Seed defaults only when the policy does not exist. Re-running this script
+    // must never overwrite settings the merchant committed in the console.
     await supabase.from('merchant_policies').upsert({
       merchant_id: merchant.id,
       max_discount_percent: 12,
@@ -51,6 +53,9 @@ async function run() {
       approval_required_above: 50000,
       allow_negotiation: true,
       allow_upsell: true
+    }, {
+      onConflict: 'merchant_id',
+      ignoreDuplicates: true,
     });
   }
 }
