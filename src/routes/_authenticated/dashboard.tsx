@@ -233,12 +233,16 @@ function Rule({ label, value, index = 0 }: any) {
     )
 }
 
-function SmallStat({ label, value }: any) {
+function SmallStat({ label, value, index = 0 }: any) {
     return (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: index * 0.1 }}
+        >
             <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest mb-1">{label}</p>
-            <p className="text-sm font-bold font-mono">{value}</p>
-        </div>
+            <p className="text-sm font-bold font-mono"><CountUp value={value} /></p>
+        </motion.div>
     )
 }
 
