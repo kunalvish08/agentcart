@@ -288,7 +288,7 @@ function Landing() {
                   </ul>
                 </div>
                 <div className="bg-primary/[0.03] p-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#36C5D8]">SERVER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Controls</h3>
                   <ul className="mt-8 space-y-5">
                     {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item) => (
