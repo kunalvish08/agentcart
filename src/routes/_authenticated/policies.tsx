@@ -62,9 +62,10 @@ function PoliciesPage() {
     refetchOnMount: "always",
   });
   const [form, setForm] = useState<PolicyForm | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   useEffect(() => {
-    if (!workspace.data) return;
+    if (!workspace.data || hasUnsavedChanges) return;
     const policy = workspace.data.policy;
     setForm({
       max_discount_percent: String(policy.max_discount_percent),
@@ -73,7 +74,7 @@ function PoliciesPage() {
       allow_negotiation: policy.allow_negotiation === true,
       allow_upsell: policy.allow_upsell === true,
     });
-  }, [workspace.data]);
+  }, [hasUnsavedChanges, workspace.data]);
 
   const mutation = useMutation({
     mutationFn: (state: PolicyForm) =>
@@ -90,6 +91,7 @@ function PoliciesPage() {
       // Reflect the persisted server row, not the local form state.
       const saved = result?.policy;
       if (saved) {
+        setHasUnsavedChanges(false);
         queryClient.setQueryData(
           policyWorkspaceQueryKey,
           (current: typeof workspace.data) => current
@@ -267,7 +269,10 @@ function PoliciesPage() {
                 </span>
                 <Switch
                   checked={form.allow_negotiation}
-                  onCheckedChange={(checked) => setForm({ ...form, allow_negotiation: checked })}
+                  onCheckedChange={(checked) => {
+                    setHasUnsavedChanges(true);
+                    setForm((current) => current ? { ...current, allow_negotiation: checked } : current);
+                  }}
                 />
               </div>
             </div>
@@ -284,7 +289,10 @@ function PoliciesPage() {
                 </span>
                 <Switch
                   checked={form.allow_upsell}
-                  onCheckedChange={(checked) => setForm({ ...form, allow_upsell: checked })}
+                  onCheckedChange={(checked) => {
+                    setHasUnsavedChanges(true);
+                    setForm((current) => current ? { ...current, allow_upsell: checked } : current);
+                  }}
                 />
               </div>
             </div>
