@@ -88,15 +88,15 @@ function DashboardPage() {
         {/* 1. HEADER / STORE STATUS */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-6">
           <div className="flex flex-col gap-1">
-             <h2 className="text-3xl font-semibold tracking-tight text-slate-900">TechNova Store</h2>
+             <h2 className="text-3xl font-bold tracking-tight text-foreground">{data?.merchant.name ?? "TechNova Store"}</h2>
              <div className="flex items-center gap-3">
-               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.65_0.15_160)]">
-                 <div className="h-1.5 w-1.5 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
-                 STORE ACTIVE
+               <div className="flex items-center gap-1.5 rounded-full bg-verified-green/10 px-2.5 py-0.5 text-[10px] font-bold text-verified-green">
+                 <div className="h-1.5 w-1.5 rounded-full bg-verified-green animate-pulse" />
+                 STORE LIVE
                </div>
-               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.75_0.15_200)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.75_0.15_200)]">
+               <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
                  <ShieldCheck className="size-3" />
-                 AI COMMERCE ENABLED
+                 SERVER AUTHORITY ACTIVE
                </div>
              </div>
           </div>
