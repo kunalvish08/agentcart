@@ -23,9 +23,10 @@ export type PersistedTurn = {
     latency_ms?: number;
     tool_name?: string;
   }>;
-  recommendation: Record<string, unknown> | null;
+  recommendation: any | null;
   notices: Array<{ code: string; message: string }>;
-  meta: Record<string, unknown>;
+  meta: any;
+
 };
 
 export type PersistedConversation = {
