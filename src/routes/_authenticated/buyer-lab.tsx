@@ -838,7 +838,7 @@ function BuyerLabPage() {
                 <p className="text-[10px] font-bold text-foreground uppercase tracking-widest border-b border-border/40 pb-2 flex items-center gap-2">
                   <Activity className="size-3" /> Tool Reliability
                 </p>
-                <div className="rounded-sm border border-border/40 overflow-hidden">
+                <div className="rounded-sm border border-border/40 overflow-x-auto no-scrollbar">
                   <table className="w-full text-[10px] font-mono">
                     <thead className="bg-muted/30 border-b border-border/40 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                       <tr>
