@@ -46,7 +46,7 @@ function Signal() {
       <motion.div 
         animate={{ y: [0, 32], opacity: [0, 1, 0] }}
         transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-        className="w-px h-8 bg-copper"
+        className="w-px h-8 bg-primary"
       />
     </div>
   );
