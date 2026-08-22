@@ -442,10 +442,31 @@ export async function eligibleGrowthRecommendations(args: {
   note?: string;
 }> {
   const policy = await getPolicy(args.merchant.id);
-  const { fetchRelatedProducts } = await import("@/lib/public-api.server");
   const { recordRevenueEvent } = await import("@/lib/revenue.server");
+
+  if (!policy.allow_upsell) {
+    // Record that we blocked a recommendation attempt due to policy
+    await recordRevenueEvent({
+      merchantId: args.merchant.id,
+      event: "REVENUE_OPPORTUNITY_DETECTED",
+      buyerSessionId: args.buyerSessionId ?? null,
+      sourceProductId: args.productId,
+      reason: "Blocked by merchant policy (allow_upsell is OFF)",
+      detail: { allow_upsell: false, policy_authority: "server" },
+    });
+    return {
+      source_product_id: args.productId,
+      source_product_name: (await loadSellableProduct(args.merchant.id, args.productId))?.name ?? null,
+      count: 0,
+      recommendations: [],
+      note: "Merchant policy has disabled upselling/cross-selling recommendations.",
+    };
+  }
+
+  const { fetchRelatedProducts } = await import("@/lib/public-api.server");
   const source = await loadSellableProduct(args.merchant.id, args.productId);
-  const related = await fetchRelatedProducts(args.merchant.id, args.productId, policy.allow_upsell);
+  const related = await fetchRelatedProducts(args.merchant.id, args.productId, true);
+
 
   const limit = Math.max(1, Math.min(2, args.limit ?? 2));
   const candidates = related

@@ -71,9 +71,19 @@ export const respondToRecommendation = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getPolicy } = await import("@/lib/public-api.server");
     const policy = await getPolicy(rec.merchant_id);
-    if (type === "upsell" && !policy.allow_upsell) {
-      throw new Error("Upselling is disabled by merchant policy");
+    if (!policy.allow_upsell) {
+      await recordRevenueEvent({
+        merchantId: rec.merchant_id,
+        event: "REVENUE_OPPORTUNITY_DETECTED",
+        buyerSessionId: rec.buyer_session_id,
+        sourceProductId: rec.source_product_id,
+        productId: rec.recommended_product_id,
+        reason: "Blocked by merchant policy (allow_upsell is OFF)",
+        detail: { allow_upsell: false, policy_authority: "server" },
+      });
+      throw new Error("Upselling and cross-selling are disabled by merchant policy");
     }
+
 
     const { data: merchant } = await supabaseAdmin
       .from("merchants")
