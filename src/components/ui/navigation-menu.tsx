@@ -51,7 +51,31 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            use CSS to completely hide the Lovable badge (the 'Made with Lovable' element), without breaking the layout`}
+                                            ┌──────────────────────────────────┐
+│ ☰   Agentic Commerce        👤  │
+├──────────────────────────────────┤
+│                                  │
+│        Current Page              │
+│                                  │
+└──────────────────────────────────┘
+
+        ↓ tap ☰
+
+┌──────────────────────────────────┐
+│ Agentic Commerce                 │
+├──────────────────────────────────┤
+│  ▣  Dashboard                    │
+│  ◉  AI Buyer                     │
+│  ◎  External AI Buyer            │
+│  ✓  Approvals                    │
+│  □  Products                     │
+│  ◇  Policies                     │
+│  ◈  Evaluation Lab               │
+│  ⚡ Judge Mode                    │
+├──────────────────────────────────┤
+│  demo@technova.test              │
+│  Sign out                        │
+└──────────────────────────────────┘`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
