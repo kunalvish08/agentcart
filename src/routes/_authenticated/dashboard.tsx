@@ -112,7 +112,7 @@ function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-2xl border border-border bg-card p-8 shadow-sm overflow-hidden"
+          className="relative rounded-sm border border-border bg-card p-8 shadow-none overflow-hidden"
         >
           <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
                style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '32px 32px' }} />
@@ -232,13 +232,13 @@ function DashboardPage() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 text-xs">
-                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                  <div className="rounded-sm border border-border/40 bg-muted/20 p-3">
                     <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Human Decision Needed</p>
-                    <p className="text-sm font-semibold">{checkout?.pendingApprovals ?? 0} orders awaiting review</p>
+                    <p className="text-sm font-bold">{checkout?.pendingApprovals ?? 0} orders awaiting review</p>
                   </div>
-                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                  <div className="rounded-sm border border-border/40 bg-muted/20 p-3">
                     <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Payment Pending</p>
-                    <p className="text-sm font-semibold">{inr.format(checkout?.paymentPendingValue ?? 0)} in transit</p>
+                    <p className="text-sm font-bold font-mono">{inr.format(checkout?.paymentPendingValue ?? 0)} in transit</p>
                   </div>
                 </div>
               </CardContent>
@@ -265,7 +265,7 @@ function DashboardPage() {
                 <div className="pt-4 border-t border-border/40 space-y-3 opacity-80">
                   <div className="flex flex-col gap-1">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Discovery Manifest</p>
-                    <code className="text-[10px] bg-white border border-border/60 rounded px-2 py-1 truncate text-slate-500">{manifestUrl}</code>
+                    <code className="text-[10px] bg-white border border-border/60 rounded-sm px-2 py-1 truncate text-slate-500 font-mono">{manifestUrl}</code>
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-tight">
                     <span className="text-muted-foreground">API Requests (24h)</span>
@@ -319,11 +319,11 @@ function DashboardPage() {
                       .slice(0, 5)
                       .map((event) => (
                         <div key={event.id} className="relative pl-6 space-y-1">
-                          <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
-                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-[oklch(0.55_0.18_25)]' : 'bg-primary/60')} />
+                          <div className="absolute left-0 top-[5px] size-[15px] rounded-sm bg-white border border-border flex items-center justify-center">
+                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
                           </div>
-                          <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
-                          <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                          <p className="text-[9px] font-mono text-muted-foreground/60">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
                         </div>
                       ))
                   ) : (
