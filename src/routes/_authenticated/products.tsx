@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Pencil, Plus } from "lucide-react";
+import { Loader2, Pencil, Plus, MoreHorizontal, ShieldCheck, Database, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { AppShell } from "@/components/AppShell";
@@ -17,6 +17,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,6 +45,8 @@ import {
   updateStock,
 } from "@/lib/merchant.functions";
 import type { ProductRow } from "@/lib/merchant-schemas";
+import { ProductsHeader } from "@/components/products/ProductsHeader";
+import { CatalogToolbar } from "@/components/products/CatalogToolbar";
 
 export const Route = createFileRoute("/_authenticated/products")({
   component: ProductsPage,
