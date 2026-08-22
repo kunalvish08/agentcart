@@ -64,8 +64,8 @@ function Landing() {
             <span className="text-sm font-bold tracking-tight text-foreground">Agentic Commerce</span>
             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">AI INFRASTRUCTURE</span>
           </div>
-          <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-            <Link to="/agent-api" className="hover:text-foreground transition-colors">Agent API</Link>
+          <div className="flex items-center gap-4 sm:gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            <Link to="/agent-api" className="hidden sm:block hover:text-foreground transition-colors">Agent API</Link>
             <Link to="/login" className="hover:text-foreground transition-colors">Merchant Console</Link>
             <button 
               onClick={toggleTheme}
