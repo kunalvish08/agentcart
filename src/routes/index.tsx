@@ -205,7 +205,7 @@ function Landing() {
             </div>
 
           </div>
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <div className="mt-8 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
              <div>No client-side pricing</div>
              <div>No AI-controlled discounts</div>
              <div>No autonomous payment capture</div>
