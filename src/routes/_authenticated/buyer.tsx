@@ -338,25 +338,32 @@ function BuyerPage() {
             </div>
             
             <div className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
-                <span className="text-xs font-mono font-bold text-foreground">7</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
-                <span className="text-xs font-mono font-bold text-foreground">10</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
-                <span className="text-xs font-mono font-bold text-foreground">20</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
-                <span className="text-[10px] font-bold text-verified-green">SERVER</span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={7} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={10} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={20} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
+                  <motion.span 
+                    initial={{ backgroundColor: "transparent" }}
+                    animate={{ backgroundColor: ["#22c55e10", "transparent"] }}
+                    transition={{ duration: 1.5 }}
+                    className="text-[10px] font-bold text-verified-green px-1.5 rounded"
+                  >
+                    SERVER
+                  </motion.span>
+                </div>
             </div>
           </div>
         </header>
