@@ -443,14 +443,29 @@ export async function eligibleGrowthRecommendations(args: {
 }> {
   const policy = await getPolicy(args.merchant.id);
   const { fetchRelatedProducts } = await import("@/lib/public-api.server");
+  const { recordRevenueEvent } = await import("@/lib/revenue.server");
   const source = await loadSellableProduct(args.merchant.id, args.productId);
   const related = await fetchRelatedProducts(args.merchant.id, args.productId, policy.allow_upsell);
 
   const limit = Math.max(1, Math.min(2, args.limit ?? 2));
-  const picks = related
+  const candidates = related
     .filter((r) => r.in_stock)
-    .filter((r) => r.relation_type === "upsell" || r.relation_type === "cross_sell")
-    .slice(0, limit);
+    .filter((r) => r.relation_type === "upsell" || r.relation_type === "cross_sell");
+  const picks = candidates.slice(0, limit);
+
+  if (candidates.length > 0) {
+    await recordRevenueEvent({
+      merchantId: args.merchant.id,
+      event: "REVENUE_OPPORTUNITY_DETECTED",
+      buyerSessionId: args.buyerSessionId ?? null,
+      sourceProductId: args.productId,
+      detail: {
+        candidate_count: candidates.length,
+        allow_upsell: policy.allow_upsell,
+        policy_authority: "server",
+      },
+    });
+  }
 
   if (picks.length === 0) {
     return {
@@ -461,6 +476,7 @@ export async function eligibleGrowthRecommendations(args: {
       note: "No eligible related products are active and in stock. Do not suggest anything else.",
     };
   }
+
 
   const recommendations: GrowthRecommendation[] = [];
   for (const pick of picks) {
