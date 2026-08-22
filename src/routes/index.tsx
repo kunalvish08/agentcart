@@ -179,10 +179,10 @@ function Landing() {
                 transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-12 flex flex-col items-center gap-6 sm:flex-row"
               >
-                <Button asChild size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest shadow-none rounded-none sm:w-auto">
+                <Button asChild size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest shadow-none rounded-none sm:w-auto transition-transform hover:translate-y-[-2px]">
                   <Link to="/login">Open merchant console</Link>
                 </Button>
-                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-colors sm:w-auto">
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-all hover:translate-x-1 sm:w-auto">
                   <Link to="/agent-api" className="flex items-center gap-2">
                     Explore Agent API <ArrowRight size={14} />
                   </Link>
