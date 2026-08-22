@@ -324,142 +324,250 @@ function BuyerPage() {
   return (
     <AppShell
       title="AI Buyer"
-      subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
+      subtitle="Your autonomous commerce agent"
       accountLabel={merchant?.name}
     >
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="flex min-w-0 flex-col gap-4">
-          <Card className="border-dashed">
-            <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <Bot className="size-4" /> Tools: search · product · quote · policy · negotiate · checkout ·
-                growth
+      <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-6">
+        {/* 1. PAGE HEADER (Infrastructure Style) */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/60">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-2">AI BUYER</p>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-3">Your autonomous commerce agent</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Searches products, requests server-authoritative quotes and can request checkout — but never controls price or payment.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-4 md:gap-8">
+            <div className="flex flex-col">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Tools</span>
+              <span className="text-xl font-mono font-bold text-foreground">7</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Max Steps</span>
+              <span className="text-xl font-mono font-bold text-foreground">10</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Max Tool Calls</span>
+              <span className="text-xl font-mono font-bold text-foreground">20</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Pricing</span>
+              <span className="text-xl font-bold text-verified-green">SERVER</span>
+            </div>
+          </div>
+        </header>
 
-              </span>
-              <span>Max 10 steps</span>
-              <span>Max 20 tool calls</span>
-              <span>Pricing authority: server</span>
-            </CardContent>
-          </Card>
+        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+          <div className="flex flex-col gap-8 min-w-0">
+            {/* 2. PRIMARY AI WORKSPACE */}
+            <section className="flex flex-col gap-6">
+              <div className="space-y-1">
+                <h2 className="text-lg font-bold text-foreground">What are you looking for?</h2>
+                <p className="text-sm text-muted-foreground">
+                  Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.
+                </p>
+              </div>
 
-          <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-
-
-
-          <div className="flex flex-col gap-6">
-            {turns.length === 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Ask for what you need</CardTitle>
-                  <CardDescription>
-                    The agent searches the live TechNova catalog, inspects the strongest match and
-                    asks the server for an authoritative quote. It never invents products or prices.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2">
-                  {SUGGESTIONS.map((s) => (
-                    <Button key={s} variant="outline" size="sm" onClick={() => void send(s)}>
-                      {s}
-                    </Button>
-                  ))}
-                </CardContent>
-              </Card>
-            ) : null}
-
-            {turns.map((turn) =>
-              turn.role === "user" ? (
-                <div key={turn.id} className="flex justify-end">
-                  <div className="flex max-w-[85%] items-start gap-3 rounded-lg rounded-tr-none bg-secondary px-4 py-3 text-sm text-secondary-foreground">
-                    <span className="whitespace-pre-wrap">{turn.content}</span>
-                    <User className="mt-0.5 size-4 shrink-0 opacity-60" />
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-30 group-focus-within:opacity-100 transition duration-500" />
+                <div className="relative bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+                  <Textarea
+                    value={input}
+                    onChange={(event) => setInput(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                        void send(input);
+                      }
+                    }}
+                    placeholder='e.g. Find a developer laptop under ₹60,000'
+                    className="w-full min-h-[120px] bg-transparent border-0 focus-visible:ring-0 resize-none p-6 text-base font-medium placeholder:text-muted-foreground/40"
+                    disabled={running}
+                  />
+                  <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
+                    <div className="flex flex-wrap gap-2">
+                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setInput(s)}
+                          className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                    {running ? (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => abortRef.current?.abort()}
+                        className="h-9 px-4 text-[11px] font-bold uppercase tracking-widest"
+                      >
+                        <Loader2 className="mr-2 size-3.5 animate-spin" />
+                        Stop Agent
+                      </Button>
+                    ) : (
+                      <Button 
+                        onClick={() => void send(input)} 
+                        disabled={!input.trim()}
+                        className="h-9 px-6 bg-copper hover:bg-copper/90 text-white text-[11px] font-bold uppercase tracking-widest"
+                      >
+                        <Send className="mr-2 size-3.5" />
+                        Ask Agent
+                      </Button>
+                    )}
                   </div>
                 </div>
+              </div>
+            </section>
+
+            {/* 3. LIVE AGENT WORKSPACE */}
+            <section className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
+                {sessionId && (
+                  <span className="text-[10px] font-mono text-muted-foreground">SESSION: {sessionId.slice(0, 8)}</span>
+                )}
+              </div>
+
+              {turns.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
+                  <Bot className="size-10 text-muted-foreground/20 mb-4" />
+                  <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
+                </div>
               ) : (
-                <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
-              ),
-            )}
-            <div ref={bottomRef} />
+                <div className="flex flex-col gap-6">
+                  {turns.map((turn) =>
+                    turn.role === "user" ? (
+                      <div key={turn.id} className="flex flex-col gap-2 opacity-60">
+                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest ml-4">Intent</p>
+                         <div className="ml-4 border-l-2 border-border pl-4 py-1">
+                           <p className="text-sm font-medium text-foreground">{turn.content}</p>
+                         </div>
+                      </div>
+                    ) : (
+                      <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
+                    )
+                  )}
+                  <div ref={bottomRef} />
+                </div>
+              )}
+            </section>
           </div>
 
-          <Card className="sticky bottom-4 shadow-sm">
-            <CardContent className="flex items-end gap-3 py-4">
-              <Textarea
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    void send(input);
-                  }
-                }}
-                placeholder="e.g. I need a coding laptop under ₹60,000."
-                rows={2}
-                className="min-h-[52px] resize-none"
-                disabled={running}
-              />
-              {running ? (
-                <Button variant="outline" onClick={() => abortRef.current?.abort()}>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Stop
-                </Button>
-              ) : (
-                <Button onClick={() => void send(input)} disabled={!input.trim()}>
-                  <Send className="mr-2 size-4" />
-                  Ask
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+          <aside className="flex flex-col gap-8">
+            {/* 4. SERVER AUTHORITY PANEL */}
+            <section className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+              <div className="px-5 py-4 bg-muted/30 border-b border-border">
+                <h3 className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</h3>
+              </div>
+              <div className="p-5 space-y-6">
+                <div>
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Agent Can</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Search", "Inspect", "Quote Request", "Negotiate", "Checkout Request"].map(c => (
+                      <span key={c} className="px-2 py-0.5 text-[9px] font-bold bg-muted text-muted-foreground rounded uppercase">{c}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-3">Server Controls</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Price", "Discount", "Inventory", "Policy", "State", "Verification"].map(c => (
+                      <span key={c} className="px-2 py-0.5 text-[9px] font-bold bg-copper/10 text-copper rounded uppercase">{c}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-border/40">
+                  <p className="text-[10px] font-medium text-muted-foreground leading-relaxed italic">
+                    AI intent is bounded by merchant policy. All calculations occur on protected server hardware.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* 8. GUARDRAILS (Infrastructure footer) */}
+            <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
+              <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
+              <ul className="space-y-3">
+                {[
+                  "Registered tools only",
+                  "Server-side argument validation",
+                  "Server-computed pricing",
+                  "Server-authoritative checkout",
+                  "No autonomous payment capture"
+                ].map(rule => (
+                  <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground">
+                    <Check className="size-3 text-verified-green shrink-0 mt-0.5" />
+                    <span>{rule}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </aside>
         </div>
 
-        <aside className="flex flex-col gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <History className="size-4" /> Session history
-              </CardTitle>
-              <CardDescription>Persisted agent runs for this account.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {sessions.isLoading ? (
-                <p className="text-sm text-muted-foreground">Loading…</p>
-              ) : (sessions.data?.length ?? 0) === 0 ? (
-                <p className="text-sm text-muted-foreground">No agent sessions yet.</p>
-              ) : (
-                sessions.data!.map((session) => (
-                  <div key={session.id} className="rounded-md border border-border px-3 py-2">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {session.title ?? "Untitled request"}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {new Date(session.created_at).toLocaleString("en-IN")} · {session.runs} run
-                      {session.runs === 1 ? "" : "s"} · {session.total_tool_calls} tool calls
-                    </p>
-                    <Badge variant="outline" className="mt-2 text-xs">
-                      {session.status}
-                    </Badge>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
+        {/* 5. YOUR ORDERS */}
+        <section className="mt-8">
+          <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
+        </section>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Guardrails</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
-              <p>· Model reaches the catalog only through registered, validated tools.</p>
-              <p>· Every tool argument is re-validated server-side.</p>
-              <p>· Prices, discounts and policy caps are computed by the quote API.</p>
-              <p>· Checkout amounts are copied from the server quote; the agent cannot approve.</p>
-              <p>· No payment is captured in this phase — orders stop at payment pending.</p>
-            </CardContent>
-          </Card>
-        </aside>
+        {/* 7. SESSION HISTORY */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border/40 pb-2">
+            <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
+            <History className="size-4 text-muted-foreground/40" />
+          </div>
+          
+          <div className="bg-card border border-border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="bg-muted/30 border-b border-border">
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Intent</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Time</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/40">
+                  {sessions.isLoading ? (
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></tr>
+                  ) : (sessions.data?.length ?? 0) === 0 ? (
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
+                  ) : (
+                    sessions.data!.map((session) => (
+                      <tr key={session.id} className="hover:bg-muted/10 transition-colors">
+                        <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
+                          {session.title ?? "General Request"}
+                        </td>
+                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+                          {new Date(session.created_at).toLocaleString("en-IN", { 
+                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                          })}
+                        </td>
+                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+                          {session.runs} run{session.runs === 1 ? "" : "s"} · {session.total_tool_calls} tool calls
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-border/60">
+                            {session.status}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
       </div>
     </AppShell>
   );
+}
 }
 
 /* ------------------------------ assistant turn ----------------------------- */
