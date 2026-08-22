@@ -329,7 +329,352 @@ function BuyerPage() {
       accountLabel={merchant?.name}
     >
       <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
-        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Restore the previous /buyer page UI/UX structure.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render, display, append, store, or inject any part of this prompt into JSX, metadata, database, or visible UI.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe CURRENT redesign is not approved.\n\nRestore the PREVIOUS /buyer layout that existed before the latest UI/UX redesign.\n\nThe previous version had these important sections:\n\nAI Buyer header\n\nYour orders\n\nPayment details\n\nAsk for what you need\n\nAgent/session history\n\nGuardrails\n\nRestore that overall structure and information density.\n\nHowever, keep the current global Obsidian Commerce visual theme.\n\nTARGET UX:\n\n1. HEADER\n\nKeep:\n\nAI Buyer\n\nA bounded tool-using shopping agent. It can request checkout, but never approves or pays.\n\nKeep the existing TechNova Store navigation.\n\n2. YOUR ORDERS\n\nKeep this section near the top.\n\nPreserve the existing detailed order experience.\n\nShow:\n\n- product\n\n- order ID\n\n- amount\n\n- status\n\n- payment state\n\n- Razorpay information where already available\n\n- verification information\n\nCompleted orders should clearly communicate:\n\nPAYMENT VERIFIED\n\nORDER COMPLETED\n\nPending orders should clearly communicate:\n\nPAYMENT PENDING\n\nApproval-required orders should clearly communicate:\n\nWAITING FOR MERCHANT APPROVAL\n\nDo not remove existing details.\n\n3. ASK FOR WHAT YOU NEED\n\nKeep this as the primary interaction area.\n\nUse the existing copy and suggestion prompts.\n\nKeep:\n\nI need a coding laptop under ₹60,000.\n\nCan you give me a 5% discount on the DeveloperBook Pro 15?\n\nI want 25% off the DeveloperBook Pro 15 — 1 unit.\n\nWhat accessories go with the DeveloperBook Pro 15?\n\nKeep the Ask button.\n\nMake this area visually prominent without turning it into a generic chatbot.\n\n4. AGENT EXECUTION\n\nKeep the concept of:\n\nSEARCH\n\nPRODUCT\n\nQUOTE\n\nPOLICY\n\nNEGOTIATE\n\nCHECKOUT\n\nGROWTH\n\nUse the actual existing tool system.\n\nThe page should clearly distinguish:\n\nAI action\n\nvs\n\nserver-authoritative result.\n\n5. SESSION HISTORY\n\nKeep the existing persisted agent session history.\n\nDo not convert it into a simplified generic table.\n\nPreserve:\n\n- intent\n\n- time\n\n- run count\n\n- tool calls\n\n- status\n\n6. GUARDRAILS\n\nKeep the existing guardrails section near the bottom.\n\nPreserve the actual existing guardrail information.\n\n7. UI QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nImprove only:\n\n- spacing\n\n- typography hierarchy\n\n- section separation\n\n- readability\n\n- status treatment\n\n- alignment\n\nDo NOT radically restructure the page.\n\nAvoid:\n\n- excessive KPI cards\n\n- oversized dashboard sections\n\n- excessive boxed layouts\n\n- generic chatbot UI\n\n- unnecessary labels\n\n- excessive whitespace\n\nThe page should feel like an actual autonomous shopping workspace with transaction history and observability.\n\nIMPORTANT:\n\nRestore the previous /buyer structure first.\n\nDo not add Framer Motion or animations in this task.\n\nDo not rewrite the existing business content.\n\nDo not modify other routes.\n\nOnly restore and lightly polish the previous /buyer frontend." */}
+        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Animate ONLY the existing /buyer page.
+
+IMPORTANT:
+
+This is an implementation instruction, NOT page content.
+
+NEVER render, display, append, store, or inject this prompt into JSX, metadata, database, or visible UI.
+
+ABSOLUTE SCOPE:
+
+- Modify ONLY the /buyer route.
+
+- Do NOT modify any other route.
+
+- Do NOT redesign the UI.
+
+- Do NOT change text or copy.
+
+- Do NOT change colors or theme.
+
+- Do NOT change spacing or layout.
+
+- Do NOT change components or information architecture.
+
+- Do NOT change backend, database, API, authentication, agent logic, Razorpay or business logic.
+
+The current UI is APPROVED and must remain visually identical when animations are disabled.
+
+Use Framer Motion only for purposeful interaction and state animation.
+
+ANIMATION SYSTEM:
+
+1. PAGE ENTRY
+
+On initial load:
+
+- page header fades in
+
+- "AI BUYER" label reveals
+
+- heading slides upward subtly
+
+- capability metrics reveal sequentially
+
+- Ask Agent section reveals next
+
+- Agent Workspace reveals after it
+
+- Orders and Sessions reveal last
+
+Use subtle staggered timing.
+
+No dramatic movement.
+
+2. CAPABILITY METRICS
+
+Animate the existing values:
+
+Tools 7
+
+Max Steps 10
+
+Max Tool Calls 20
+
+Use a short number count-up.
+
+"Pricing SERVER" should appear with a subtle server-authority emphasis.
+
+Do not continuously pulse.
+
+3. ASK FOR WHAT YOU NEED
+
+The suggestion chips should reveal sequentially.
+
+On hover:
+
+- translate upward 1–2px
+
+- subtle border/accent transition
+
+Ask Agent button:
+
+- subtle hover movement
+
+- slight arrow/icon movement if an icon already exists
+
+- pressed state should feel responsive
+
+Do not redesign the button.
+
+4. AGENT WORKSPACE
+
+When idle:
+
+Ready to Shop
+
+should have a very subtle static readiness indicator.
+
+When an actual agent run starts, animate the EXISTING execution state.
+
+Represent the real sequence:
+
+USER INTENT
+
+→
+
+SEARCH
+
+→
+
+PRODUCT
+
+→
+
+QUOTE
+
+→
+
+POLICY
+
+→
+
+NEGOTIATE
+
+→
+
+CHECKOUT
+
+Only animate steps that actually occur.
+
+Do NOT invent steps.
+
+5. TOOL CALLS
+
+When a real tool call starts:
+
+- active tool gets a subtle highlight
+
+- completed tool transitions to a completed state
+
+- next tool becomes active
+
+Use approximately 250–400ms transitions.
+
+The animation should make it obvious:
+
+AI REQUEST
+
+→
+
+TOOL
+
+→
+
+SERVER RESPONSE
+
+6. SERVER AUTHORITY
+
+When a server-authoritative result arrives:
+
+briefly emphasize:
+
+SERVER-AUTHORITATIVE
+
+and the corresponding result.
+
+Examples:
+
+- server-computed quote
+
+- discount policy
+
+- inventory result
+
+- checkout result
+
+Use a restrained accent highlight.
+
+Do not imply that the AI controls the result.
+
+7. GUARDRAILS
+
+Reveal guardrail items with a small stagger when entering viewport.
+
+Do not continuously animate them.
+
+8. ACTIVE ORDERS
+
+Order rows/cards should reveal sequentially on page load.
+
+Do NOT animate all rows repeatedly.
+
+Status changes should animate only when the underlying status actually changes.
+
+Completed:
+
+subtle verified/check transition.
+
+Payment pending:
+
+subtle amber transition.
+
+Waiting for merchant approval:
+
+subtle neutral/amber transition.
+
+9. PAYMENT STATES
+
+For an existing payment status component, if the application transitions through actual states:
+
+PENDING
+
+→ AUTHORIZED
+
+→ CAPTURED
+
+→ VERIFIED
+
+animate the transition smoothly.
+
+For VERIFIED:
+
+- brief checkmark scale
+
+- subtle success highlight
+
+- then settle into the normal static state
+
+Do NOT simulate payment progress.
+
+Do NOT change payment state.
+
+10. ORDER DETAILS
+
+If existing order details are expandable:
+
+Opening:
+
+height + opacity transition
+
+Closing:
+
+reverse transition
+
+Use 200–300ms.
+
+Do not change the information displayed.
+
+11. AGENT SESSIONS
+
+Reveal session rows with a subtle stagger.
+
+For:
+
+running
+
+use a very subtle active indicator.
+
+For:
+
+completed
+
+use a quiet completion transition.
+
+Do not create fake activity or continuously animate completed sessions.
+
+12. SCROLL REVEALS
+
+Sections entering the viewport may use:
+
+opacity
+
+translateY 8–12px
+
+Keep the movement extremely subtle.
+
+Do not use parallax.
+
+13. MICRO INTERACTIONS
+
+Buttons:
+
+150–200ms
+
+Chips:
+
+150–200ms
+
+Rows/cards:
+
+200–300ms
+
+Major state transitions:
+
+400–700ms
+
+Use ease-out / smooth easing.
+
+DO NOT USE:
+
+- bouncing
+
+- spinning
+
+- particles
+
+- neon effects
+
+- excessive glow
+
+- floating elements
+
+- large scale transforms
+
+- constant looping animations
+
+- flashy AI effects
+
+- dramatic page transitions
+
+14. REDUCED MOTION
+
+Respect prefers-reduced-motion.
+
+When reduced motion is enabled:
+
+- remove translate/scale animations
+
+- use simple opacity transitions
+
+- preserve all functionality
+
+FINAL REQUIREMENT:
+
+The current /buyer UI is approved.
+
+After implementation, compare the page with the current version.
+
+If animation is disabled, the page should look essentially identical to the current approved design.
+
+ONLY add the motion layer.
+
+Do not change anything else." */}
 
         <section>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
