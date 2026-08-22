@@ -721,23 +721,45 @@ function AssistantTurn({
               </button>
               {open ? (
                 <div className="space-y-3 px-4 py-4">
-                  {turn.steps.map((step) => (
-                    <div key={step.step_number} className="flex items-center gap-3 text-sm">
-                      {stepIcon(step)}
-                      <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
-                      {step.tool_name ? (
-                        <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                          {step.tool_name}
-                        </code>
-                      ) : null}
-                      {step.latency_ms !== undefined ? (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Clock className="size-3" />
-                          {step.latency_ms} ms
-                        </span>
-                      ) : null}
-                    </div>
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {turn.steps.map((step, idx) => (
+                      <motion.div 
+                        key={step.step_number} 
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className={cn(
+                          "flex items-center gap-3 text-sm transition-all duration-300",
+                          running && idx === turn.steps.length - 1 ? "border-l-2 border-copper/50 pl-2 bg-copper/5 rounded-r" : ""
+                        )}
+                      >
+                        <motion.span
+                          animate={running && idx === turn.steps.length - 1 ? { scale: [1, 1.05, 1] } : {}}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                        >
+                          {stepIcon(step)}
+                        </motion.span>
+                        <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
+                        {step.tool_name ? (
+                          <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                            {step.tool_name}
+                          </code>
+                        ) : null}
+                        <AnimatePresence>
+                          {step.latency_ms !== undefined && (
+                            <motion.span 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="flex items-center gap-1 text-xs text-muted-foreground"
+                            >
+                              <Clock className="size-3" />
+                              {step.latency_ms} ms
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               ) : null}
             </div>
