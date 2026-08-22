@@ -55,18 +55,12 @@ function PoliciesPage() {
 
   useEffect(() => {
     if (workspace.data) {
-      setForm((prev) => {
-        // Only update the form if it hasn't been initialized or if the server data changed
-        // and we are not currently editing it (or just synced).
-        // To be safe and simple: when workspace data changes (e.g. after a save), 
-        // we sync the form to the server truth.
-        return {
-          max_discount_percent: String(workspace.data.policy.max_discount_percent),
-          max_order_value: String(workspace.data.policy.max_order_value),
-          approval_required_above: String(workspace.data.policy.approval_required_above),
-          allow_negotiation: workspace.data.policy.allow_negotiation,
-          allow_upsell: workspace.data.policy.allow_upsell,
-        };
+      setForm({
+        max_discount_percent: String(workspace.data.policy.max_discount_percent),
+        max_order_value: String(workspace.data.policy.max_order_value),
+        approval_required_above: String(workspace.data.policy.approval_required_above),
+        allow_negotiation: workspace.data.policy.allow_negotiation,
+        allow_upsell: workspace.data.policy.allow_upsell,
       });
     }
   }, [workspace.data]);
