@@ -101,85 +101,91 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             {`FIX ONLY THE POLICY TOGGLE PERSISTENCE BUG.
+             {`IGNORE ALL PREVIOUS UI/TEXT/HEADER INSTRUCTIONS.
 
-Do NOT touch Dashboard, Authority Pipeline, navigation, headings, text, styling, or any unrelated component.
+CURRENT TASK ONLY:
 
-Target ONLY the code responsible for:
+Fix the persistence bug in the Policies page.
 
-- Commercial Policies / Agent Capabilities
+ONLY these two settings are in scope:
 
 - Allow negotiation
 
 - Allow upsell
 
-- Commit Changes
-
-- Loading merchant policy values
-
 BUG:
 
-Both toggles reset to ON after leaving the Policies page and returning.
+Changing either setting to OFF, clicking Commit Changes, then navigating away and returning causes it to become ON again.
 
-Required fix:
+Do ONLY this:
 
-- Find the existing database fields used for allow_negotiation and allow_upsell.
+1. Inspect the existing policy load logic.
 
-- Find the existing policy load/save logic.
+2. Inspect the existing Commit Changes/save logic.
 
-- Fix the existing load/save logic so the actual database values are persisted and restored.
+3. Find why the saved boolean values are being overwritten/reset to true.
 
-- Do NOT create a new policy system.
+4. Fix the existing persistence logic.
 
-- Do NOT change the database schema unless absolutely required.
+5. Ensure page load reads the saved database/server values.
 
-- Do NOT hardcode either value to true.
+6. Ensure Commit Changes persists both boolean values.
 
-- On page load, use the saved server/database value.
+7. Ensure server-side AI behavior respects those persisted values.
 
-- Commit Changes must save both boolean values.
+Acceptance tests:
 
-- Reloading the page must preserve the saved values.
+- negotiation OFF → save → leave page → return → OFF
 
-Server enforcement:
+- negotiation ON → save → leave page → return → ON
 
-- allow_negotiation=false → negotiation must be rejected server-side.
+- upsell OFF → save → leave page → return → OFF
 
-- allow_upsell=false → upsell/cross-sell recommendations must be rejected server-side.
+- upsell ON → save → leave page → return → ON
 
-Test:
+- OFF upsell must prevent server-side upsell recommendations.
 
-OFF → Commit → reload → OFF
+- OFF negotiation must prevent server-side negotiation.
 
-ON → Commit → reload → ON
+STRICT SCOPE:
 
-Test both independently.
+Only policy persistence and the minimum server enforcement code required.
 
-IMPORTANT:
-
-Modify ONLY the existing policy persistence/load/save implementation and the minimum related server enforcement code.
-
-DO NOT MODIFY:
-
-- navigation-menu.tsx
+DO NOT TOUCH:
 
 - Dashboard
 
 - Authority Pipeline
 
+- Dashboard header
+
 - Dashboard text
 
-- Dashboard animations
+- navigation-menu.tsx
 
-- any visual design
+- navigation
 
-- any unrelated page/component
+- animations
 
-- Razorpay/payment flow
+- styling/design
 
-- checkout flow
+- products
 
-- catalog`}
+- checkout
+
+- Razorpay
+
+- payment
+
+- unrelated components
+
+IMPORTANT:
+
+Do not make any visual/text changes.
+
+Do not report any Dashboard/header changes.
+
+Do not modify anything outside this task.`}
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
