@@ -329,7 +329,7 @@ function BuyerPage() {
       subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
-      <div>
+      <div className="flex flex-col gap-10">
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
 
                                             
@@ -470,6 +470,34 @@ Stop.
 Do not add animations.
 
 Do not make further visual changes.''' */}
+
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-4">
+            <div className="space-y-0.5">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">AI Buyer</h1>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-[0.2em]">Your autonomous commerce agent</p>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Tools</span>
+                <span className="text-sm font-bold text-foreground">7</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Max Steps</span>
+                <span className="text-sm font-bold text-foreground">10</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Max Tool Calls</span>
+                <span className="text-sm font-bold text-foreground">20</span>
+              </div>
+              <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-copper/40 text-copper bg-copper/5">
+                Pricing SERVER
+              </Badge>
+            </div>
+          </div>
+        </div>
+
 
         <section>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
