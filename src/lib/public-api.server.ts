@@ -19,6 +19,7 @@ export type PublicPolicy = {
   approval_required_above: number;
   allow_negotiation: boolean;
   allow_upsell: boolean;
+  merchant_agent_commerce_enabled: boolean;
 };
 
 /* ------------------------------ money helpers ----------------------------- */
