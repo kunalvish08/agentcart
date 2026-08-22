@@ -469,7 +469,7 @@ export async function requestCheckout(args: {
       unit_price: Number(addOn.recommended_price),
       discount_amount: 0,
       final_unit_price: Number(addOn.recommended_price),
-      metadata: { source: "revenue_agent_recommendation" } as any,
+      metadata: { source: "revenue_agent_recommendation" } as never,
     });
   }
 
@@ -485,7 +485,7 @@ export async function requestCheckout(args: {
     reason: args.customerRequestSummary?.slice(0, 300) ?? "Checkout requested for a verified quote.",
     policyDecision: {
       final_amount: finalAmount,
-      discount_percent: allowedDiscount,
+      discount_percent: baseQuoteDiscountPercent,
       approval_required_above: policy.approval_required_above,
     },
   });
