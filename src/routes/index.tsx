@@ -343,8 +343,8 @@ function Landing() {
                 <CreditCard size={24} strokeWidth={1.5} />
               </div>
               <h3 className="text-sm font-bold tracking-[0.2em] uppercase">TRANSACTABLE</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 Checkout and payment remain server-authoritative and Razorpay-backed, ensuring secure financial completion.
               </p>
             </motion.div>
