@@ -101,7 +101,48 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             Authority Pipeline
+             '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Fix Agent Capabilities policy persistence.
+
+Both settings currently reset to ON after navigating away and returning:
+
+- Allow negotiation
+
+- Allow upsell
+
+Required behavior:
+
+1. Toggle OFF → Commit Changes → navigate away → return → must remain OFF.
+
+2. Toggle ON → Commit Changes → navigate away → return → must remain ON.
+
+3. On page load, always fetch the current values from the server/database.
+
+4. Never default either value to true after loading.
+
+5. Commit Changes must persist both values together.
+
+6. AI Buyer must enforce the persisted server-side values:
+
+   - allow_negotiation=false → negotiation requests must be rejected/disabled server-side.
+
+   - allow_upsell=false → upsell/cross-sell recommendations must be rejected/disabled server-side.
+
+7. Frontend state must never be the source of truth.
+
+8. Preserve existing UI/design and all other functionality.
+
+9. Do not modify navigation-menu.tsx.
+
+10. Do not modify unrelated pages/components.
+
+Test both settings independently and together:
+
+OFF/OFF, ON/OFF, OFF/ON, ON/ON.
+
+After every save + page reload, the values must remain exactly as saved.
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
