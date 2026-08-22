@@ -118,13 +118,13 @@ export function AppShell({
           </div>
         </header>
 
-        <nav className="flex gap-1 border-b border-border bg-card px-4 py-2 md:hidden">
+        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden no-scrollbar">
           {NAV.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className="rounded-md px-3 py-1.5 text-sm text-muted-foreground"
-              activeProps={{ className: "rounded-md px-3 py-1.5 text-sm bg-secondary text-secondary-foreground" }}
+              className="whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
+              activeProps={{ className: "whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-accent text-primary" }}
             >
               {label}
             </Link>
