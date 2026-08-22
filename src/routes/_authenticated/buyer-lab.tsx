@@ -347,7 +347,7 @@ function BuyerLabPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-6 pt-6 pb-6 text-xs sm:grid-cols-2">
-        <div>
+                <div>
                   <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2 border-b border-border/40 pb-2">
                     Agent Can
                   </p>
