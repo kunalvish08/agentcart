@@ -50,19 +50,26 @@ function PoliciesPage() {
   const fetchWorkspace = useServerFn(getWorkspace);
   const savePolicy = useServerFn(updatePolicy);
 
-  const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
+  const workspace = useQuery({
+    queryKey: ["workspace"],
+    queryFn: () => fetchWorkspace(),
+    // The database is the only source of truth for policy flags: always
+    // re-read on mount so returning to this page never shows stale booleans.
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
   const [form, setForm] = useState<PolicyForm | null>(null);
 
   useEffect(() => {
-    if (workspace.data) {
-      setForm({
-        max_discount_percent: String(workspace.data.policy.max_discount_percent),
-        max_order_value: String(workspace.data.policy.max_order_value),
-        approval_required_above: String(workspace.data.policy.approval_required_above),
-        allow_negotiation: workspace.data.policy.allow_negotiation,
-        allow_upsell: workspace.data.policy.allow_upsell,
-      });
-    }
+    if (!workspace.data) return;
+    const policy = workspace.data.policy;
+    setForm({
+      max_discount_percent: String(policy.max_discount_percent),
+      max_order_value: String(policy.max_order_value),
+      approval_required_above: String(policy.approval_required_above),
+      allow_negotiation: policy.allow_negotiation === true,
+      allow_upsell: policy.allow_upsell === true,
+    });
   }, [workspace.data]);
 
   const mutation = useMutation({
@@ -76,13 +83,25 @@ function PoliciesPage() {
           allow_upsell: state.allow_upsell,
         },
       }),
-    onSuccess: () => {
+    onSuccess: (result) => {
       toast.success("Policies saved");
+      // Reflect the persisted server row, not the local form state.
+      const saved = result?.policy;
+      if (saved) {
+        setForm({
+          max_discount_percent: String(saved.max_discount_percent),
+          max_order_value: String(saved.max_order_value),
+          approval_required_above: String(saved.approval_required_above),
+          allow_negotiation: saved.allow_negotiation === true,
+          allow_upsell: saved.allow_upsell === true,
+        });
+      }
       void queryClient.invalidateQueries({ queryKey: ["workspace"] });
     },
     onError: (error) =>
       toast.error(error instanceof Error ? error.message : "Could not save policies"),
   });
+
 
   if (!workspace.data || !form) {
     return (
