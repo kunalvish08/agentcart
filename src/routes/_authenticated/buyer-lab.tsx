@@ -690,7 +690,6 @@ function BuyerLabPage() {
             </CardContent>
           </Card>
         </motion.div>
-        </motion.div>
 
 
         {/* API traffic */}
