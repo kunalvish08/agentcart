@@ -111,7 +111,7 @@ function ApprovalsPage() {
         {/* HEADER & SUMMARY */}
         <ApprovalsHeader 
           pendingCount={pending.length} 
-          email={workspace.data?.profile.email}
+          email={workspace.data?.profile.email ?? undefined}
           totalPendingValue={totalPendingValue}
         />
 
