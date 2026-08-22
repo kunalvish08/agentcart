@@ -470,7 +470,7 @@ function BuyerLabPage() {
                 ) : null}
               </CardContent>
             </Card>
-                    </motion.div>
+          </motion.div>
 
           {/* RIGHT: Agent execution / current run */}
           <motion.div variants={itemReveal} className="space-y-6 flex flex-col">
