@@ -1186,7 +1186,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
             </thead>
             <tbody className="divide-y divide-border/40">
               {rows.map((row: BuyerActiveOrder) => (
-                <OrderRow key={row.order_id} row={row} buyerName={buyerName} />
+                <OrderRow key={row.order_id} row={row} buyerName={buyerName ?? undefined} />
               ))}
             </tbody>
           </table>
