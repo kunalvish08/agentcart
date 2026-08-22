@@ -1,8 +1,9 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, Search, Scale, CreditCard } from "lucide-react";
+import { ArrowRight, CheckCircle2, Search, Scale, CreditCard, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useTheme } from "./__root";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,17 +54,25 @@ function Signal() {
 
 
 function Landing() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className="min-h-screen bg-obsidian text-white selection:bg-copper/20 font-sans">
-      <nav className="sticky top-0 z-50 border-b border-slate bg-obsidian/80 backdrop-blur-md">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 font-sans">
+      <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold tracking-tight text-white">Agentic Commerce</span>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-steel hidden sm:block">AI INFRASTRUCTURE</span>
+            <span className="text-sm font-bold tracking-tight text-foreground">Agentic Commerce</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">AI INFRASTRUCTURE</span>
           </div>
-          <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-steel">
-            <Link to="/agent-api" className="hover:text-white transition-colors">Agent API</Link>
-            <Link to="/login" className="hover:text-white transition-colors">Merchant Console</Link>
+          <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            <Link to="/agent-api" className="hover:text-foreground transition-colors">Agent API</Link>
+            <Link to="/login" className="hover:text-foreground transition-colors">Merchant Console</Link>
+            <button 
+              onClick={toggleTheme}
+              className="flex size-8 items-center justify-center rounded-sm hover:bg-accent transition-colors"
+            >
+              {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+            </button>
           </div>
         </div>
       </nav>
