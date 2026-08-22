@@ -27,7 +27,7 @@ export function ProductsHeader({
         </div>
         <Button 
           onClick={onNewProduct}
-          className="bg-[#5B8DEF] hover:bg-[#6c9bef] text-white font-bold uppercase tracking-widest rounded-none h-10 px-6 font-mono"
+          className="bg-[var(--accent)] hover:opacity-90 text-white font-bold uppercase tracking-widest rounded-none h-10 px-6 font-mono border-none"
         >
           <Plus className="mr-2 size-4" />
           New product
