@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            from dashboard page , pls delete this content -   \"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\\n \\n \\n delete it from the websote - '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\\\\n \\\\n \\\\n '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\\\\\\\\n \\\\\\\\n \\\\\\\\n abhi currunt texts and color theeme kya hai website ka ??? ye kyu aa raha hai\""
+      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">
