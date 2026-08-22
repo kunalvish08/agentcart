@@ -150,7 +150,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="py-32 grid md:grid-cols-3 gap-8">
+        <section className="py-20 sm:py-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="border border-border p-8 bg-card">
             <Search className="text-primary" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">01 DISCOVERABLE</h3>
