@@ -329,8 +329,8 @@ function Landing() {
                 <Scale size={24} strokeWidth={1.5} />
               </div>
               <h3 className="text-sm font-bold tracking-[0.2em] uppercase">BOUNDED</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 Merchant policies determine discount limits and commercial decisions. The AI buyer requests, the server enforces.
               </p>
             </motion.div>
