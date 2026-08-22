@@ -262,86 +262,155 @@ function ProductsPage() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-sm border-border bg-card sm:max-w-[500px]">
-          <DialogHeader className="border-b border-border pb-4 -mx-6 px-6 bg-muted/30">
-            <DialogTitle className="text-base font-bold uppercase tracking-tight">{form.id ? "Edit Product" : "New Product"}</DialogTitle>
-            <DialogDescription className="text-xs">
-              Prices and inventory are stored in PostgreSQL and scoped to your merchant identity.
+        <DialogContent className="max-w-2xl rounded-none border-border bg-graphite-950 p-0 overflow-hidden font-mono">
+          <DialogHeader className="p-6 border-b border-border bg-graphite-900/50">
+            <div className="flex items-center gap-2 mb-1 text-copper-500">
+              <Database className="size-4" />
+              <span className="text-[10px] font-bold tracking-widest uppercase">Infrastructure Node</span>
+            </div>
+            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-foreground">
+              {form.id ? "Edit Product" : "New Product"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground uppercase tracking-widest">
+              Commercial authority record for TechNova Store
             </DialogDescription>
           </DialogHeader>
 
           <form
-            className="space-y-6 pt-6"
+            className="p-6 space-y-8"
             onSubmit={(event) => {
               event.preventDefault();
               saveMutation.mutate(form);
             }}
           >
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Product Name</Label>
-              <Input
-                id="name"
-                required
-                className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 text-sm"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Input
-                  id="category"
-                  value={form.category}
-                  onChange={(e) => setForm({ ...form, category: e.target.value })}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2 space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Product Information</h3>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Name</Label>
+                    <Input
+                      required
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Description</Label>
+                    <Textarea
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 min-h-[100px] text-sm"
+                      value={form.description}
+                      onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Category</Label>
+                    <Input
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
+                      value={form.category}
+                      onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Pricing</h3>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Price (INR)</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        required
+                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
+                        value={form.price}
+                        onChange={(e) => setForm({ ...form, price: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Inventory</h3>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Stock Quantity</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        required
+                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
+                        value={form.stock_quantity}
+                        onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="price">Price (INR)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  required
-                  value={form.price}
-                  onChange={(e) => setForm({ ...form, price: e.target.value })}
-                />
+
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">AI Commerce</h3>
+                  <div className="p-4 border border-border bg-graphite-900 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Public Catalog</span>
+                      <Switch
+                        checked={form.status === "active"}
+                        onCheckedChange={(checked) =>
+                          setForm({ ...form, status: checked ? "active" : "inactive" })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2 pt-2 border-t border-border/50">
+                      <div className="flex items-center gap-2 text-verified-500">
+                        <ShieldCheck className="size-3" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Discovery</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-verified-500">
+                        <ShieldCheck className="size-3" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Quote</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-verified-500">
+                        <ShieldCheck className="size-3" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Negotiation</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-verified-500">
+                        <ShieldCheck className="size-3" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Checkout</span>
+                      </div>
+                    </div>
+                    <p className="text-[9px] leading-relaxed text-muted-foreground italic">
+                      AI agents may discover this product through the public commerce API. Commercial authority remains server-side.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Technical Meta</h3>
+                  <div className="space-y-2 text-[10px] font-mono text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span className="uppercase">Record ID:</span>
+                      <span className="text-foreground truncate ml-4">{form.id?.slice(0, 8) ?? "NEW_NODE"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="uppercase">Authority:</span>
+                      <span className="text-foreground uppercase">Merchant Server</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="uppercase">Validation:</span>
+                      <span className="text-verified-500 uppercase">Passed</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="stock">Stock</Label>
-                <Input
-                  id="stock"
-                  type="number"
-                  min={0}
-                  required
-                  value={form.stock_quantity}
-                  onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Switch
-                checked={form.status === "active"}
-                onCheckedChange={(checked) =>
-                  setForm({ ...form, status: checked ? "active" : "inactive" })
-                }
-              />
-              <span className="text-sm text-muted-foreground">Active in catalog</span>
             </div>
 
-            <DialogFooter className="pt-4 border-t border-border -mx-6 px-6">
-              <Button type="submit" disabled={saveMutation.isPending} className="rounded-sm font-bold uppercase tracking-widest px-8">
-                {saveMutation.isPending ? <Loader2 className="mr-2 size-3.5 animate-spin" /> : null}
-                {form.id ? "Save Changes" : "Create Product"}
+            <DialogFooter className="pt-6 border-t border-border">
+              <Button 
+                type="submit" 
+                disabled={saveMutation.isPending} 
+                className="w-full sm:w-auto bg-copper-500 hover:bg-copper-600 text-black font-bold uppercase tracking-widest rounded-none h-10 px-8"
+              >
+                {saveMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+                {form.id ? "Commit Changes" : "Create Product"}
               </Button>
             </DialogFooter>
           </form>
