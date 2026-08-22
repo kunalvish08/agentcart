@@ -323,7 +323,7 @@ function Landing() {
 
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-card p-12 transition-all"
+              className="group bg-white p-12 transition-all"
             >
               <div className="mb-8 text-primary">
                 <Scale size={24} strokeWidth={1.5} />
