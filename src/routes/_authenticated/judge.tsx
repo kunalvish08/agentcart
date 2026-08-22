@@ -301,8 +301,8 @@ function JudgePage() {
                 </div>
 
                 {resetSummary && (
-                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm">
-                    <div className="flex items-center gap-2 font-medium text-emerald-600">
+                  <div className="rounded-sm border border-verified-green/20 bg-verified-green/5 p-4 text-sm">
+                    <div className="flex items-center gap-2 font-bold text-verified-green uppercase tracking-tight">
                       <CheckCircle2 className="size-4" />
                       Demo state reset at {new Intl.DateTimeFormat('en-IN', { timeStyle: 'medium' }).format(new Date(resetSummary.timestamp))}
                     </div>
@@ -317,7 +317,7 @@ function JudgePage() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {resetSummary.preserved.map(item => (
-                        <Badge key={item} variant="secondary" className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/10 border-emerald-500/20">
+                        <Badge key={item} variant="secondary" className="bg-verified-green/10 text-verified-green hover:bg-verified-green/10 border-verified-green/20 rounded-sm text-[9px] font-bold uppercase tracking-widest">
                           Preserved: {item}
                         </Badge>
                       ))}
