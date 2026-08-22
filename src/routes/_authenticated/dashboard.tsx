@@ -193,13 +193,18 @@ function DashboardPage() {
 
 function Stat({ label, value, icon: Icon }: any) {
     return (
-        <div className="border border-border p-4 rounded-sm bg-card">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="border border-border p-4 rounded-sm bg-card"
+        >
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
                 <Icon className="size-3.5" />
                 <span className="text-[9px] uppercase font-bold tracking-widest">{label}</span>
             </div>
-            <p className="text-lg font-bold">{value ?? "—"}</p>
-        </div>
+            <p className="text-lg font-bold"><CountUp value={value} /></p>
+        </motion.div>
     )
 }
 
