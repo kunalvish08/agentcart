@@ -110,25 +110,28 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/10">
       {/* 1. TOP NAVIGATION */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#0B1220]/80 backdrop-blur-md">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2 leading-none transition-opacity hover:opacity-90">
-              <span className="text-sm font-bold tracking-tight uppercase">Agentic Commerce</span>
-              <span className="h-3 w-[1px] bg-border/60 mx-1 hidden sm:block" />
-              <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
+              <span className="text-sm font-bold tracking-tight uppercase text-white">Agentic Commerce</span>
+              <span className="h-3 w-[1px] bg-white/10 mx-1 hidden sm:block" />
+              <span className="text-[9px] text-[#8291A8] uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
             </Link>
           </div>
           
           <div className="flex items-center gap-8">
-            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-slate-600 transition-all hover:text-primary relative group">
+            <Link 
+              to="/agent-api" 
+              className="text-[11px] font-bold uppercase tracking-widest text-[#B8C4D6] transition-all hover:text-white relative group"
+            >
               Agent API
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
+              <motion.span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
             </Link>
-            <Button asChild variant="link" size="sm" className="h-auto p-0 text-[11px] font-bold uppercase tracking-widest text-foreground hover:no-underline relative group">
+            <Button asChild variant="link" size="sm" className="h-auto p-0 text-[11px] font-bold uppercase tracking-widest text-white hover:no-underline relative group">
               <Link to="/login">
                 Merchant Console
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all group-hover:w-full" />
+                <motion.span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
               </Link>
             </Button>
           </div>
