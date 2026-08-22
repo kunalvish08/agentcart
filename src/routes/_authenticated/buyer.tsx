@@ -838,8 +838,8 @@ Do not change anything else." */}
               </li>
             ))}
           </ul>
-        </section>
-      </div>
+        </motion.section>
+      </motion.div>
     </AppShell>
   );
 }
