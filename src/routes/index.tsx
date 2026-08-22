@@ -58,7 +58,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
       )}
       <p className={cn(
         "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
-        isServerAuthority ? "text-primary" : "text-muted-foreground/60"
+        isServerAuthority ? "text-primary" : "text-[#8291A8]"
       )}>{title}</p>
       <div className="space-y-2">
         {items.map((item, i) => (
@@ -69,7 +69,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
             )} />
             <span className={cn(
               "text-[11px] font-medium tracking-tight",
-              isServerAuthority ? "text-foreground" : "text-foreground/80"
+              isServerAuthority ? "text-white" : "text-[#B8C4D6]"
             )}>{item}</span>
           </div>
         ))}
