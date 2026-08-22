@@ -153,6 +153,25 @@ function Landing() {
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">02 BOUNDED</h3>
             <p className="mt-4 text-[11px] font-mono text-ice">Let agents negotiate without giving them pricing authority.</p>
             <p className="mt-8 text-sm text-steel">Merchant policies determine discount limits. The AI buyer requests, the server enforces.</p>
+            <div className="mt-8 h-12 flex items-center justify-between px-4 border border-slate bg-obsidian overflow-hidden relative">
+               <motion.div 
+                 animate={{ x: [0, 150] }}
+                 transition={{ repeat: Infinity, duration: 3, ease: "easeIn" }}
+                 className="text-[10px] font-mono text-ice"
+               >
+                 REQ 30%
+               </motion.div>
+               <div className="absolute right-12 h-full w-px bg-copper" />
+               <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: [0, 1, 0] }}
+                 transition={{ repeat: Infinity, duration: 3, delay: 1.5 }}
+                 className="text-[10px] font-mono text-copper"
+               >
+                 LIMIT 12%
+               </motion.div>
+            </div>
+
           </div>
           <div className="border border-slate p-8">
             <CreditCard className="text-verified-green" />
