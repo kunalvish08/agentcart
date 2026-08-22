@@ -113,7 +113,7 @@ function Landing() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 inline-flex items-center rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary"
+                className="mb-6 inline-flex items-center rounded-full border border-[oklch(0.75_0.15_200)]/10 bg-[oklch(0.75_0.15_200)]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[oklch(0.75_0.15_200)]"
               >
                 AI-NATIVE COMMERCE INFRASTRUCTURE
               </motion.div>
@@ -207,7 +207,7 @@ function Landing() {
                     <SchematicNode 
                       title="STATUS" 
                       items={["COMPLETED ORDER"]} 
-                      className="border-green-500/20 bg-green-500/[0.02]"
+                      className="border-[oklch(0.65_0.15_160)]/20 bg-[oklch(0.65_0.15_160)]/[0.02]"
                       delay={2.2}
                     />
                   </div>

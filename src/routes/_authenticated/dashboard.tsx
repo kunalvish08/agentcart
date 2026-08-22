@@ -320,7 +320,7 @@ function DashboardPage() {
                       .map((event) => (
                         <div key={event.id} className="relative pl-6 space-y-1">
                           <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
-                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
+                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-[oklch(0.55_0.18_25)]' : 'bg-primary/60')} />
                           </div>
                           <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
                           <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
