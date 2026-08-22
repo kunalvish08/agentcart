@@ -219,12 +219,17 @@ function PipelineNode({ label, icon: Icon, active }: any) {
     )
 }
 
-function Rule({ label, value }: any) {
+function Rule({ label, value, index = 0 }: any) {
     return (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -5 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: index * 0.1 }}
+          className="group"
+        >
             <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest mb-1">{label}</p>
-            <p className="text-sm font-bold">{value}</p>
-        </div>
+            <p className="text-sm font-bold group-hover:text-copper transition-colors duration-200">{value}</p>
+        </motion.div>
     )
 }
 
