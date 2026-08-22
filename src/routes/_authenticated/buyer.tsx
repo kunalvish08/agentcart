@@ -832,7 +832,11 @@ function AssistantTurn({
                 </div>
 
                 {quote ? (
-                  <div className="rounded-sm border border-border bg-muted/40 p-4 text-xs">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="rounded-sm border border-border bg-muted/40 p-4 text-xs"
+                  >
                     <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-widest text-foreground">
                       <Receipt className="size-3.5" /> Authority Quote
                     </p>
