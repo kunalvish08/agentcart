@@ -900,7 +900,6 @@ function BuyerLabPage() {
             ) : null}
           </CardContent>
         </Card>
-        </motion.div>
       </motion.div>
     </AppShell>
   );
