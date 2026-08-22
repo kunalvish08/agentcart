@@ -89,17 +89,24 @@ function Landing() {
             </div>
           </div>
 
-          <div className="grid gap-2 p-8 border border-slate bg-graphite rounded-sm">
-            <ObsidianNode title="AI BUYER" subtitle="Laptop under ₹60k" />
-            <div className="flex justify-center text-steel"><ArrowRight className="rotate-90" /></div>
-            <ObsidianNode title="PUBLIC AGENT API" subtitle="/search · /quote · /negotiate" />
-            <div className="flex justify-center text-steel"><ArrowRight className="rotate-90" /></div>
-            <ObsidianNode title="SERVER AUTHORITY" subtitle="PRICE · INVENTORY · POLICY · CHECKOUT" active copper />
-            <div className="flex justify-center text-steel"><ArrowRight className="rotate-90" /></div>
-            <ObsidianNode title="RAZORPAY" subtitle="PAYMENT VERIFICATION" />
-            <div className="flex justify-center text-verified-green"><ArrowRight className="rotate-90" /></div>
-            <ObsidianNode title="VERIFIED ORDER" subtitle="COMPLETED" />
+          <div className="grid gap-1 p-8 border border-slate bg-graphite rounded-sm relative overflow-hidden">
+            <ObsidianNode title="AI BUYER" subtitle="Laptop under ₹60k" delay={0.2} />
+            <Signal />
+            <ObsidianNode title="PUBLIC AGENT API" subtitle="/search · /quote · /negotiate" delay={0.4} />
+            <Signal />
+            <ObsidianNode title="SERVER AUTHORITY" subtitle="PRICE · INVENTORY · POLICY · CHECKOUT" active copper delay={0.6} />
+            <Signal />
+            <ObsidianNode title="RAZORPAY" subtitle="PAYMENT VERIFICATION" delay={0.8} />
+            <div className="relative h-8 flex justify-center">
+              <motion.div 
+                animate={{ y: [0, 32], opacity: [0, 1, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                className="w-px h-8 bg-verified-green"
+              />
+            </div>
+            <ObsidianNode title="VERIFIED ORDER" subtitle="COMPLETED" active delay={1.0} />
           </div>
+
         </section>
 
         <section className="py-32 grid lg:grid-cols-2 gap-24 items-center">
