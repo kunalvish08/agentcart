@@ -276,6 +276,28 @@ function SmallStat({ label, value, index = 0 }: any) {
     )
 }
 
+function StatusRow({ label, status, index = 0 }: any) {
+    return (
+        <motion.div 
+          initial={{ opacity: 0, x: -10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="flex items-center justify-between text-[10px] font-bold uppercase group"
+        >
+            <span className="text-muted-foreground group-hover:text-foreground transition-colors">{label}</span>
+            <div className="flex items-center gap-2">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="size-1 rounded-full bg-verified-green"
+                />
+                <span className="text-verified-green">{status}</span>
+            </div>
+        </motion.div>
+    )
+}
+
 function Connector() {
     return (
         <div className="text-muted-foreground/30 hidden md:block relative overflow-hidden">
