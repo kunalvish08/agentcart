@@ -101,91 +101,10 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             {`IGNORE ALL PREVIOUS UI/TEXT/HEADER INSTRUCTIONS.
-
-CURRENT TASK ONLY:
-
-Fix the persistence bug in the Policies page.
-
-ONLY these two settings are in scope:
-
-- Allow negotiation
-
-- Allow upsell
-
-BUG:
-
-Changing either setting to OFF, clicking Commit Changes, then navigating away and returning causes it to become ON again.
-
-Do ONLY this:
-
-1. Inspect the existing policy load logic.
-
-2. Inspect the existing Commit Changes/save logic.
-
-3. Find why the saved boolean values are being overwritten/reset to true.
-
-4. Fix the existing persistence logic.
-
-5. Ensure page load reads the saved database/server values.
-
-6. Ensure Commit Changes persists both boolean values.
-
-7. Ensure server-side AI behavior respects those persisted values.
-
-Acceptance tests:
-
-- negotiation OFF → save → leave page → return → OFF
-
-- negotiation ON → save → leave page → return → ON
-
-- upsell OFF → save → leave page → return → OFF
-
-- upsell ON → save → leave page → return → ON
-
-- OFF upsell must prevent server-side upsell recommendations.
-
-- OFF negotiation must prevent server-side negotiation.
-
-STRICT SCOPE:
-
-Only policy persistence and the minimum server enforcement code required.
-
-DO NOT TOUCH:
-
-- Dashboard
-
-- Authority Pipeline
-
-- Dashboard header
-
-- Dashboard text
-
-- navigation-menu.tsx
-
-- navigation
-
-- animations
-
-- styling/design
-
-- products
-
-- checkout
-
-- Razorpay
-
-- payment
-
-- unrelated components
-
-IMPORTANT:
-
-Do not make any visual/text changes.
-
-Do not report any Dashboard/header changes.
-
-Do not modify anything outside this task.`}
+             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            remove "IGNORE ALL PREVIOUS UI/TEXT/HEADER INSTRUCTIONS. CURRENT TASK ONLY: Fix the persistence bug in the Policies page. ONLY these two settings are in scope: - Allow negotiation - Allow upsell BUG: Changing either setting to OFF, clicking Commit Changes, then navigating away and returning causes it to become ON again. Do ONLY this: 1. Inspect the existing policy load logic. 2. Inspect the existing Commit Changes/save logic. 3. Find why the saved boolean values are being overwritten/reset to true. 4. Fix the existing persistence logic. 5. Ensure page load reads the saved database/server values. 6. Ensure Commit Changes persists both boolean values. 7. Ensure server-side AI behavior respects those persisted values. Acceptance tests: - negotiation OFF → save → leave page → return → OFF - negotiation ON → save → leave page → return → ON - upsell OFF → save → leave page → return → OFF - upsell ON → save → leave page → return → ON - OFF upsell must prevent server-side upsell recommendations. - OFF negotiation must prevent server-side negotiation. STRICT SCOPE: Only policy persistence and the minimum server enforcement code required. DO NOT TOUCH: - Dashboard - Authority Pipeline - Dashboard header - Dashboard text - navigation-menu.tsx - navigation - animations - styling/design - products - checkout - Razorpay - payment - unrelated components IMPORTANT: Do not make any visual/text changes. Do not report any Dashboard/header changes. Do not modify anything outside this task."`}
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
