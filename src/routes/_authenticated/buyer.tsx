@@ -1196,7 +1196,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   );
 }
 
-function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName?: string }) {
+function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string | undefined }) {
   const [expanded, setExpanded] = useState(false);
   const isCompleted = row.status === "COMPLETED";
 
