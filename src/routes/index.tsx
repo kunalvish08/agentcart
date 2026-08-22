@@ -69,7 +69,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
             )} />
             <span className={cn(
               "text-[11px] font-medium tracking-tight",
-              isServerAuthority ? "text-white" : "text-[#B8C4D6]"
+              isServerAuthority ? "text-white" : (className?.includes("!text-[#18A878]") ? "text-[#18A878]" : "text-[#B8C4D6]")
             )}>{item}</span>
           </div>
         ))}
