@@ -352,7 +352,7 @@ function Landing() {
         </section>
 
         {/* 6. TECHNICAL TRUST STRIP */}
-        <section className="border-t border-border/40 bg-card py-20">
+        <section className="border-t border-border/40 bg-white py-20">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
               <div>
