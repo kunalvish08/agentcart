@@ -505,6 +505,22 @@ export async function eligibleGrowthRecommendations(args: {
       recommendationId = data?.id ?? null;
     }
 
+    await recordRevenueEvent({
+      merchantId: args.merchant.id,
+      event: "RECOMMENDATION_SHOWN",
+      buyerSessionId: args.buyerSessionId ?? null,
+      recommendationId,
+      sourceProductId: args.productId,
+      productId: pick.product_id,
+      recommendationType: type,
+      amount: pick.price,
+      currency: pick.currency,
+      reason,
+      detail: { relation_type: pick.relation_type, pricing_authority: "server" },
+    });
+
+
+
     recommendations.push({
       recommendation_id: recommendationId,
       product_id: pick.product_id,
