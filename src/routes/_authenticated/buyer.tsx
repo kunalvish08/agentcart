@@ -522,16 +522,16 @@ function AssistantTurn({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-start gap-3">
-        <span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+        <span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary border border-primary/20">
           <Bot className="size-4" />
         </span>
         <div className="min-w-0 flex-1 space-y-3">
           {turn.steps.length > 0 ? (
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-sm border border-border bg-card shadow-none overflow-hidden">
               <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex w-full items-center justify-between px-4 py-2.5 text-sm font-medium"
+                className="flex w-full items-center justify-between px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/30 border-b border-border"
               >
                 <span className="flex items-center gap-2">
                   {open ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
@@ -545,7 +545,7 @@ function AssistantTurn({
                 ) : null}
               </button>
               {open ? (
-                <div className="space-y-2 border-t border-border px-4 py-3">
+                <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
                     <div key={step.step_number} className="flex items-center gap-3 text-sm">
                       {stepIcon(step)}
@@ -579,9 +579,9 @@ function AssistantTurn({
           {turn.notices.map((notice, index) => (
             <div
               key={`${notice.code}-${index}`}
-              className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-foreground"
+              className="flex items-start gap-2 rounded-sm border border-destructive/20 bg-destructive/5 px-4 py-3 text-xs text-foreground"
             >
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
+              <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-destructive" />
               <span>
                 <span className="font-medium">{notice.code}</span> — {notice.message}
               </span>
@@ -589,13 +589,13 @@ function AssistantTurn({
           ))}
 
           {rec ? (
-            <Card className="border-primary/30">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <ShoppingBag className="size-4 text-primary" /> Recommended product
+            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border pb-3">
+                <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  <ShoppingBag className="size-3.5 text-primary" /> Recommended Product
                 </CardTitle>
-                <CardDescription>
-                  Assembled from server tool results — never model-generated figures.
+                <CardDescription className="text-xs">
+                  Assembled from server tool results — authoritative figures only.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
