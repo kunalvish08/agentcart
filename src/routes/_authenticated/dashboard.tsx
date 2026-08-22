@@ -104,45 +104,24 @@ function DashboardPage() {
              '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Fix Agent Capabilities policy persistence.
+                                            policy me Agent Capabilities
 
-Both settings currently reset to ON after navigating away and returning:
+Define the range of autonomous actions permitted for AI consumers.
 
-- Allow negotiation
+Allow negotiation
 
-- Allow upsell
+Permits AI buyers to negotiate within the max discount cap.
 
-Required behavior:
+ON
 
-1. Toggle OFF → Commit Changes → navigate away → return → must remain OFF.
+Allow upsell
 
-2. Toggle ON → Commit Changes → navigate away → return → must remain ON.
+Permits AI buyers to receive product recommendations.
 
-3. On page load, always fetch the current values from the server/database.
+ON
 
-4. Never default either value to true after loading.
 
-5. Commit Changes must persist both values together.
-
-6. AI Buyer must enforce the persisted server-side values:
-
-   - allow_negotiation=false → negotiation requests must be rejected/disabled server-side.
-
-   - allow_upsell=false → upsell/cross-sell recommendations must be rejected/disabled server-side.
-
-7. Frontend state must never be the source of truth.
-
-8. Preserve existing UI/design and all other functionality.
-
-9. Do not modify navigation-menu.tsx.
-
-10. Do not modify unrelated pages/components.
-
-Test both settings independently and together:
-
-OFF/OFF, ON/OFF, OFF/ON, ON/ON.
-
-After every save + page reload, the values must remain exactly as saved.
+ye mesha ON hi rahte hai ,  ham manuallly OFF kar rahe hai but page switch karte hi fir se ON ho ja raha hai , fix it
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
