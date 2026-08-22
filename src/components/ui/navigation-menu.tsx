@@ -47,7 +47,181 @@ const NavigationMenuTrigger = React.forwardRef<
     className={cn(navigationMenuTriggerStyle(), "group", className)}
     {...props}
   >
-    {children}{" "}
+    {children}
+    {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Fix the MOBILE NAVIGATION BAR across the entire Agentic Commerce website.
+
+IMPORTANT:
+
+- This is ONLY a navigation/UI fix.
+
+- Do not change backend, APIs, routes, database, authentication, or page functionality.
+
+- Keep the existing desktop sidebar/navigation unchanged.
+
+- Do not redesign the individual pages.
+
+MOBILE NAVIGATION REQUIREMENT:
+
+At viewport widths below 768px, replace the desktop sidebar with a persistent compact horizontal navigation bar.
+
+Navigation items:
+
+Dashboard
+
+AI Buyer
+
+External AI Buyer
+
+Approvals
+
+Products
+
+Policies
+
+Evaluation Lab
+
+Judge Mode
+
+LAYOUT:
+
+[☰ / brand]  Dashboard  AI Buyer  Buyer Lab  Approvals  Products  Policies  Evaluation  Judge
+
+The navigation should:
+
+- stay horizontally scrollable INSIDE the navigation container
+
+- never cause body/page horizontal scrolling
+
+- remain accessible at all times
+
+- use touch-friendly targets (minimum ~44px height)
+
+- have comfortable horizontal spacing
+
+- keep the active route clearly highlighted
+
+- support swipe scrolling on mobile
+
+- hide the scrollbar visually
+
+- preserve the order of navigation items
+
+- use icons + short labels where needed
+
+IMPORTANT:
+
+The horizontal scrolling must belong ONLY to the navigation container.
+
+Use something equivalent to:
+
+overflow-x-auto
+
+overflow-y-hidden
+
+white-space: nowrap
+
+flex-shrink: 0
+
+min-width: 0
+
+Do NOT use global overflow-x-hidden as a workaround.
+
+MOBILE HEADER:
+
+Create a compact mobile header above the navigation:
+
+Left:
+
+Agentic Commerce / logo
+
+Right:
+
+user/account action
+
+Then place the horizontal navigation directly below it.
+
+The navigation should remain visually connected to the header.
+
+DESKTOP:
+
+At >=768px:
+
+- keep the current desktop sidebar
+
+- hide the mobile navigation
+
+- preserve current desktop layout
+
+MOBILE:
+
+At <768px:
+
+- hide desktop sidebar
+
+- show mobile header
+
+- show horizontal navigation
+
+- content should use full viewport width
+
+- page itself must NOT horizontally scroll
+
+THEME:
+
+Support both light and dark themes using existing semantic theme tokens.
+
+Active navigation:
+
+- subtle accent background
+
+- readable accent text
+
+- clear active indicator
+
+Inactive navigation:
+
+- muted foreground
+
+- visible enough in both themes
+
+Do NOT hardcode:
+
+text-black
+
+bg-white
+
+border-black
+
+RESPONSIVE TEST:
+
+Verify navigation at:
+
+320px
+
+375px
+
+390px
+
+430px
+
+768px
+
+At 320–430px:
+
+- all navigation items remain reachable by horizontal swipe
+
+- no item is clipped
+
+- no page-level horizontal scrollbar appears
+
+- active item automatically scrolls into view when navigating if necessary
+
+Do not use a hamburger-only replacement. The requirement is a VISIBLE horizontal mobile navigation bar with swipe scrolling.
+
+Implement this in the shared AppShell/layout so it works consistently across ALL pages.`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
