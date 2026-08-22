@@ -1254,15 +1254,15 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Server Authority Information</h4>
-                  <div className="bg-background/50 rounded border border-border/60 p-3 space-y-2">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Verification Time</span>
-                      <span className="text-foreground font-mono">{new Date(row.created_at).toLocaleTimeString()}</span>
+                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2.5">Server Authority Information</h4>
+                  <div className="bg-background/40 rounded border border-border/40 p-3 space-y-2">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-muted-foreground/60">Verification Time</span>
+                      <span className="text-foreground/80 font-mono">{new Date(row.created_at).toLocaleTimeString()}</span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Payment State</span>
-                      <span className="text-foreground font-bold uppercase tracking-tight">{row.status.replace(/_/g, ' ')}</span>
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-muted-foreground/60">Payment State</span>
+                      <span className="text-foreground/80 font-bold uppercase tracking-tight">{row.status.replace(/_/g, ' ')}</span>
                     </div>
                   </div>
                 </div>
