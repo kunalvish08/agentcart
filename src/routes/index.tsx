@@ -315,8 +315,8 @@ function Landing() {
                 <Search size={24} strokeWidth={1.5} />
               </div>
               <h3 className="text-sm font-bold tracking-[0.2em] uppercase">DISCOVERABLE</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Make your catalog readable by machines."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Make your catalog readable by machines."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 External AI buyers can discover products through a public machine-readable API designed for LLM tool-calling.
               </p>
             </motion.div>
