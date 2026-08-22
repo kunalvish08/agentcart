@@ -319,7 +319,27 @@ function BuyerPage() {
     }
   }
 
-  const merchant = workspace.data?.merchant;
+  const shouldReduceMotion = useReducedMotion();
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        duration: 0.5
+      }
+    }
+  };
+
+  const itemReveal = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 5 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" }
+    }
+  };
 
   return (
     <AppShell
@@ -327,7 +347,12 @@ function BuyerPage() {
       subtitle="Your autonomous commerce agent"
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4"
+      >
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Polish ONLY the existing /buyer page UI/UX.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render or inject this prompt into JSX, UI text, metadata, or database.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe current /buyer structure is approved.\n\nDo NOT redesign the page from scratch.\n\nImprove only hierarchy, spacing, grouping and interaction clarity.\n\n1. HERO\n\nKeep:\n\nAI BUYER\n\nYour autonomous commerce agent\n\nMake the hero more compact.\n\nPlace the capability indicators:\n\nTools 7\n\nMax Steps 10\n\nMax Tool Calls 20\n\nPricing SERVER\n\nin one clean technical status bar instead of making them compete with the heading.\n\n2. AGENT WORKSPACE\n\nMake \"What are you looking for?\" the strongest interactive section.\n\nCreate a premium command-console style input area.\n\nKeep the existing suggestion chips.\n\nMake the Ask Agent button visually primary.\n\nThe workspace should immediately communicate:\n\nUSER INTENT\n\n→\n\nAI AGENT\n\n→\n\nSERVER DECISION\n\n3. AGENT WORKSPACE / SERVER AUTHORITY\n\nKeep these together but visually separate them.\n\nLeft:\n\nAgent Workspace\n\nRight:\n\nServer Authority\n\nUse a subtle vertical divider.\n\nServer Authority should have stronger visual emphasis because it is the core product principle.\n\nUse a small label:\n\nSERVER-AUTHORITATIVE\n\nDo not add explanatory marketing copy.\n\n4. AGENT CAN / SERVER CONTROLS\n\nDo not present these as two large generic cards.\n\nUse a compact comparison layout:\n\nAGENT CAN\n\nSearch · Inspect · Quote · Negotiate · Request checkout\n\nSERVER CONTROLS\n\nPrice · Discount · Inventory · Policy · State · Verification\n\nMake the distinction immediately readable.\n\n5. GUARDRAILS\n\nMove Guardrails into a compact technical trust strip below Server Authority.\n\nDo not let it dominate the page.\n\n6. ORDERS\n\nKeep Orders below the active agent workspace.\n\nImprove the table:\n\nProduct\n\nOrder\n\nAmount\n\nStatus\n\nDate\n\nMake the status the strongest secondary visual element.\n\nUse semantic status treatment:\n\nCompleted → verified green\n\nPayment pending → amber\n\nWaiting for merchant approval → neutral/amber\n\nKeep all existing order data.\n\nIf the existing UI supports row expansion, make the row expandable rather than showing all details by default.\n\n7. AGENT SESSIONS\n\nKeep this as a secondary observability section.\n\nUse compact rows.\n\nPrioritize:\n\nIntent\n\nTime\n\nTool calls\n\nStatus\n\nTruncate long intents cleanly instead of allowing them to dominate the layout.\n\nDo not remove the underlying data.\n\n8. VISUAL HIERARCHY\n\nThe final page hierarchy should be:\n\nAI Buyer\n\n↓\n\nAsk Agent\n\n↓\n\nAgent / Server Authority\n\n↓\n\nCurrent Orders\n\n↓\n\nAgent Sessions\n\n↓\n\nGuardrails\n\nThe page should feel like an AI commerce operating workspace, not a dashboard.\n\n9. RESPONSIVE\n\nDesktop:\n\nAgent Workspace + Server Authority can sit side-by-side.\n\nMobile:\n\nStack them vertically.\n\nOrders remain readable without horizontal overflow.\n\n10. DESIGN QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nIncrease:\n\n- information density\n\n- alignment\n\n- whitespace consistency\n\n- typography hierarchy\n\n- technical clarity\n\nReduce:\n\n- oversized cards\n\n- repetitive borders\n\n- unnecessary visual weight\n\n- empty space\n\n- dashboard-like KPI treatment\n\nDo NOT change the global theme.\n\nFINAL REQUIREMENT:\n\nThis task is UI/UX polish only.\n\nNO animations.\n\nNO Framer Motion.\n\nNO copy rewrite.\n\nNO backend changes.\n\nNO new functionality.\n\nNO changes to other routes.\n\nAfter this is complete, stop. Animation will be implemented in a separate task." */}
         {/* 1. COMPACT HERO & STATUS BAR */}
         <header className="flex flex-col gap-4 pb-4 border-b border-border/40">
