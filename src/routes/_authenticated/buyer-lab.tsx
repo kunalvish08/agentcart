@@ -813,7 +813,8 @@ function BuyerLabPage() {
               )}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
+      </div>
         <motion.div variants={itemReveal}>
           <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
             <CardHeader className="bg-muted/30 border-b border-border py-3">
