@@ -104,7 +104,40 @@ function DashboardPage() {
              {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            remove "'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.''' remove \"IGNORE ALL PREVIOUS UI/TEXT/HEADER INSTRUCTIONS. CURRENT TASK ONLY: Fix the persistence bug in the Policies page. ONLY these two settings are in scope: - Allow negotiation - Allow upsell BUG: Changing either setting to OFF, clicking Commit Changes, then navigating away and returning causes it to become ON again. Do ONLY this: 1. Inspect the existing policy load logic. 2. Inspect the existing Commit Changes/save logic. 3. Find why the saved boolean values are being overwritten/reset to true. 4. Fix the existing persistence logic. 5. Ensure page load reads the saved database/server values. 6. Ensure Commit Changes persists both boolean values. 7. Ensure server-side AI behavior respects those persisted values. Acceptance tests: - negotiation OFF → save → leave page → return → OFF - negotiation ON → save → leave page → return → ON - upsell OFF → save → leave page → return → OFF - upsell ON → save → leave page → return → ON - OFF upsell must prevent server-side upsell recommendations. - OFF negotiation must prevent server-side negotiation. STRICT SCOPE: Only policy persistence and the minimum server enforcement code required. DO NOT TOUCH: - Dashboard - Authority Pipeline - Dashboard header - Dashboard text - navigation-menu.tsx - navigation - animations - styling/design - products - checkout - Razorpay - payment - unrelated components IMPORTANT: Do not make any visual/text changes. Do not report any Dashboard/header changes. Do not modify anything outside this task.\""`}
+                                            For the code present, I get the error below.
+
+Please think step-by-step in order to resolve it.
+\`\`\`
+# Error number 1:
+#################
+
+The app returned 500 while handling GET /_serverFn/eyJmaWxlIjoiL3NyYy9saWIvY2hlY2tvdXQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldENoZWNrb3V0QXVkaXRfY3JlYXRlU2VydmVyRm5faGFuZGxlciJ9. The error was handled by a route or error boundary, so no stack was captured — check the failing loader/route code and the dev server output.
+
+{
+  "timestamp": 1787412060806,
+  "error_type": "RUNTIME_ERROR",
+  "filename": "Unknown file",
+  "lineno": 0,
+  "colno": 0,
+  "stack": "Unavailable",
+  "has_blank_screen": true
+}
+
+# Error number 2:
+#################
+
+The app returned 500 while handling GET /_serverFn/eyJmaWxlIjoiL3NyYy9saWIvY2hlY2tvdXQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldENoZWNrb3V0TWV0cmljc19jcmVhdGVTZXJ2ZXJGbl9oYW5kbGVyIn0. The error was handled by a route or error boundary, so no stack was captured — check the failing loader/route code and the dev server output.
+
+{
+  "timestamp": 1787412061102,
+  "error_type": "RUNTIME_ERROR",
+  "filename": "Unknown file",
+  "lineno": 0,
+  "colno": 0,
+  "stack": "Unavailable",
+  "has_blank_screen": true
+}
+\`\`\``}
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
