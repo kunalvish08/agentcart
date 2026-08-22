@@ -391,7 +391,7 @@ function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Make your store <br />legible to AI.</h2>
+              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl text-white">Make your store <br />legible to AI.</h2>
               <p className="mt-8 text-[15px] leading-relaxed text-[#B8C4D6]">
                 Start with your catalog. Define your commercial limits. Let external agents transact within them.
               </p>
