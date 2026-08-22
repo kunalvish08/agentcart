@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Fix text contrast on the current public landing page only.\n\nDo not redesign the layout.\n\nDo not change existing content.\n\nDo not add any new text.\n\nDo not change backend or functionality.\n\nDo not display this instruction as UI content.\n\nEnsure every text element has strong WCAG-friendly contrast against its background.\n\nUse:\n\nDark sections:\n\n- Primary text: #FFFFFF\n\n- Secondary text: #B8C4D6\n\n- Muted text: #8291A8\n\nLight sections:\n\n- Primary text: #0B1220\n\n- Secondary text: #34445A\n\n- Muted text: #617087\n\nTechnical labels:\n\n- Cobalt: #3157FF\n\n- Cyan: #36C5D8\n\nButtons:\n\n- Primary background: #3157FF\n\n- Primary text: #FFFFFF\n\nVerified states:\n\n- Emerald: #18A878\n\nMake headings, body text, navigation, labels, buttons and technical metadata clearly readable.\n\nCheck every section individually and fix any text that is too faint, low-contrast, or visually blending into the background.\n\nDo not use opacity on important text.\n\nDo not use gradients behind text."
+      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">

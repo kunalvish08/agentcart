@@ -58,7 +58,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
       )}
       <p className={cn(
         "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
-        isServerAuthority ? "text-primary" : "text-muted-foreground/60"
+        isServerAuthority ? "text-primary" : (className?.includes("!text-[#36C5D8]") ? "text-[#36C5D8]" : "text-[#8291A8]")
       )}>{title}</p>
       <div className="space-y-2">
         {items.map((item, i) => (
@@ -69,7 +69,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
             )} />
             <span className={cn(
               "text-[11px] font-medium tracking-tight",
-              isServerAuthority ? "text-foreground" : "text-foreground/80"
+              isServerAuthority ? "text-white" : (className?.includes("!text-[#18A878]") ? "text-[#18A878]" : (className?.includes("!text-[#36C5D8]") ? "text-[#36C5D8]" : "text-[#B8C4D6]"))
             )}>{item}</span>
           </div>
         ))}
@@ -116,12 +116,12 @@ function Landing() {
             <Link to="/" className="flex items-center gap-2 leading-none transition-opacity hover:opacity-90">
               <span className="text-sm font-bold tracking-tight uppercase">Agentic Commerce</span>
               <span className="h-3 w-[1px] bg-border/60 mx-1 hidden sm:block" />
-              <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
+              <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold hidden sm:block">AI Infrastructure</span>
             </Link>
           </div>
           
           <div className="flex items-center gap-8">
-            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground transition-all hover:text-primary relative group">
+            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-slate-600 transition-all hover:text-primary relative group">
               Agent API
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
             </Link>
@@ -147,7 +147,7 @@ function Landing() {
                 className="mb-8 inline-flex items-center gap-3"
               >
                 <div className="h-[1px] w-8 bg-primary/60" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#3157FF]">
                   AI COMMERCE INFRASTRUCTURE
                 </span>
               </motion.div>
@@ -165,7 +165,7 @@ function Landing() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-10 text-lg leading-relaxed text-muted-foreground/80 md:text-xl max-w-xl"
+                className="mt-10 text-lg leading-relaxed text-slate-600 md:text-xl max-w-xl"
               >
                 Keep the money under your control. Expose your catalog to external agents while keeping pricing and payment authority on your server.
               </motion.p>
@@ -203,6 +203,7 @@ function Landing() {
                     title="AI BUYER" 
                     items={['"Laptop under ₹60k"']} 
                     delay={0.6}
+                    className="!text-[#36C5D8]"
                   />
 
                   <Connector vertical delay={0.8} />
@@ -234,7 +235,7 @@ function Landing() {
                     <SchematicNode 
                       title="STATUS" 
                       items={["COMPLETED"]} 
-                      className="border-[#18A878]/30 bg-[#0B1220] text-[#18A878]"
+                      className="border-[#18A878]/30 bg-[#0B1220] !text-[#18A878]"
                       delay={2.0}
                     />
                   </div>
@@ -259,36 +260,36 @@ function Landing() {
                   className="mb-8 inline-flex items-center gap-3"
                 >
                   <div className="h-[1px] w-8 bg-primary" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#3157FF]">
                     AUTHORITY MODEL
                   </span>
                 </motion.div>
                 
                 <h2 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]">
                   AI decides what to ask. <br />
-                  <span className="text-white/40">Your server decides what can happen.</span>
+                  <span className="text-[#B8C4D6]">Your server decides what can happen.</span>
                 </h2>
                 
-                <p className="mt-8 text-lg text-white/50 max-w-md leading-relaxed">
+                <p className="mt-8 text-lg text-[#B8C4D6] max-w-md leading-relaxed">
                   Every commercial action is evaluated against merchant-defined policies before execution.
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-sm overflow-hidden">
                 <div className="bg-[#0B1220] p-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">AI BUYER</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8291A8]">AI BUYER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Capabilities</h3>
                   <ul className="mt-8 space-y-5">
                     {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item) => (
-                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-white/50 tracking-wide">
-                        <div className="h-px w-3 bg-white/20" />
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-[#B8C4D6] tracking-wide">
+                        <div className="h-px w-3 bg-[#8291A8]/20" />
                         {item}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="bg-primary/[0.03] p-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#36C5D8]">SERVER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Controls</h3>
                   <ul className="mt-8 space-y-5">
                     {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item) => (
@@ -309,42 +310,42 @@ function Landing() {
           <div className="grid gap-px bg-border/40 border border-border/40 rounded-sm overflow-hidden md:grid-cols-3">
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-card p-12 transition-all"
+              className="group bg-white p-12 transition-all border-none"
             >
               <div className="mb-8 text-primary">
                 <Search size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">DISCOVERABLE</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Make your catalog readable by machines."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-[#3157FF]">DISCOVERABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Make your catalog readable by machines."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 External AI buyers can discover products through a public machine-readable API designed for LLM tool-calling.
               </p>
             </motion.div>
 
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-card p-12 transition-all"
+              className="group bg-white p-12 transition-all border-none"
             >
               <div className="mb-8 text-primary">
                 <Scale size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">BOUNDED</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-[#3157FF]">BOUNDED</h3>
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Let agents negotiate without giving them pricing authority."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 Merchant policies determine discount limits and commercial decisions. The AI buyer requests, the server enforces.
               </p>
             </motion.div>
 
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-card p-12 transition-all"
+              className="group bg-white p-12 transition-all border-none"
             >
               <div className="mb-8 text-primary">
                 <CreditCard size={24} strokeWidth={1.5} />
               </div>
-              <h3 className="text-sm font-bold tracking-[0.2em] uppercase">TRANSACTABLE</h3>
-              <p className="mt-4 text-[11px] font-medium text-muted-foreground/60 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
-              <p className="mt-8 text-[13px] leading-relaxed text-muted-foreground tracking-tight">
+              <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-[#3157FF]">TRANSACTABLE</h3>
+              <p className="mt-4 text-[11px] font-medium text-slate-500 italic tracking-wider">"Take the transaction all the way to verified payment."</p>
+              <p className="mt-8 text-[13px] leading-relaxed text-slate-700 tracking-tight">
                 Checkout and payment remain server-authoritative and Razorpay-backed, ensuring secure financial completion.
               </p>
             </motion.div>
@@ -352,30 +353,30 @@ function Landing() {
         </section>
 
         {/* 6. TECHNICAL TRUST STRIP */}
-        <section className="border-t border-border/40 bg-card py-20">
+        <section className="border-t border-border/40 bg-white py-20">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">SERVER AUTHORITY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">SERVER AUTHORITY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Price · Inventory · Policy
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">TENANT ISOLATION</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">TENANT ISOLATION</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Merchant-scoped data
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">AUDITABLE</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">AUDITABLE</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Orders · Payments · Traces
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">RAZORPAY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">RAZORPAY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Verified payments
                 </div>
               </div>
@@ -391,8 +392,8 @@ function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Make your store <br />legible to AI.</h2>
-              <p className="mt-8 text-[15px] leading-relaxed text-white/50">
+              <h2 className="text-4xl font-semibold tracking-tight md:text-5xl text-white">Make your store <br />legible to AI.</h2>
+              <p className="mt-8 text-[15px] leading-relaxed text-[#B8C4D6]">
                 Start with your catalog. Define your commercial limits. Let external agents transact within them.
               </p>
               <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
@@ -413,12 +414,12 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
           <div className="flex flex-col items-center gap-1 sm:items-start">
              <span className="text-sm font-bold tracking-tight">Agentic Commerce</span>
-             <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">© 2026 AI-Native Infra</span>
+             <span className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">© 2026 AI-Native Infra</span>
           </div>
           
           <div className="flex items-center gap-8">
-            <Link to="/agent-api" className="text-xs font-semibold text-muted-foreground hover:text-foreground">Agent API</Link>
-            <Link to="/login" className="text-xs font-semibold text-muted-foreground hover:text-foreground">Merchant Console</Link>
+            <Link to="/agent-api" className="text-xs font-semibold text-slate-600 hover:text-foreground">Agent API</Link>
+            <Link to="/login" className="text-xs font-semibold text-slate-600 hover:text-foreground">Merchant Console</Link>
           </div>
         </div>
       </footer>
