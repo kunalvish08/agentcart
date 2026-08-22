@@ -329,7 +329,7 @@ function BuyerPage() {
       subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
+      <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
@@ -677,11 +677,11 @@ ONLY add the motion layer.
 
 Do not change anything else." */}
 
-        <section>
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </section>
+        </motion.section>
 
-        <section className="flex flex-col gap-6">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-foreground">Ask for what you need</h2>
             <p className="text-sm text-muted-foreground">Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.</p>
@@ -703,15 +703,18 @@ Do not change anything else." */}
               />
               <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
                 <div className="flex flex-wrap gap-2">
-                  {SUGGESTIONS.map((s) => (
-                    <button
+                  {SUGGESTIONS.map((s, idx) => (
+                    <motion.button
                       key={s}
+                      variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => setInput(s)}
                       className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
                     >
                       {s}
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
                 {running ? (
@@ -737,9 +740,9 @@ Do not change anything else." */}
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="flex flex-col gap-6">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
            <div className="flex items-center justify-between">
              <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Execution</h2>
              {sessionId && (
@@ -770,9 +773,9 @@ Do not change anything else." */}
                <div ref={bottomRef} />
              </div>
            )}
-        </section>
+        </motion.section>
 
-        <section className="space-y-4">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
@@ -820,8 +823,8 @@ Do not change anything else." */}
               </table>
             </div>
           </div>
-        </section>
-        <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
+        </motion.section>
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="bg-muted/10 border border-border/40 rounded-lg p-5">
           <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
           <ul className="space-y-3">
             {[
@@ -837,7 +840,7 @@ Do not change anything else." */}
               </li>
             ))}
           </ul>
-        </section>
+        </motion.section>
       </motion.div>
     </AppShell>
   );
@@ -901,7 +904,7 @@ function AssistantTurn({
   const quote = rec?.quote?.quote ?? rec?.quote ?? null;
 
   return (
-    <div className="flex flex-col gap-3">
+    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col gap-3">
       <div className="flex items-start gap-3">
         <span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary border border-primary/20">
           <Bot className="size-4" />
@@ -924,7 +927,7 @@ function AssistantTurn({
                 {running && !turn.meta?.status ? (
                   <Loader2 className="size-4 animate-spin text-muted-foreground" />
                 ) : null}
-              </button>
+              </motion.button>
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
@@ -1436,7 +1439,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   if (rows.length === 0) return null;
 
   return (
-    <section className="space-y-4">
+    <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
       <div className="flex items-center justify-between border-b border-border/40 pb-2">
         <h2 className="text-sm font-bold text-foreground">Active Orders</h2>
         <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
@@ -1465,7 +1468,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
           </table>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
