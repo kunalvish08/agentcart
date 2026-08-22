@@ -160,6 +160,8 @@ export async function loadBuyerConversation(
         content: run.user_request,
         steps: [],
         notices: [],
+        recommendation: null,
+        meta: {},
       });
     }
 
