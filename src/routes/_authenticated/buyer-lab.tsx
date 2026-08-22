@@ -30,7 +30,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+
 import {
   A2A_STAGES,
   BUYER_CAN,
