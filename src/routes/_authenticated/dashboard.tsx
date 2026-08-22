@@ -121,15 +121,20 @@ function DashboardPage() {
                        <ShieldCheck className="size-4 text-copper" /> Commercial Rules
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-                        <Rule label="Max Discount" value={`${data?.policy.max_discount_percent}%`} />
-                        <Rule label="Max Order" value={data ? inr.format(data.policy.max_order_value) : "—"} />
-                        <Rule label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} />
-                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "Enabled" : "Disabled"} />
-                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} />
+                        <Rule label="Max Discount" value={`${data?.policy.max_discount_percent}%`} index={0} />
+                        <Rule label="Max Order" value={data ? inr.format(data.policy.max_order_value) : "—"} index={1} />
+                        <Rule label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} index={2} />
+                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "Enabled" : "Disabled"} index={3} />
+                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} index={4} />
                     </div>
-                    <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: 0.6 }}
+                      className="mt-8 pt-6 border-t border-border flex items-center justify-between"
+                    >
                          <p className="text-xs font-bold text-copper uppercase tracking-widest italic">AI may request. Policy decides.</p>
-                    </div>
+                    </motion.div>
                 </section>
 
                 {/* SECTION 4: NEGOTIATION */}
