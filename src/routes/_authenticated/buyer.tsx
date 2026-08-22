@@ -571,9 +571,9 @@ function BuyerPage() {
         </motion.div>
 
         {/* 5. YOUR ORDERS */}
-        <section className="mt-8">
+        <motion.section variants={itemReveal} className="mt-8">
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </section>
+        </motion.section>
 
         {/* 7. SESSION HISTORY */}
         <section className="space-y-4">
