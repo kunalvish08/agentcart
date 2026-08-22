@@ -284,7 +284,7 @@ function LabPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="sample" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenarios</Label>
-                    <Input id="sample" type="number" value={sampleSize} onChange={(e) => setSampleSize(Number(e.target.value))} />
+                    <Input id="sample" type="number" value={sampleSize ?? 0} onChange={(e) => setSampleSize(Number(e.target.value))} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="batch" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Batch Size</Label>
