@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 interface Step {
   step_number: number;
   step_type: string;
-  tool_name?: string;
+  tool_name?: string | null;
   status: string;
   latency_ms: number;
   input_summary?: string;

@@ -1116,7 +1116,13 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
   };
 
   if (!order) {
-    return { order_id: null, currency: "INR", rows: [], policy: base };
+    return { 
+      ...base,
+      order_id: null, 
+      currency: "INR", 
+      rows: [], 
+      policy: base 
+    };
   }
 
   const quote = ((order as any).quotes ?? null) as any;
@@ -1170,7 +1176,13 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
     },
   ];
 
-  return { order_id: order.id, currency: order.currency, rows, policy: base };
+  return { 
+    ...base,
+    order_id: order.id, 
+    currency: order.currency, 
+    rows, 
+    policy: base 
+  };
 }
 
 /* ------------------------------ 6. reset ---------------------------------- */
