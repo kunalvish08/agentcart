@@ -561,6 +561,42 @@ Do not make further visual changes.''' */}
           </div>
         </section>
 
+        <section className="bg-card border border-border/40 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase flex items-center gap-2">
+              <Receipt className="size-3.5" />
+              Server Authority
+            </h2>
+            <Badge variant="outline" className="text-[8px] font-bold uppercase tracking-widest text-verified-green border-verified-green/30 bg-verified-green/5">
+              SERVER-AUTHORITATIVE
+            </Badge>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-3">
+              <h3 className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Agent Can:</h3>
+              <div className="flex flex-wrap gap-2">
+                {['Search', 'Inspect', 'Quote', 'Negotiate', 'Request checkout'].map(cap => (
+                  <span key={cap} className="px-2 py-0.5 rounded border border-border/60 bg-muted/30 text-[10px] text-foreground/70">
+                    {cap}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Server Controls:</h3>
+              <div className="flex flex-wrap gap-2">
+                {['Price', 'Discount', 'Inventory', 'Policy', 'State', 'Verification'].map(ctrl => (
+                  <span key={ctrl} className="px-2 py-0.5 rounded border border-border/60 bg-muted/30 text-[10px] text-foreground/70">
+                    {ctrl}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+
         <section>
            <div className="flex items-center justify-between">
              <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Execution</h2>
