@@ -244,10 +244,14 @@ export async function requestCheckout(args: {
   // Load any accepted growth recommendations (add-ons) for this session.
   const { data: addOns, error: addOnsError } = await supabaseAdmin
     .from("growth_recommendations")
-    .select("recommended_product_id, recommended_price, accepted, products(name)")
+    .select(
+      "id, merchant_id, recommended_product_id, recommended_price, recommendation_type, source_product_id, currency, accepted",
+    )
     .eq("buyer_session_id", args.buyerSessionId)
+    .eq("merchant_id", session.merchant_id)
     .eq("accepted", true);
   if (addOnsError) throw new Error(addOnsError.message);
+
 
   if (quote.merchant_id !== session.merchant_id) {
     return {
