@@ -90,11 +90,11 @@ function DashboardPage() {
           <div className="flex flex-col gap-1">
              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">TechNova Store</h2>
              <div className="flex items-center gap-3">
-               <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600">
-                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse" />
+               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.65_0.15_160)]">
+                 <div className="h-1.5 w-1.5 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
                  STORE ACTIVE
                </div>
-               <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.75_0.15_200)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.75_0.15_200)]">
                  <ShieldCheck className="size-3" />
                  AI COMMERCE ENABLED
                </div>
@@ -247,7 +247,7 @@ function DashboardPage() {
 
           <aside className="space-y-6">
             {/* 7. AI SYSTEM STATUS */}
-            <Card className="border-border/60 shadow-none bg-slate-50/50">
+            <Card className="border-border/60 shadow-none bg-secondary/30">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                    <Activity className="size-3.5" /> AI Commerce Infrastructure
@@ -279,7 +279,7 @@ function DashboardPage() {
             </Card>
 
             {/* 8. JUDGE MODE PROOF */}
-            <Card className="border-primary/20 shadow-none bg-primary/[0.02]">
+            <Card className="border-primary/20 shadow-none bg-primary/5 dark">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                    <ShieldCheck className="size-3.5" /> Proof of Authority
