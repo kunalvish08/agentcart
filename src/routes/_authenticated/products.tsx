@@ -392,40 +392,46 @@ function ProductsPage() {
                         <span className="text-[9px] font-bold uppercase tracking-widest">Checkout</span>
                       </div>
                     </div>
-                    <p className="text-[9px] leading-relaxed text-muted-foreground italic">
+                    <p className="text-[9px] leading-relaxed text-[#707B8C] italic">
                       AI agents may discover this product through the public commerce API. Commercial authority remains server-side.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Technical Meta</h3>
-                  <div className="space-y-2 text-[10px] font-mono text-muted-foreground">
-                    <div className="flex justify-between">
-                      <span className="uppercase">Record ID:</span>
-                      <span className="text-foreground truncate ml-4">{form.id?.slice(0, 8) ?? "NEW_NODE"}</span>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Technical Meta</h3>
+                  <div className="p-4 border border-[#252D38] bg-[#11161D] space-y-3">
+                    <div className="flex justify-between items-center text-[10px]">
+                      <span className="text-[#A0A9B8] uppercase tracking-widest">Product ID</span>
+                      <span className="font-mono text-[#F5F7FA]">{form.id?.slice(0, 8) ?? "PENDING"}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="uppercase">Authority:</span>
-                      <span className="text-foreground uppercase">Merchant Server</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="uppercase">Validation:</span>
-                      <span className="text-verified-500 uppercase">Passed</span>
+                    <div className="flex justify-between items-center text-[10px]">
+                      <span className="text-[#A0A9B8] uppercase tracking-widest">Authority</span>
+                      <span className="text-[#5B8DEF] font-bold uppercase tracking-widest">Server-Enforced</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <DialogFooter className="pt-6 border-t border-border">
+            <DialogFooter className="p-6 border-t border-[#252D38] bg-[#11161D] gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-none border-[#252D38] bg-transparent text-[#A0A9B8] text-[10px] uppercase tracking-widest font-bold h-10 hover:bg-[#161C24] hover:text-[#F5F7FA]"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
               <Button 
                 type="submit" 
-                disabled={saveMutation.isPending} 
-                className="w-full sm:w-auto bg-copper-500 hover:bg-copper-600 text-black font-bold uppercase tracking-widest rounded-none h-10 px-8"
+                disabled={saveMutation.isPending}
+                className="rounded-none bg-[#5B8DEF] hover:bg-[#6c9bef] text-white text-[10px] uppercase tracking-widest font-bold h-10 px-8"
               >
-                {saveMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
-                {form.id ? "Commit Changes" : "Create Product"}
+                {saveMutation.isPending ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : null}
+                {form.id ? "Update record" : "Create record"}
               </Button>
             </DialogFooter>
           </form>
