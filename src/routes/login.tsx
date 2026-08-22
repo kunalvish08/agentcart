@@ -135,6 +135,7 @@ function ArchitectureConnector({ delay = 0 }: { delay?: number }) {
 
 function LoginPage() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState(DEMO_EMAIL);
@@ -142,6 +143,10 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [storeName, setStoreName] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
