@@ -170,33 +170,25 @@ function Landing() {
                 '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Modify the React component and styling used by the public "/" landing page.
+                                            Remove the accidentally rendered instruction text from the PUBLIC LANDING PAGE.
 
-Fix only text color and contrast.
+Remove these two visible instruction blocks completely:
+
+1. "Do not make any visual modifications. The phrases I write are commands..."
+
+2. "Modify the React component and styling used by the public "/" landing page..."
+
+Do not change any other landing-page content.
+
+Do not redesign anything.
+
+Do not add replacement text.
 
 Do not modify Dashboard or any other route.
 
-Do not modify page copy or content.
+Do not modify backend, database, API, authentication or business logic.
 
-Do not add any text.
-
-Do not modify backend or business logic.
-
-Make all headings, body text, navigation, labels and buttons clearly readable
-
-against their existing backgrounds.
-
-Use high-contrast navy text on light surfaces and white/light text on dark
-
-surfaces.
-
-Keep the current layout, colors, animations and components unchanged except
-
-for text contrast.
-
-This request must be implemented as code/style changes, not added as visible
-
-page content.
+Only remove these accidentally rendered instruction strings from the landing page.
               </motion.p>
               
               <motion.div 
