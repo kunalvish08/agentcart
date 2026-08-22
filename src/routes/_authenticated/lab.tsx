@@ -28,6 +28,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORY_LABELS, OUTCOME_LABELS } from "@/lib/evaluation-dataset";
+import { cn } from "@/lib/utils";
 import {
   createEvaluationRunFn,
   getEvaluationRun,
@@ -82,11 +83,11 @@ function DeltaBadge({ value, suffix = "pp" }: { value: number | null; suffix?: s
   if (value === null) return <Badge variant="outline">n/a</Badge>;
   const tone =
     value > 0.05
-      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+      ? "border-verified-green/40 bg-verified-green/10 text-verified-green"
       : value < -0.05
         ? "border-destructive/40 bg-destructive/10 text-destructive"
         : "border-muted bg-muted/40 text-muted-foreground";
-  return <Badge className={tone} variant="outline">{signed(value, suffix)}</Badge>;
+  return <Badge className={cn("rounded-sm font-bold", tone)} variant="outline">{signed(value, suffix)}</Badge>;
 }
 
 function MetricRow({
@@ -295,59 +296,64 @@ function LabPage() {
   const progress = run && run.total_results > 0 ? ((run.total_results - run.pending_results) / run.total_results) * 100 : 0;
 
   return (
-    <AppShell
-      title="Evaluation Lab"
-      subtitle="Measure agentic commerce against a traditional storefront on identical synthetic buyers"
-      accountLabel={workspace.data?.profile?.email ?? undefined}
+    <AppShell 
+      title="Evaluation Lab" 
+      subtitle="Benchmark agentic mechanisms against traditional commerce patterns on identical buyer intent."
+      accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <div className="space-y-6">
-        <Card className="border-primary/30 bg-primary/[0.03]">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Beaker className="size-4 text-primary" />
-              What this experiment does and does not claim
+      <div className="flex items-center justify-between border-b border-border/40 pb-6 mb-8">
+        <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Experiment Console</h2>
+      </div>
+
+      <div className="space-y-8">
+        <Card className="rounded-sm border-primary/20 bg-primary/[0.02] shadow-none overflow-hidden">
+          <CardHeader className="bg-primary/[0.05] border-b border-primary/10 pb-4">
+            <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/80">
+              <Beaker className="size-3.5" />
+              Experiment Methodology
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 text-sm md:grid-cols-3">
+          <CardContent className="grid gap-8 pt-6 pb-8 text-xs md:grid-cols-3">
             <div>
-              <p className="font-medium">Same everything, one difference</p>
-              <p className="text-muted-foreground">
-                Both arms use the same synthetic buyers, the same public Agent Commerce API, the same catalog and the
-                same merchant policy. Only the buying agent differs.
+              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Isolating Variables</p>
+              <p className="text-muted-foreground leading-relaxed">
+                Both arms execute against identical buyer profiles, catalog data, and merchant policies. The only variable is the commerce engine.
               </p>
             </div>
             <div>
-              <p className="font-medium">The control is not handicapped</p>
-              <p className="text-muted-foreground">
-                The storefront arm searches, respects the budget, picks the best-fitting in-stock product and attaches
-                an accessory from the related-items strip. It simply has no negotiation surface — that is the effect
-                being measured.
+              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Baseline Parity</p>
+              <p className="text-muted-foreground leading-relaxed">
+                The control arm implements standard storefront logic: budget matching, stock checking, and upsell rules. It lacks negotiation agency.
               </p>
             </div>
             <div>
-              <p className="font-medium">Synthetic, not real demand</p>
-              <p className="text-muted-foreground">
-                Buyers are generated from a fixed seed, so runs are reproducible. These are not real shoppers, so lift
-                is directional evidence about the mechanism, not a revenue forecast.
+              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Deterministic Signal</p>
+              <p className="text-muted-foreground leading-relaxed">
+                Scenarios are seeded to ensure reproducible results. Outcomes provide mechanism evidence, not stochastic projections.
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">New evaluation run</CardTitle>
-              <CardDescription>
-                Dataset {overview.data?.dataset.version ?? "…"} · {overview.data?.dataset.total ?? 0} reproducible
-                scenarios (seed {overview.data?.dataset.seed ?? "…"})
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-1.5">
-                <Label htmlFor="run-label">Label</Label>
-                <Input id="run-label" value={label} onChange={(event) => setLabel(event.target.value)} />
-              </div>
+        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+          <aside className="space-y-6">
+            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border pb-4">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">New Evaluation</CardTitle>
+                <CardDescription className="text-xs">
+                  Dataset {overview.data?.dataset.version ?? "…"} · {overview.data?.dataset.total ?? 0} scenarios
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="run-label" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Run Label</Label>
+                  <Input 
+                    id="run-label" 
+                    className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-9 text-sm"
+                    value={label} 
+                    onChange={(event) => setLabel(event.target.value)} 
+                  />
+                </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="sample">Scenarios</Label>
