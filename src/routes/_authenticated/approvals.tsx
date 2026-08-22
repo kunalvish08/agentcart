@@ -115,7 +115,7 @@ function ApprovalsPage() {
           totalPendingValue={totalPendingValue}
         />
 
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="flex flex-col lg:grid lg:gap-12 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="space-y-16">
             {/* 3. ACTIVE APPROVAL QUEUE */}
             <section className="space-y-6">
