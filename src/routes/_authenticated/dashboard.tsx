@@ -454,28 +454,67 @@ function Stat({ label, value, icon: Icon, index = 0 }: any) {
     )
 }
 
-function PipelineNode({ label, icon: Icon, active, index = 0 }: any) {
+function PipelineNode({ label, name, purpose, status, icon: Icon, state, index = 0 }: any) {
     const shouldReduceMotion = useReducedMotion();
+    const isActive = state === "active";
+    const isCompleted = state === "completed";
     
     return (
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
-          className={cn("flex flex-col items-center gap-2", active ? "text-copper" : "text-muted-foreground")}
+          className={cn(
+            "flex flex-1 flex-col p-3 border rounded-sm transition-all duration-300 relative group",
+            isActive ? "bg-copper/5 border-copper shadow-[0_0_15px_rgba(213,155,98,0.1)]" : "bg-card border-border",
+            isCompleted && "border-verified-green/30"
+          )}
         >
-            <div className={cn("size-10 flex items-center justify-center border rounded-sm relative overflow-hidden", active ? "bg-copper/10 border-copper" : "bg-card border-border")}>
-                <Icon className={cn("size-4 z-10", active && "animate-pulse")} />
-                {active && !shouldReduceMotion && (
-                  <motion.div 
+            <div className="flex items-start justify-between mb-3">
+                <div className={cn(
+                    "size-8 flex items-center justify-center border rounded-sm shrink-0",
+                    isActive ? "bg-copper/10 border-copper text-copper" : 
+                    isCompleted ? "bg-verified-green/5 border-verified-green/20 text-verified-green" : 
+                    "bg-muted/5 border-border text-muted-foreground"
+                )}>
+                    <Icon className={cn("size-3.5", isActive && "animate-pulse")} />
+                </div>
+                <div className={cn(
+                    "text-[8px] font-bold tracking-tighter uppercase px-1.5 py-0.5 rounded-full border",
+                    isActive ? "bg-copper/10 border-copper/30 text-copper" :
+                    isCompleted ? "bg-verified-green/10 border-verified-green/30 text-verified-green" :
+                    "bg-muted/10 border-border text-muted-foreground"
+                )}>
+                    {status}
+                </div>
+            </div>
+
+            <div>
+                <div className="flex items-baseline gap-1.5 mb-0.5">
+                    <span className="text-[9px] font-mono font-bold text-muted-foreground">{label}</span>
+                    <h4 className={cn("text-xs font-bold tracking-tight", isActive ? "text-foreground" : "text-muted-foreground")}>{name}</h4>
+                </div>
+                <p className="text-[10px] text-muted-foreground/70 leading-tight">{purpose}</p>
+            </div>
+
+            {isActive && !shouldReduceMotion && (
+                <motion.div 
                     initial={{ x: "-100%" }}
                     animate={{ x: "100%" }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-copper/20 to-transparent z-0"
-                  />
-                )}
-            </div>
-            <span className="text-[8px] font-bold tracking-widest uppercase">{label}</span>
+                    transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                    className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent"
+                />
+            )}
+            
+            {/* Desktop Connector */}
+            {index < 5 && (
+                <div className="hidden md:block absolute -right-1 top-1/2 -translate-y-1/2 z-10">
+                    <div className={cn(
+                        "w-2 h-[1px]",
+                        isCompleted ? "bg-verified-green/30" : "bg-border"
+                    )} />
+                </div>
+            )}
         </motion.div>
     )
 }
