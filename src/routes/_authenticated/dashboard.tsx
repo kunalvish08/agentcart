@@ -104,7 +104,7 @@ function DashboardPage() {
              {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            use CSS to completely hide the Lovable badge (the 'Made with Lovable' element), without breaking the layout`}
+                                            remove "'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.''' use CSS to completely hide the Lovable badge (the 'Made with Lovable' element), without breaking the layout"`}
            </h3>
 
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
