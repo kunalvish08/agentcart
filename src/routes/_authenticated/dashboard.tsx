@@ -98,7 +98,36 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             Authority Pipeline
+             '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            suno ,  razorpay buidathon hai for ai intership ,    Problem statement -  track 01
+
+AI Growth & Agentic Commerce
+
+Grow the merchant’s revenue, and make them sellable to AI buyers
+
+Build an agent that grows revenue for a merchant on Razorpay test-mode APIs, or that makes a merchant transactable by an AI buyer end to end.
+
+why now
+
+NPCI’s UAP and the global protocol race (ACP, AP2, x402) make agent-to-agent commerce the open problem of the year, and Razorpay’s in-app pilots are already live.
+
+example directions
+
+Conversational in-app checkout
+
+Agent-readable catalog
+
+Upsell & cross-sell agent
+
+Campaign orchestrator
+
+the bar
+
+Every money action explainable, bounded and gated. Show the audit trail and one failure handled gracefully.
+
+ab batao kitne ready hai for this track
            </h3>
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
              <div className="flex min-w-max md:min-w-0 md:w-full items-center justify-between gap-1 relative">
