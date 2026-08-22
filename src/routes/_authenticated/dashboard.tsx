@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            IMPORTANT: IMPLEMENTATION INSTRUCTION ONLY.\n\nDO NOT DISPLAY THIS TEXT IN THE WEBSITE UI.\n\nOn the current public landing page, remove the entire accidentally rendered\n\ninstruction/prompt block that begins with:\n\n\"Do not make any visual modifications...\"\n\nand ends with:\n\n\"Only redesign the frontend presentation and interactions.\"\n\nDelete this text completely from the rendered page.\n\nDo not modify any other landing page content.\n\nDo not modify dashboard content.\n\nDo not modify backend, database, APIs, authentication, Razorpay,\n\nevaluation logic or business logic.\n\nDo not add any replacement text for the removed instruction."
+      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">
