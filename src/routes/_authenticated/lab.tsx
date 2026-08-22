@@ -375,14 +375,15 @@ function LabPage() {
             ) : null}
 
             {metrics ? (
-              <Tabs defaultValue="impact">
-                <TabsList className="bg-transparent border-b border-border p-0 h-auto">
-                  <TabsTrigger value="impact" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary px-6 py-3">Merchant impact</TabsTrigger>
-                  <TabsTrigger value="ab" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary px-6 py-3">A/B detail</TabsTrigger>
-                  <TabsTrigger value="safety" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary px-6 py-3">Safety</TabsTrigger>
-                  <TabsTrigger value="failures" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary px-6 py-3">Where it failed</TabsTrigger>
-                  <TabsTrigger value="rows" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary px-6 py-3">Scenario rows</TabsTrigger>
+              <Tabs defaultValue="impact" className="w-full">
+                <TabsList className="bg-transparent border-b border-border p-0 h-auto w-full justify-start rounded-none">
+                  <TabsTrigger value="impact" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Merchant impact</TabsTrigger>
+                  <TabsTrigger value="ab" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">A/B detail</TabsTrigger>
+                  <TabsTrigger value="safety" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Safety</TabsTrigger>
+                  <TabsTrigger value="failures" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Where it failed</TabsTrigger>
+                  <TabsTrigger value="rows" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Scenario rows</TabsTrigger>
                 </TabsList>
+
 
                 <TabsContent value="impact" className="space-y-6 pt-6">
                   <div className="grid md:grid-cols-2 gap-6">
