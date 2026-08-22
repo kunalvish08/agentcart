@@ -277,16 +277,16 @@ function ProductsPage() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl rounded-none border-[#252D38] bg-[#0B0F14] p-0 overflow-hidden font-mono text-[#F5F7FA]">
-          <DialogHeader className="p-6 border-b border-[#252D38] bg-[#11161D]">
-            <div className="flex items-center gap-2 mb-1 text-[#5B8DEF]">
+        <DialogContent className="max-w-2xl rounded-none border-[var(--border-color)] bg-[var(--bg-page)] p-0 overflow-hidden font-mono text-[var(--text-primary)]">
+          <DialogHeader className="p-6 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
+            <div className="flex items-center gap-2 mb-1 text-[var(--accent)]">
               <Database className="size-4" />
               <span className="text-[10px] font-bold tracking-widest uppercase">Infrastructure Node</span>
             </div>
-            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-[#F5F7FA]">
+            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-[var(--text-primary)]">
               {form.id ? "Edit Product" : "New Product"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#707B8C] uppercase tracking-widest">
+            <DialogDescription className="text-xs text-[var(--text-muted)] uppercase tracking-widest">
               Commercial authority record for TechNova Store
             </DialogDescription>
           </DialogHeader>
@@ -301,28 +301,28 @@ function ProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2 space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Product Information</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Product Information</h3>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Name</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Name</Label>
                     <Input
                       required
-                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm text-[#F5F7FA]"
+                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm text-[var(--text-primary)]"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Description</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Description</Label>
                     <Textarea
-                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 min-h-[100px] text-sm text-[#F5F7FA]"
+                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 min-h-[100px] text-sm text-[var(--text-primary)]"
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Category</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Category</Label>
                     <Input
-                      className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm text-[#F5F7FA]"
+                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm text-[var(--text-primary)]"
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
                     />
@@ -331,28 +331,28 @@ function ProductsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Pricing</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Pricing</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Price (INR)</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Price (INR)</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm font-mono text-[#F5F7FA]"
+                        className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm font-mono text-[var(--text-primary)]"
                         value={form.price}
                         onChange={(e) => setForm({ ...form, price: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Inventory</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Inventory</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Stock Quantity</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Stock Quantity</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-[#252D38] bg-[#11161D] focus-visible:ring-[#5B8DEF]/20 h-10 text-sm font-mono text-[#F5F7FA]"
+                        className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm font-mono text-[var(--text-primary)]"
                         value={form.stock_quantity}
                         onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
                       />
@@ -363,10 +363,10 @@ function ProductsPage() {
 
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">AI Commerce</h3>
-                  <div className="p-4 border border-[#252D38] bg-[#11161D] space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">AI Commerce</h3>
+                  <div className="p-4 border border-[var(--border-color)] bg-[var(--bg-surface)] space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-widest text-[#A0A9B8]">Public Catalog</span>
+                      <span className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Public Catalog</span>
                       <Switch
                         checked={form.status === "active"}
                         onCheckedChange={(checked) =>
@@ -374,51 +374,51 @@ function ProductsPage() {
                         }
                       />
                     </div>
-                    <div className="space-y-2 pt-2 border-t border-[#252D38]/50">
-                      <div className="flex items-center gap-2 text-[#35C98A]">
+                    <div className="space-y-2 pt-2 border-t border-[var(--border-color)]/50">
+                      <div className="flex items-center gap-2 text-[var(--success)]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Discovery</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[#35C98A]">
+                      <div className="flex items-center gap-2 text-[var(--success)]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Quote</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[#35C98A]">
+                      <div className="flex items-center gap-2 text-[var(--success)]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Negotiation</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[#35C98A]">
+                      <div className="flex items-center gap-2 text-[var(--success)]">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Checkout</span>
                       </div>
                     </div>
-                    <p className="text-[9px] leading-relaxed text-[#707B8C] italic">
+                    <p className="text-[9px] leading-relaxed text-[var(--text-muted)] italic">
                       AI agents may discover this product through the public commerce API. Commercial authority remains server-side.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B8DEF]/80 pb-2 border-b border-[#252D38]/50">Technical Meta</h3>
-                  <div className="p-4 border border-[#252D38] bg-[#11161D] space-y-3">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Technical Meta</h3>
+                  <div className="p-4 border border-[var(--border-color)] bg-[var(--bg-surface)] space-y-3">
                     <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-[#A0A9B8] uppercase tracking-widest">Product ID</span>
-                      <span className="font-mono text-[#F5F7FA]">{form.id?.slice(0, 8) ?? "PENDING"}</span>
+                      <span className="text-[var(--text-secondary)] uppercase tracking-widest">Product ID</span>
+                      <span className="font-mono text-[var(--text-primary)]">{form.id?.slice(0, 8) ?? "PENDING"}</span>
                     </div>
                     <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-[#A0A9B8] uppercase tracking-widest">Authority</span>
-                      <span className="text-[#5B8DEF] font-bold uppercase tracking-widest">Server-Enforced</span>
+                      <span className="text-[var(--text-secondary)] uppercase tracking-widest">Authority</span>
+                      <span className="text-[var(--accent)] font-bold uppercase tracking-widest">Server-Enforced</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <DialogFooter className="p-6 border-t border-[#252D38] bg-[#11161D] gap-3">
+            <DialogFooter className="p-6 border-t border-[var(--border-color)] bg-[var(--bg-surface)] gap-3">
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-none border-[#252D38] bg-transparent text-[#A0A9B8] text-[10px] uppercase tracking-widest font-bold h-10 hover:bg-[#161C24] hover:text-[#F5F7FA]"
+                className="rounded-none border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] text-[10px] uppercase tracking-widest font-bold h-10 hover:bg-[var(--bg-page)] hover:text-[var(--text-primary)]"
                 onClick={() => setOpen(false)}
               >
                 Cancel
@@ -426,7 +426,7 @@ function ProductsPage() {
               <Button 
                 type="submit" 
                 disabled={saveMutation.isPending}
-                className="rounded-none bg-[#5B8DEF] hover:bg-[#6c9bef] text-white text-[10px] uppercase tracking-widest font-bold h-10 px-8"
+                className="rounded-none bg-[var(--accent)] hover:opacity-90 text-white text-[10px] uppercase tracking-widest font-bold h-10 px-8 border-none"
               >
                 {saveMutation.isPending ? (
                   <Loader2 className="mr-2 size-4 animate-spin" />
