@@ -393,10 +393,10 @@ function BuyerPage() {
           </div>
         </motion.header>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+        <motion.div variants={itemReveal} className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="flex flex-col gap-6 min-w-0">
             {/* 2. AGENT WORKSPACE (COMMAND CONSOLE) */}
-            <section className="flex flex-col gap-4">
+            <motion.section variants={itemReveal} className="flex flex-col gap-4">
               <div className="space-y-1">
                 <h2 className="text-sm font-bold text-foreground">What are you looking for?</h2>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
