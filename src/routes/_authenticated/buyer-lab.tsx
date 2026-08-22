@@ -822,7 +822,7 @@ function BuyerLabPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-8">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { label: "External runs", value: m?.runs.total, hint: `${m?.runs.completed ?? 0} COMPLETED · ${m?.runs.avg_duration_ms ?? 0}MS AVG` },
                 { label: "Quotes issued", value: m?.funnel.quote_issued, hint: `${m?.funnel.checkout_requested ?? 0} CHECKOUT REQ` },
