@@ -754,7 +754,14 @@ Do not change anything else." */}
            {turns.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
                <Bot className="size-10 text-muted-foreground/20 mb-4" />
-               <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
+               <div className="flex items-center gap-2">
+                 <motion.div 
+                   animate={{ opacity: [0.4, 1, 0.4] }} 
+                   transition={{ duration: 2, repeat: Infinity }} 
+                   className="size-1.5 rounded-full bg-verified-green" 
+                 />
+                 <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
+               </div>
                <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
              </div>
            ) : (
@@ -795,9 +802,9 @@ Do not change anything else." */}
                 </thead>
                 <tbody className="divide-y divide-border/40">
                   {sessions.isLoading ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></motion.tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></tr>
                   ) : (sessions.data?.length ?? 0) === 0 ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></motion.tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
                   ) : (
                     sessions.data!.map((session, idx) => (
                       <motion.tr initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} key={session.id} className="hover:bg-muted/10 transition-colors">
