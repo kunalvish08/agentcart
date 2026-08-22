@@ -245,37 +245,60 @@ function Landing() {
         </section>
 
         {/* 4. AUTHORITY MESSAGE */}
-        <section className="border-y border-border/60 bg-muted/20 py-24">
-          <div className="mx-auto max-w-5xl px-6 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-              AI decides what to ask. <br className="sm:hidden" />
-              <span className="text-muted-foreground">Your server decides what can happen.</span>
-            </h2>
-            
-            <div className="mt-16 grid gap-0 overflow-hidden rounded-xl border border-border bg-card shadow-sm md:grid-cols-2">
-              <div className="p-8 text-left md:border-r md:border-border">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AI BUYER</p>
-                <h3 className="mt-4 text-lg font-semibold">Can:</h3>
-                <ul className="mt-6 space-y-4">
-                  {["discover products", "search catalog", "request quote", "negotiate", "request checkout"].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
-                      <ChevronRight size={14} className="text-muted-foreground/40" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+        <section className="bg-[#0B1220] py-32 text-white overflow-hidden relative">
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-2 gap-24 items-center">
+              <div>
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-8 inline-flex items-center gap-3"
+                >
+                  <div className="h-[1px] w-8 bg-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                    AUTHORITY MODEL
+                  </span>
+                </motion.div>
+                
+                <h2 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]">
+                  AI decides what to ask. <br />
+                  <span className="text-white/40">Your server decides what can happen.</span>
+                </h2>
+                
+                <p className="mt-8 text-lg text-white/50 max-w-md leading-relaxed">
+                  Every commercial action is evaluated against merchant-defined policies before execution.
+                </p>
               </div>
-              <div className="bg-primary/[0.01] p-8 text-left">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">SERVER</p>
-                <h3 className="mt-4 text-lg font-semibold">Controls:</h3>
-                <ul className="mt-6 space-y-4">
-                  {["price authority", "inventory validation", "discount limits", "order state machine", "payment verification"].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm font-semibold text-foreground">
-                      <CheckCircle2 size={16} className="text-primary" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+
+              <div className="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-sm overflow-hidden">
+                <div className="bg-[#0B1220] p-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">AI BUYER</p>
+                  <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Capabilities</h3>
+                  <ul className="mt-8 space-y-5">
+                    {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item) => (
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-white/50 tracking-wide">
+                        <div className="h-px w-3 bg-white/20" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-primary/[0.03] p-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER</p>
+                  <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Controls</h3>
+                  <ul className="mt-8 space-y-5">
+                    {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item) => (
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-bold text-white tracking-wide">
+                        <CheckCircle2 size={12} className="text-primary" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
