@@ -32,7 +32,7 @@ export function decideDiscount(input: {
   policy: Pick<PublicPolicy, "allow_negotiation" | "max_discount_percent">;
 }): DiscountDecision {
   const requested = Number.isFinite(input.requestedPercent) ? input.requestedPercent : 0;
-  const limit = input.policy.allow_negotiation
+  const limit = input.policy.allow_negotiation && (input.policy as any).merchant_agent_commerce_enabled !== false
     ? Math.max(0, Math.min(100, Number(input.policy.max_discount_percent ?? 0)))
     : 0;
 
