@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useTheme } from "./__root";
+import { Logo } from "@/components/ui/Logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,6 +62,7 @@ function Landing() {
       <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
+            <Logo iconOnly className="size-7" />
             <span className="text-sm font-bold tracking-tight text-foreground">Agentic Commerce</span>
             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">AI INFRASTRUCTURE</span>
           </div>

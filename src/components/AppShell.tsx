@@ -70,14 +70,8 @@ export function AppShell({
       {/* DESKTOP SIDEBAR (>= 768px) */}
       <aside className="hidden w-64 shrink-0 flex-col justify-between border-r border-border bg-card px-4 py-6 md:flex">
         <div>
-          <div className="flex items-center gap-2 px-2">
-            <span className="flex size-8 items-center justify-center rounded-sm bg-primary text-primary-foreground">
-              <Sparkles className="size-4" />
-            </span>
-            <div className="leading-tight">
-              <p className="text-sm font-bold tracking-tight">Agentic Commerce</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Infrastructure</p>
-            </div>
+          <div className="px-2">
+            <Logo />
           </div>
 
           <nav className="mt-8 space-y-1">
@@ -108,9 +102,7 @@ export function AppShell({
         {/* MOBILE HEADER (< 768px) */}
         <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-card/80 px-4 backdrop-blur-md md:hidden">
           <Link to="/" className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-sm bg-primary text-primary-foreground">
-              <Sparkles className="size-3.5" />
-            </span>
+            <Logo iconOnly className="size-7" />
             <span className="text-xs font-bold tracking-tight">Agentic Commerce</span>
           </Link>
           
