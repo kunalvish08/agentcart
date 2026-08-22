@@ -118,7 +118,7 @@ function Landing() {
 
         </section>
 
-        <section className="py-32 grid lg:grid-cols-2 gap-24 items-center">
+        <section className="py-20 sm:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           <div>
             <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
               AI decides what to ask. <br />
