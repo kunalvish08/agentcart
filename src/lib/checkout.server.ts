@@ -244,10 +244,14 @@ export async function requestCheckout(args: {
   // Load any accepted growth recommendations (add-ons) for this session.
   const { data: addOns, error: addOnsError } = await supabaseAdmin
     .from("growth_recommendations")
-    .select("recommended_product_id, recommended_price, accepted, products(name)")
+    .select(
+      "id, merchant_id, recommended_product_id, recommended_price, recommendation_type, source_product_id, currency, accepted",
+    )
     .eq("buyer_session_id", args.buyerSessionId)
+    .eq("merchant_id", session.merchant_id)
     .eq("accepted", true);
   if (addOnsError) throw new Error(addOnsError.message);
+
 
   if (quote.merchant_id !== session.merchant_id) {
     return {
@@ -360,12 +364,68 @@ export async function requestCheckout(args: {
   // Authoritative server-side total recalculation (paise units).
   const { toMinor, fromMinor, applyDiscountMinor } = await import("@/lib/public-api.server");
   let subtotalMinor = toMinor(baseQuoteSubtotal);
-  let discountMinor = toMinor(baseQuoteDiscount);
+  const discountMinor = toMinor(baseQuoteDiscount);
 
-  // Add-ons are currently list-price (0% discount) in Phase 1.
-  for (const addOn of (addOns ?? [])) {
-    subtotalMinor += toMinor(Number(addOn.recommended_price ?? 0));
+  // Each accepted add-on is re-priced from server data only: the persisted
+  // server-issued quote row when one exists, otherwise the live catalog price.
+  // Nothing here ever trusts a client- or model-supplied amount.
+  type ResolvedAddOn = {
+    recommendationId: string;
+    productId: string;
+    sourceProductId: string | null;
+    recommendationType: "upsell" | "cross_sell";
+    quantity: number;
+    unitPrice: number;
+    quoteId: string | null;
+    currency: string;
+  };
+  const resolvedAddOns: ResolvedAddOn[] = [];
+
+  for (const addOn of addOns ?? []) {
+    const { data: addOnProduct, error: addOnProductError } = await supabaseAdmin
+      .from("products")
+      .select("id, price, status, stock_quantity, currency")
+      .eq("id", addOn.recommended_product_id)
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    if (addOnProductError) throw new Error(addOnProductError.message);
+    if (!addOnProduct || addOnProduct.status !== "active" || addOnProduct.stock_quantity < 1) {
+      add("Add-on skipped — unavailable", false);
+      continue;
+    }
+
+    const { data: addOnQuote, error: addOnQuoteError } = await supabaseAdmin
+      .from("quotes")
+      .select("id, final_amount, quantity, unit_price, expires_at")
+      .eq("merchant_id", merchantId)
+      .eq("product_id", addOn.recommended_product_id)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (addOnQuoteError) throw new Error(addOnQuoteError.message);
+
+    const quantity = Number(addOnQuote?.quantity ?? 1) || 1;
+    const unitPrice = addOnQuote
+      ? Number((Number(addOnQuote.final_amount) / quantity).toFixed(2))
+      : Number(addOnProduct.price);
+
+    subtotalMinor += toMinor(unitPrice) * quantity;
+    resolvedAddOns.push({
+      recommendationId: addOn.id,
+      productId: addOnProduct.id,
+      sourceProductId: addOn.source_product_id ?? null,
+      recommendationType: (addOn.recommendation_type ?? "cross_sell") as "upsell" | "cross_sell",
+      quantity,
+      unitPrice,
+      quoteId: addOnQuote?.id ?? null,
+      currency: String(addOnProduct.currency ?? quote.currency),
+    });
   }
+  if (resolvedAddOns.length > 0) {
+    add(`${resolvedAddOns.length} add-on(s) re-priced server-side`);
+  }
+
 
   const finalAmountMinor = subtotalMinor - discountMinor;
   const finalAmount = fromMinor(finalAmountMinor);
@@ -423,7 +483,7 @@ export async function requestCheckout(args: {
         allow_negotiation: policy.allow_negotiation,
         quoted_discount_percent: baseQuoteDiscountPercent,
         requested_discount_percent: Number(quote.requested_discount_percent),
-        add_on_count: (addOns ?? []).length,
+        add_on_count: resolvedAddOns.length,
       } as never,
       expires_at: new Date(Date.now() + ORDER_TTL_HOURS * 3_600_000).toISOString(),
     })
@@ -451,7 +511,7 @@ export async function requestCheckout(args: {
   add("Checkout requested");
 
   // Add the base product
-  await supabaseAdmin.from("order_items").insert({
+  const baseItem = await supabaseAdmin.from("order_items").insert({
     order_id: orderId,
     product_id: product.id,
     quantity: quote.quantity,
@@ -459,19 +519,43 @@ export async function requestCheckout(args: {
     discount_amount: baseQuoteDiscount,
     final_unit_price: Number((baseQuoteFinal / quote.quantity).toFixed(2)),
   });
+  if (baseItem.error) throw new Error(baseItem.error.message);
 
-  // Add the add-ons
-  for (const addOn of (addOns ?? [])) {
-    await supabaseAdmin.from("order_items").insert({
+  // Add each accepted add-on with its server price, quantity and quote reference.
+  const { recordRevenueEvent } = await import("@/lib/revenue.server");
+  for (const addOn of resolvedAddOns) {
+    const addOnItem = await supabaseAdmin.from("order_items").insert({
       order_id: orderId,
-      product_id: addOn.recommended_product_id,
-      quantity: 1,
-      unit_price: Number(addOn.recommended_price),
+      product_id: addOn.productId,
+      quantity: addOn.quantity,
+      unit_price: addOn.unitPrice,
       discount_amount: 0,
-      final_unit_price: Number(addOn.recommended_price),
-      metadata: { source: "revenue_agent_recommendation" } as never,
+      final_unit_price: addOn.unitPrice,
+    });
+    if (addOnItem.error) throw new Error(addOnItem.error.message);
+
+    const incremental = Number((addOn.unitPrice * addOn.quantity).toFixed(2));
+    await recordRevenueEvent({
+      merchantId,
+      event: addOn.recommendationType === "upsell" ? "UPSELL_ACCEPTED" : "CROSS_SELL_ACCEPTED",
+      buyerSessionId: args.buyerSessionId,
+      recommendationId: addOn.recommendationId,
+      sourceProductId: addOn.sourceProductId,
+      productId: addOn.productId,
+      recommendationType: addOn.recommendationType,
+      amount: incremental,
+      currency: addOn.currency,
+      reason: "Incremental revenue added to order at checkout",
+      detail: {
+        order_id: orderId,
+        quote_id: addOn.quoteId,
+        quantity: addOn.quantity,
+        unit_price: addOn.unitPrice,
+        pricing_authority: "server",
+      },
     });
   }
+
 
 
   await writeAudit({
