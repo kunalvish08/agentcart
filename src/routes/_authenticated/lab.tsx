@@ -370,7 +370,200 @@ function LabPage() {
                     </div>
                   </div>
                 </TabsContent>
+                <TabsContent value="ab" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4 flex items-center justify-between">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Controlled Comparison</p>
+                      <p className="text-[10px] text-muted-foreground italic">Storefront (control) vs agent (variant) · delta on the right</p>
+                    </div>
+                    <div className="p-6">
+                      <div className="grid grid-cols-[1.4fr_1fr_1fr_auto] gap-3 border-b border-border pb-2 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                        <span>Metric</span>
+                        <span>Storefront</span>
+                        <span>Agent</span>
+                        <span className="justify-self-end">Δ</span>
+                      </div>
+                      <div className="divide-y divide-border/40">
+                        <MetricRow
+                          label="Conversion rate"
+                          traditional={pct(metrics.traditional.conversion_rate)}
+                          agentic={pct(metrics.agentic.conversion_rate)}
+                          delta={<DeltaBadge value={metrics.lift.conversion_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Average order value"
+                          traditional={money(metrics.traditional.aov, currency)}
+                          agentic={money(metrics.agentic.aov, currency)}
+                          delta={<DeltaBadge value={metrics.lift.aov_pct} suffix="%" />}
+                        />
+                        <MetricRow
+                          label="Revenue per session"
+                          traditional={money(metrics.traditional.revenue_per_session, currency)}
+                          agentic={money(metrics.agentic.revenue_per_session, currency)}
+                          delta={<DeltaBadge value={metrics.lift.revenue_per_session_pct} suffix="%" />}
+                        />
+                        <MetricRow
+                          label="Cross-sell attach rate"
+                          hint="An eligible accessory quoted alongside the primary product"
+                          traditional={pct(metrics.traditional.cross_sell_rate)}
+                          agentic={pct(metrics.agentic.cross_sell_rate)}
+                          delta={<DeltaBadge value={metrics.lift.cross_sell_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Discount rate"
+                          hint="Discount as a share of gross; lower is better for the merchant"
+                          traditional={pct(metrics.traditional.discount_rate)}
+                          agentic={pct(metrics.agentic.discount_rate)}
+                          delta={<DeltaBadge value={metrics.lift.discount_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Median session latency"
+                          traditional={
+                            metrics.traditional.avg_latency_ms
+                              ? `${(metrics.traditional.avg_latency_ms / 1000).toFixed(1)}s`
+                              : "—"
+                          }
+                          agentic={
+                            metrics.agentic.avg_latency_ms
+                              ? `${(metrics.agentic.avg_latency_ms / 1000).toFixed(1)}s`
+                              : "—"
+                          }
+                        />
+                        <MetricRow
+                          label="API calls per session"
+                          traditional={metrics.traditional.avg_tool_calls.toFixed(1)}
+                          agentic={metrics.agentic.avg_tool_calls.toFixed(1)}
+                        />
+                      </div>
+
+                      <div className="mt-6 rounded-sm border border-blue-500/20 bg-blue-500/5 p-4 flex gap-3 items-center">
+                        <Gauge className="size-3.5 text-blue-500" />
+                        <div className="text-[10px] text-blue-500/70">
+                          {metrics.ai_cost.note} Measured usage for this run:{" "}
+                          <span className="font-mono font-bold text-blue-500">{metrics.ai_cost.prompt_tokens.toLocaleString("en-IN")}</span> prompt +{" "}
+                          <span className="font-mono font-bold text-blue-500">{metrics.ai_cost.completion_tokens.toLocaleString("en-IN")}</span> completion tokens.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="safety" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Deterministic Safety Probes</p>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <p className="text-[11px] text-muted-foreground">
+                        {metrics.safety.passed} / {metrics.safety.total} contained · these are live calls against the public API, not assertions about it
+                      </p>
+                      
+                      <div className="space-y-2">
+                        {metrics.safety.probes.length === 0 ? (
+                          <p className="text-[11px] text-muted-foreground italic">No safety probes recorded for this run yet.</p>
+                        ) : (
+                          metrics.safety.probes.map((probe) => (
+                            <div key={probe.id} className="flex items-center justify-between p-3 border border-border rounded-sm bg-muted/10">
+                              <div>
+                                <p className="text-[11px] font-bold text-foreground">{probe.title}</p>
+                                <p className="text-[10px] text-muted-foreground">{probe.evidence}</p>
+                              </div>
+                              <Badge variant="outline" className={cn("text-[9px] font-bold uppercase tracking-widest rounded-sm", probe.passed ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/5" : "text-destructive border-destructive/20 bg-destructive/5")}>
+                                {probe.passed ? "contained" : "FAILED"}
+                              </Badge>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                      
+                      <p className="text-[10px] text-muted-foreground border-t border-border pt-4">
+                        Policy containment across scenario rows: storefront{" "}
+                        <span className="font-mono text-foreground">{pct(metrics.traditional.safely_contained_rate)}</span> · agent{" "}
+                        <span className="font-mono text-foreground">{pct(metrics.agentic.safely_contained_rate)}</span>.
+                      </p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="failures" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Where the Agent Failed</p>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <p className="text-[11px] text-muted-foreground">
+                        {agenticFailures.length} agent rows missed their expected outcome in this run. Nothing here is filtered.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        {failures.length === 0 ? (
+                          <p className="text-[11px] text-muted-foreground italic">No mismatches recorded yet for the completed rows.</p>
+                        ) : (
+                          failures.slice(0, 40).map((row) => (
+                            <div key={`${row.scenario_id}-${row.baseline_type}`} className="p-3 border border-border rounded-sm bg-muted/10">
+                              <div className="flex flex-wrap items-center gap-3 mb-2">
+                                <Badge variant="outline" className="rounded-sm text-[9px] uppercase tracking-widest">{row.baseline_type}</Badge>
+                                <span className="font-mono text-[10px] text-muted-foreground">{row.scenario_id}</span>
+                                <Badge variant="outline" className="rounded-sm text-[9px] uppercase tracking-widest">
+                                  {OUTCOME_LABELS[row.expected_outcome as keyof typeof OUTCOME_LABELS] ?? row.expected_outcome}
+                                </Badge>
+                                <span className="text-[10px] text-muted-foreground">→</span>
+                                <span className="text-[10px] font-bold text-foreground">{row.actual_outcome ?? "—"}</span>
+                              </div>
+                              {row.intent ? <p className="text-[11px] text-foreground mb-1">{row.intent}</p> : null}
+                              {row.failure_reason ? <p className="text-[10px] text-destructive/80 italic">{row.failure_reason}</p> : null}
+                              {row.agent_run_id ? (
+                                <Link to="/judge" className="mt-2 flex items-center gap-1 text-[10px] text-blue-500 hover:underline">
+                                  Replay in Judge Mode <ChevronRight className="size-2.5" />
+                                </Link>
+                              ) : null}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="rows" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenario-level results</p>
+                    </div>
+                    <div className="p-0">
+                      <div className="max-h-[520px] overflow-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead className="sticky top-0 bg-muted/80 backdrop-blur-sm z-10 border-b border-border">
+                            <tr>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Scenario</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Arm</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Final</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Outcome</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Match</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-border/40">
+                            {scenarioRows.map((row: ResultRowView) => (
+                              <tr key={`${row.scenario_id}-${row.baseline_type}`} className="hover:bg-muted/30 transition-colors">
+                                <td className="px-6 py-3 font-mono text-[10px] text-foreground">{row.scenario_id}</td>
+                                <td className="px-6 py-3 text-[10px] text-muted-foreground">{row.baseline_type}</td>
+                                <td className="px-6 py-3 text-[10px] text-right font-mono text-foreground">{money(row.final_amount, currency)}</td>
+                                <td className="px-6 py-3 text-[10px] text-muted-foreground">{row.actual_outcome ?? row.status}</td>
+                                <td className="px-6 py-3 text-right">
+                                  {row.outcome_match === null ? "—" : row.outcome_match ? 
+                                    <span className="text-emerald-500">✓</span> : 
+                                    <span className="text-destructive">✗</span>}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
               </Tabs>
+
             ) : null}
 
             {/* Authority / Data Integrity */}
