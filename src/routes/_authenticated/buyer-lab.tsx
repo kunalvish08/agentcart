@@ -338,7 +338,7 @@ function BuyerLabPage() {
         </motion.header>
 
         <div className="grid gap-6 lg:grid-cols-2">
-            {/* LEFT: Simulation configuration */}
+          {/* LEFT: Simulation configuration */}
             <motion.div variants={itemReveal} className="space-y-6">
               <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
               <CardHeader className="bg-muted/30 border-b border-border py-3">
