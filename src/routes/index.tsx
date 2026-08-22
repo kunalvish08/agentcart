@@ -77,18 +77,18 @@ function Landing() {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-7xl px-6 py-20">
-        <section className="grid lg:grid-cols-2 gap-20 items-center">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-20">
+        <section className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">AI COMMERCE INFRASTRUCTURE</span>
-            <h1 className="mt-6 text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
+            <h1 className="mt-6 text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
               Let AI buyers shop your store. <br />
               <span className="text-muted-foreground">Keep the money under your control.</span>
             </h1>
-            <p className="mt-10 text-lg text-muted-foreground leading-relaxed max-w-xl">
+            <p className="mt-6 sm:mt-10 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
               Expose your catalog to external AI agents while keeping pricing, policy, checkout and payment authority on your server.
             </p>
-            <div className="mt-12 flex items-center gap-4">
+            <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none">
                 <Link to="/login">Open Merchant Console</Link>
               </Button>
