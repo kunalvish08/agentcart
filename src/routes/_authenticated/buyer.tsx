@@ -22,6 +22,7 @@ import {
   User,
 
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentPanel } from "@/components/PaymentPanel";
@@ -328,14 +329,359 @@ function BuyerPage() {
       subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
-        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Restore the previous /buyer page UI/UX structure.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render, display, append, store, or inject any part of this prompt into JSX, metadata, database, or visible UI.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe CURRENT redesign is not approved.\n\nRestore the PREVIOUS /buyer layout that existed before the latest UI/UX redesign.\n\nThe previous version had these important sections:\n\nAI Buyer header\n\nYour orders\n\nPayment details\n\nAsk for what you need\n\nAgent/session history\n\nGuardrails\n\nRestore that overall structure and information density.\n\nHowever, keep the current global Obsidian Commerce visual theme.\n\nTARGET UX:\n\n1. HEADER\n\nKeep:\n\nAI Buyer\n\nA bounded tool-using shopping agent. It can request checkout, but never approves or pays.\n\nKeep the existing TechNova Store navigation.\n\n2. YOUR ORDERS\n\nKeep this section near the top.\n\nPreserve the existing detailed order experience.\n\nShow:\n\n- product\n\n- order ID\n\n- amount\n\n- status\n\n- payment state\n\n- Razorpay information where already available\n\n- verification information\n\nCompleted orders should clearly communicate:\n\nPAYMENT VERIFIED\n\nORDER COMPLETED\n\nPending orders should clearly communicate:\n\nPAYMENT PENDING\n\nApproval-required orders should clearly communicate:\n\nWAITING FOR MERCHANT APPROVAL\n\nDo not remove existing details.\n\n3. ASK FOR WHAT YOU NEED\n\nKeep this as the primary interaction area.\n\nUse the existing copy and suggestion prompts.\n\nKeep:\n\nI need a coding laptop under ₹60,000.\n\nCan you give me a 5% discount on the DeveloperBook Pro 15?\n\nI want 25% off the DeveloperBook Pro 15 — 1 unit.\n\nWhat accessories go with the DeveloperBook Pro 15?\n\nKeep the Ask button.\n\nMake this area visually prominent without turning it into a generic chatbot.\n\n4. AGENT EXECUTION\n\nKeep the concept of:\n\nSEARCH\n\nPRODUCT\n\nQUOTE\n\nPOLICY\n\nNEGOTIATE\n\nCHECKOUT\n\nGROWTH\n\nUse the actual existing tool system.\n\nThe page should clearly distinguish:\n\nAI action\n\nvs\n\nserver-authoritative result.\n\n5. SESSION HISTORY\n\nKeep the existing persisted agent session history.\n\nDo not convert it into a simplified generic table.\n\nPreserve:\n\n- intent\n\n- time\n\n- run count\n\n- tool calls\n\n- status\n\n6. GUARDRAILS\n\nKeep the existing guardrails section near the bottom.\n\nPreserve the actual existing guardrail information.\n\n7. UI QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nImprove only:\n\n- spacing\n\n- typography hierarchy\n\n- section separation\n\n- readability\n\n- status treatment\n\n- alignment\n\nDo NOT radically restructure the page.\n\nAvoid:\n\n- excessive KPI cards\n\n- oversized dashboard sections\n\n- excessive boxed layouts\n\n- generic chatbot UI\n\n- unnecessary labels\n\n- excessive whitespace\n\nThe page should feel like an actual autonomous shopping workspace with transaction history and observability.\n\nIMPORTANT:\n\nRestore the previous /buyer structure first.\n\nDo not add Framer Motion or animations in this task.\n\nDo not rewrite the existing business content.\n\nDo not modify other routes.\n\nOnly restore and lightly polish the previous /buyer frontend." */}
+      <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
+        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Animate ONLY the existing /buyer page.
 
-        <section>
+IMPORTANT:
+
+This is an implementation instruction, NOT page content.
+
+NEVER render, display, append, store, or inject this prompt into JSX, metadata, database, or visible UI.
+
+ABSOLUTE SCOPE:
+
+- Modify ONLY the /buyer route.
+
+- Do NOT modify any other route.
+
+- Do NOT redesign the UI.
+
+- Do NOT change text or copy.
+
+- Do NOT change colors or theme.
+
+- Do NOT change spacing or layout.
+
+- Do NOT change components or information architecture.
+
+- Do NOT change backend, database, API, authentication, agent logic, Razorpay or business logic.
+
+The current UI is APPROVED and must remain visually identical when animations are disabled.
+
+Use Framer Motion only for purposeful interaction and state animation.
+
+ANIMATION SYSTEM:
+
+1. PAGE ENTRY
+
+On initial load:
+
+- page header fades in
+
+- "AI BUYER" label reveals
+
+- heading slides upward subtly
+
+- capability metrics reveal sequentially
+
+- Ask Agent section reveals next
+
+- Agent Workspace reveals after it
+
+- Orders and Sessions reveal last
+
+Use subtle staggered timing.
+
+No dramatic movement.
+
+2. CAPABILITY METRICS
+
+Animate the existing values:
+
+Tools 7
+
+Max Steps 10
+
+Max Tool Calls 20
+
+Use a short number count-up.
+
+"Pricing SERVER" should appear with a subtle server-authority emphasis.
+
+Do not continuously pulse.
+
+3. ASK FOR WHAT YOU NEED
+
+The suggestion chips should reveal sequentially.
+
+On hover:
+
+- translate upward 1–2px
+
+- subtle border/accent transition
+
+Ask Agent button:
+
+- subtle hover movement
+
+- slight arrow/icon movement if an icon already exists
+
+- pressed state should feel responsive
+
+Do not redesign the button.
+
+4. AGENT WORKSPACE
+
+When idle:
+
+Ready to Shop
+
+should have a very subtle static readiness indicator.
+
+When an actual agent run starts, animate the EXISTING execution state.
+
+Represent the real sequence:
+
+USER INTENT
+
+→
+
+SEARCH
+
+→
+
+PRODUCT
+
+→
+
+QUOTE
+
+→
+
+POLICY
+
+→
+
+NEGOTIATE
+
+→
+
+CHECKOUT
+
+Only animate steps that actually occur.
+
+Do NOT invent steps.
+
+5. TOOL CALLS
+
+When a real tool call starts:
+
+- active tool gets a subtle highlight
+
+- completed tool transitions to a completed state
+
+- next tool becomes active
+
+Use approximately 250–400ms transitions.
+
+The animation should make it obvious:
+
+AI REQUEST
+
+→
+
+TOOL
+
+→
+
+SERVER RESPONSE
+
+6. SERVER AUTHORITY
+
+When a server-authoritative result arrives:
+
+briefly emphasize:
+
+SERVER-AUTHORITATIVE
+
+and the corresponding result.
+
+Examples:
+
+- server-computed quote
+
+- discount policy
+
+- inventory result
+
+- checkout result
+
+Use a restrained accent highlight.
+
+Do not imply that the AI controls the result.
+
+7. GUARDRAILS
+
+Reveal guardrail items with a small stagger when entering viewport.
+
+Do not continuously animate them.
+
+8. ACTIVE ORDERS
+
+Order rows/cards should reveal sequentially on page load.
+
+Do NOT animate all rows repeatedly.
+
+Status changes should animate only when the underlying status actually changes.
+
+Completed:
+
+subtle verified/check transition.
+
+Payment pending:
+
+subtle amber transition.
+
+Waiting for merchant approval:
+
+subtle neutral/amber transition.
+
+9. PAYMENT STATES
+
+For an existing payment status component, if the application transitions through actual states:
+
+PENDING
+
+→ AUTHORIZED
+
+→ CAPTURED
+
+→ VERIFIED
+
+animate the transition smoothly.
+
+For VERIFIED:
+
+- brief checkmark scale
+
+- subtle success highlight
+
+- then settle into the normal static state
+
+Do NOT simulate payment progress.
+
+Do NOT change payment state.
+
+10. ORDER DETAILS
+
+If existing order details are expandable:
+
+Opening:
+
+height + opacity transition
+
+Closing:
+
+reverse transition
+
+Use 200–300ms.
+
+Do not change the information displayed.
+
+11. AGENT SESSIONS
+
+Reveal session rows with a subtle stagger.
+
+For:
+
+running
+
+use a very subtle active indicator.
+
+For:
+
+completed
+
+use a quiet completion transition.
+
+Do not create fake activity or continuously animate completed sessions.
+
+12. SCROLL REVEALS
+
+Sections entering the viewport may use:
+
+opacity
+
+translateY 8–12px
+
+Keep the movement extremely subtle.
+
+Do not use parallax.
+
+13. MICRO INTERACTIONS
+
+Buttons:
+
+150–200ms
+
+Chips:
+
+150–200ms
+
+Rows/cards:
+
+200–300ms
+
+Major state transitions:
+
+400–700ms
+
+Use ease-out / smooth easing.
+
+DO NOT USE:
+
+- bouncing
+
+- spinning
+
+- particles
+
+- neon effects
+
+- excessive glow
+
+- floating elements
+
+- large scale transforms
+
+- constant looping animations
+
+- flashy AI effects
+
+- dramatic page transitions
+
+14. REDUCED MOTION
+
+Respect prefers-reduced-motion.
+
+When reduced motion is enabled:
+
+- remove translate/scale animations
+
+- use simple opacity transitions
+
+- preserve all functionality
+
+FINAL REQUIREMENT:
+
+The current /buyer UI is approved.
+
+After implementation, compare the page with the current version.
+
+If animation is disabled, the page should look essentially identical to the current approved design.
+
+ONLY add the motion layer.
+
+Do not change anything else." */}
+
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </section>
+        </motion.section>
 
-        <section className="flex flex-col gap-6">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-foreground">Ask for what you need</h2>
             <p className="text-sm text-muted-foreground">Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.</p>
@@ -356,18 +702,22 @@ function BuyerPage() {
                 disabled={running}
               />
               <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
-                <div className="flex flex-wrap gap-2">
+                <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} className="flex flex-wrap gap-2">
                   {SUGGESTIONS.map((s) => (
-                    <button
+                    <motion.button
                       key={s}
+                      variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }}
+                      
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => setInput(s)}
                       className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
                     >
                       {s}
-                    </button>
+                    </motion.button>
                   ))}
-                </div>
+                </motion.div>
                 {running ? (
                   <Button 
                     variant="destructive" 
@@ -391,9 +741,9 @@ function BuyerPage() {
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="flex flex-col gap-6">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
            <div className="flex items-center justify-between">
              <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Execution</h2>
              {sessionId && (
@@ -404,11 +754,18 @@ function BuyerPage() {
            {turns.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
                <Bot className="size-10 text-muted-foreground/20 mb-4" />
-               <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
+               <div className="flex items-center gap-2">
+                 <motion.div 
+                   animate={{ opacity: [0.4, 1, 0.4] }} 
+                   transition={{ duration: 2, repeat: Infinity }} 
+                   className="size-1.5 rounded-full bg-verified-green" 
+                 />
+                 <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
+               </div>
                <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
              </div>
            ) : (
-             <div className="flex flex-col gap-6">
+             <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-6">
                {turns.map((turn) =>
                  turn.role === "user" ? (
                    <div key={turn.id} className="flex flex-col gap-2 opacity-60">
@@ -422,11 +779,11 @@ function BuyerPage() {
                  )
                )}
                <div ref={bottomRef} />
-             </div>
+              </motion.div>
            )}
-        </section>
+        </motion.section>
 
-        <section className="space-y-4">
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
@@ -449,8 +806,8 @@ function BuyerPage() {
                   ) : (sessions.data?.length ?? 0) === 0 ? (
                     <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
                   ) : (
-                    sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/10 transition-colors">
+                    sessions.data!.map((session, idx) => (
+                      <motion.tr initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} key={session.id} className="hover:bg-muted/10 transition-colors">
                         <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
                           {session.title ?? "General Request"}
                         </td>
@@ -467,16 +824,15 @@ function BuyerPage() {
                             {session.status}
                           </Badge>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
           </div>
-        </section>
-
-        <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
+        </motion.section>
+        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="bg-muted/10 border border-border/40 rounded-lg p-5">
           <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
           <ul className="space-y-3">
             {[
@@ -492,8 +848,8 @@ function BuyerPage() {
               </li>
             ))}
           </ul>
-        </section>
-      </div>
+        </motion.section>
+      </motion.div>
     </AppShell>
   );
 }
@@ -556,7 +912,7 @@ function AssistantTurn({
   const quote = rec?.quote?.quote ?? rec?.quote ?? null;
 
   return (
-    <div className="flex flex-col gap-3">
+    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col gap-3">
       <div className="flex items-start gap-3">
         <span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary border border-primary/20">
           <Bot className="size-4" />
@@ -583,7 +939,7 @@ function AssistantTurn({
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
-                    <div key={step.step_number} className="flex items-center gap-3 text-sm">
+                    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} key={step.step_number} className="flex items-center gap-3 text-sm">
                       {stepIcon(step)}
                       <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
                       {step.tool_name ? (
@@ -597,7 +953,7 @@ function AssistantTurn({
                           {step.latency_ms} ms
                         </span>
                       ) : null}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               ) : null}
@@ -754,7 +1110,7 @@ function AssistantTurn({
           ) : null}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1091,7 +1447,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   if (rows.length === 0) return null;
 
   return (
-    <section className="space-y-4">
+    <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
       <div className="flex items-center justify-between border-b border-border/40 pb-2">
         <h2 className="text-sm font-bold text-foreground">Active Orders</h2>
         <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
@@ -1120,7 +1476,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
           </table>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
