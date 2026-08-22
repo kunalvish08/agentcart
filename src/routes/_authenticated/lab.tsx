@@ -372,9 +372,10 @@ function LabPage() {
                 </TabsContent>
               </Tabs>
             ) : null}
-            
+
+            {/* Authority / Data Integrity */}
             <div className="rounded-sm border border-blue-500/20 bg-blue-500/5 p-4 flex gap-3 items-center">
-              <Shield className="size-4 text-blue-500" />
+              <Shield className="size-4 text-blue-500 flex-shrink-0" />
               <div>
                 <p className="text-[10px] font-bold uppercase text-blue-500">SERVER-SOURCED EVIDENCE</p>
                 <p className="text-[10px] text-muted-foreground">Evaluation results are read from persisted server-side orders, quotes and measurements.</p>
@@ -386,3 +387,4 @@ function LabPage() {
     </AppShell>
   );
 }
+
