@@ -59,7 +59,7 @@ export const getJudgeEvidence = createServerFn({ method: "GET" })
     return judgeEvidenceForUser(context.userId);
   });
 
-export const getMoneyAuthorityProof = createServerFn({ method: "GET" })
+export const getJudgeProof = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<MoneyAuthorityProof | null> => {
     const { moneyProofForUser } = await import("@/lib/judge.server");

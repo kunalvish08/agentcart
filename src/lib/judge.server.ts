@@ -35,6 +35,7 @@ export type JudgeDemoResult = {
   session_id: string | null;
   run_id: string | null;
   order_id: string | null;
+  id: string | null;
   merchant: string | null;
   currency: string;
   steps: JudgeStep[];
@@ -1008,7 +1009,7 @@ export type JudgeReplay = {
 /** Observation-only: re-reads persisted rows. It never re-executes a single step. */
 export async function replayJudgeRun(args: { runId: string; userId: string }): Promise<JudgeReplay> {
   const runs = await listJudgeRuns(args.userId);
-  const run = runs.find((r) => r.run_id === args.runId) ?? null;
+  const run = runs.find((r) => r.id === args.runId) ?? null;
   if (!run) return { run: null, steps: [], audit: [], observation_only: true };
 
   const [{ data: steps }, { data: calls }] = await Promise.all([

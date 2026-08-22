@@ -63,7 +63,7 @@ function JudgePage() {
   });
 
   const runMutation = useMutation({
-    mutationFn: (chaos: boolean) => triggerDemo({ chaosMode: chaos }),
+    mutationFn: (chaos: boolean) => triggerDemo({ data: { chaosMode: chaos } }),
     onSuccess: (newRun) => {
       toast.success(newRun.chaos_mode ? "Chaos drill initiated" : "Standard run initiated");
       queryClient.invalidateQueries({ queryKey: ["judge-runs"] });
