@@ -74,7 +74,7 @@ export function AuditTrail({ events, isLoading }: AuditTrailProps) {
                 </div>
 
                 {event.reason && (
-                  <p className="mb-2 text-[10px] text-muted-foreground italic border-l border-border/60 pl-2 leading-relaxed">
+                  <p className="mb-2 text-[10px] text-muted-foreground italic border-l border-border/60 pl-2 leading-relaxed break-words overflow-wrap-anywhere">
                     {event.reason}
                   </p>
                 )}
