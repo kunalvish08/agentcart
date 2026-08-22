@@ -250,26 +250,28 @@ function DashboardPage() {
             <Card className="border-border/60 shadow-none bg-slate-50/50">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                   <Activity className="size-3.5" /> System Status
+                   <Activity className="size-3.5" /> AI Commerce Infrastructure
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <StatusRow label="Public catalog live" status="live" />
-                <StatusRow label="Public API operational" status="operational" />
-                <StatusRow label="Razorpay test mode" status={payments?.configured ? "configured" : "offline"} />
-                <StatusRow label="Negotiation Authority" status="enforced" />
-                <StatusRow label="Upsell Authority" status="enforced" />
+                <div className="space-y-3">
+                  <StatusRow label="Catalog" status="live" />
+                  <StatusRow label="Public API" status="operational" />
+                  <StatusRow label="Negotiation" status="enforced" />
+                  <StatusRow label="Upsell" status="enforced" />
+                  <StatusRow label="Razorpay" status={payments?.configured ? "test mode" : "offline"} />
+                </div>
                 
-                <div className="pt-4 border-t border-border/40 space-y-3">
+                <div className="pt-4 border-t border-border/40 space-y-3 opacity-80">
                   <div className="flex flex-col gap-1">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Discovery Manifest</p>
                     <code className="text-[10px] bg-white border border-border/60 rounded px-2 py-1 truncate text-slate-500">{manifestUrl}</code>
                   </div>
-                  <div className="flex justify-between items-center text-[11px] font-semibold">
+                  <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-tight">
                     <span className="text-muted-foreground">API Requests (24h)</span>
-                    <span>{data?.agentApi.requests24h ?? 0}</span>
+                    <span className="text-slate-700">{data?.agentApi.requests24h ?? 0}</span>
                   </div>
-                  <Button asChild variant="outline" className="w-full h-9 text-[11px] font-bold uppercase tracking-widest">
+                  <Button asChild variant="outline" className="w-full h-8 text-[10px] font-bold uppercase tracking-widest shadow-none">
                     <Link to="/agent-api">View Agent API Documentation</Link>
                   </Button>
                 </div>
