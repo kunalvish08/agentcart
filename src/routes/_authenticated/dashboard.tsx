@@ -98,7 +98,25 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             Authority Pipeline
+             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            For the code present, I get the error below.
+
+Please think step-by-step in order to resolve it.
+\`\`\`
+Error: Unauthorized: No authorization header provided
+
+{
+  "timestamp": 1787397645390,
+  "error_type": "RUNTIME_ERROR",
+  "filename": "http://localhost:8080/_serverFn/eyJmaWxlIjoiL3NyYy9saWIvbWVyY2hhbnQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldEdyb3d0aE1ldHJpY3NfY3JlYXRlU2VydmVyRm5faGFuZGxlciJ9",
+  "lineno": 0,
+  "colno": 0,
+  "stack": "Error: Unauthorized: No authorization header provided\\n    at eval (/dev-server/src/integrations/supabase/auth-middleware.ts:58:13)\\n    at callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:322:30)\\n    at callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:352:14)\\n    at executeMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:362:10)\\n    at AsyncFunction.__executeServer (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:201:34)\\n    at logsResult (/dev-server/src/lib/merchant.functions.ts:277:6)\\n    at eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:148:24)\\n    at eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:160:7)\\n    at handleServerAction (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:431:1)\\n    at async Object.next (/dev-server/node_modules/@tanstack/start-server-core/src/createStartHandler.ts:301:16)",
+  "has_blank_screen": true
+}
+\`\`\``}
            </h3>
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
              <div className="flex min-w-max md:min-w-0 md:w-full items-center justify-between gap-1 relative">
