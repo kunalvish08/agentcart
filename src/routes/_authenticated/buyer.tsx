@@ -328,49 +328,56 @@ function BuyerPage() {
       subtitle="Your autonomous commerce agent"
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-6">
-        {/* 1. PAGE HEADER (Infrastructure Style) */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/60">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-2">AI BUYER</p>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-3">Your autonomous commerce agent</h1>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Searches products, requests server-authoritative quotes and can request checkout — but never controls price or payment.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-4 md:gap-8">
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Tools</span>
-              <span className="text-xl font-mono font-bold text-foreground">7</span>
+      <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4">
+        {/* 1. COMPACT HERO & STATUS BAR */}
+        <header className="flex flex-col gap-4 pb-4 border-b border-border/40">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</p>
+              <h1 className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</h1>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Max Steps</span>
-              <span className="text-xl font-mono font-bold text-foreground">10</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Max Tool Calls</span>
-              <span className="text-xl font-mono font-bold text-foreground">20</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Pricing</span>
-              <span className="text-xl font-bold text-verified-green">SERVER</span>
+            
+            <div className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
+                <span className="text-xs font-mono font-bold text-foreground">7</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
+                <span className="text-xs font-mono font-bold text-foreground">10</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
+                <span className="text-xs font-mono font-bold text-foreground">20</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
+                <span className="text-[10px] font-bold text-verified-green">SERVER</span>
+              </div>
             </div>
           </div>
         </header>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="flex flex-col gap-8 min-w-0">
-            {/* 2. PRIMARY AI WORKSPACE */}
-            <section className="flex flex-col gap-6">
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="flex flex-col gap-6 min-w-0">
+            {/* 2. AGENT WORKSPACE (COMMAND CONSOLE) */}
+            <section className="flex flex-col gap-4">
               <div className="space-y-1">
-                <h2 className="text-lg font-bold text-foreground">What are you looking for?</h2>
-                <p className="text-sm text-muted-foreground">
-                  Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.
-                </p>
+                <h2 className="text-sm font-bold text-foreground">What are you looking for?</h2>
+                <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span>USER INTENT</span>
+                  <ChevronRight className="size-3" />
+                  <span>AI AGENT</span>
+                  <ChevronRight className="size-3" />
+                  <span className="text-copper">SERVER DECISION</span>
+                </div>
               </div>
 
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-30 group-focus-within:opacity-100 transition duration-500" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-20 group-focus-within:opacity-60 transition duration-500" />
                 <div className="relative bg-card border border-border rounded-lg overflow-hidden shadow-sm">
                   <Textarea
                     value={input}
@@ -381,18 +388,18 @@ function BuyerPage() {
                         void send(input);
                       }
                     }}
-                    placeholder='e.g. Find a developer laptop under ₹60,000'
-                    className="w-full min-h-[120px] bg-transparent border-0 focus-visible:ring-0 resize-none p-6 text-base font-medium placeholder:text-muted-foreground/40"
+                    placeholder='Enter your commerce intent...'
+                    className="w-full min-h-[100px] bg-transparent border-0 focus-visible:ring-0 resize-none p-5 text-sm font-medium placeholder:text-muted-foreground/30"
                     disabled={running}
                   />
-                  <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
+                  <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-t border-border/40">
                     <div className="flex flex-wrap gap-2">
                       {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s) => (
                         <button
                           key={s}
                           type="button"
                           onClick={() => setInput(s)}
-                          className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
+                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
                         >
                           {s}
                         </button>
@@ -403,18 +410,18 @@ function BuyerPage() {
                         variant="destructive" 
                         size="sm" 
                         onClick={() => abortRef.current?.abort()}
-                        className="h-9 px-4 text-[11px] font-bold uppercase tracking-widest"
+                        className="h-8 px-3 text-[10px] font-bold uppercase tracking-widest"
                       >
-                        <Loader2 className="mr-2 size-3.5 animate-spin" />
+                        <Loader2 className="mr-2 size-3 animate-spin" />
                         Stop Agent
                       </Button>
                     ) : (
                       <Button 
                         onClick={() => void send(input)} 
                         disabled={!input.trim()}
-                        className="h-9 px-6 bg-copper hover:bg-copper/90 text-white text-[11px] font-bold uppercase tracking-widest"
+                        className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
                       >
-                        <Send className="mr-2 size-3.5" />
+                        <Send className="mr-2 size-3" />
                         Ask Agent
                       </Button>
                     )}
