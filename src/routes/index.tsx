@@ -170,25 +170,7 @@ function Landing() {
                 '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Remove the accidentally rendered instruction text from the PUBLIC LANDING PAGE.
-
-Remove these two visible instruction blocks completely:
-
-1. "Do not make any visual modifications. The phrases I write are commands..."
-
-2. "Modify the React component and styling used by the public "/" landing page..."
-
-Do not change any other landing-page content.
-
-Do not redesign anything.
-
-Do not add replacement text.
-
-Do not modify Dashboard or any other route.
-
-Do not modify backend, database, API, authentication or business logic.
-
-Only remove these accidentally rendered instruction strings from the landing page.
+                                            bhai suno fast visual edit end kar do ab
               </motion.p>
               
               <motion.div 
