@@ -431,62 +431,72 @@ function BuyerLabPage() {
 
           {/* RIGHT: Agent execution / current run */}
           <div className="space-y-6 flex flex-col">
+            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden h-full">
+              <CardHeader className="bg-muted/30 border-b border-border py-3">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <Activity className="size-3.5" /> Agent-to-Agent Journey
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-2">
+                {A2A_STAGES.map((stage) => {
+                  const reached = run.calls.some((c) =>
+                    stage.key === "manifest"
+                      ? c.path.includes("agent-manifest")
+                      : stage.key === "product"
+                        ? /\/products\//.test(c.path)
+                        : c.path.includes(stage.key),
+                  );
+                  const note =
+                    stage.key === "approval"
+                      ? state?.checkout?.approval_required
+                        ? "awaiting merchant"
+                        : state?.checkout?.order_id
+                          ? "not required"
+                          : null
+                      : stage.key === "payment"
+                        ? (state?.checkout?.payment_state ?? null)
+                        : null;
+                  const stageDone = note ? false : reached;
+                  return (
+                    <div
+                      key={stage.key}
+                      className="flex items-center justify-between gap-3 rounded-sm border border-border/60 bg-muted/10 px-4 py-2.5 transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">{stage.label}</p>
+                          <span className="text-[8px] font-bold uppercase tracking-tighter text-muted-foreground/40 font-mono">
+                            {stage.endpoint}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className={cn(
+                          "text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
+                          stage.actor === "buyer" 
+                            ? "text-blue-400 border-blue-400/20 bg-blue-400/5" 
+                            : stage.actor === "server"
+                              ? "text-copper border-copper/20 bg-copper/5"
+                              : stage.actor === "razorpay"
+                                ? "text-indigo-400 border-indigo-400/20 bg-indigo-400/5"
+                                : "text-emerald-400 border-emerald-400/20 bg-emerald-400/5"
+                        )}>
+                          {stage.actor}
+                        </span>
+                        {stageDone ? (
+                          <Check className="size-3.5 text-verified-green" />
+                        ) : (
+                          <span className="text-[8px] font-bold uppercase tracking-tight text-muted-foreground/40">{note ?? "Pending"}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
-          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-            <CardHeader className="bg-muted/30 border-b border-border pb-4">
-              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                <Activity className="size-3.5" /> Agent-to-Agent Journey
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Sequential discovery and execution log.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-2">
-              {A2A_STAGES.map((stage) => {
-                const reached = run.calls.some((c) =>
-                  stage.key === "manifest"
-                    ? c.path.includes("agent-manifest")
-                    : stage.key === "product"
-                      ? /\/products\//.test(c.path)
-                      : c.path.includes(stage.key),
-                );
-                const note =
-                  stage.key === "approval"
-                    ? state?.checkout?.approval_required
-                      ? "awaiting merchant"
-                      : state?.checkout?.order_id
-                        ? "not required"
-                        : null
-                    : stage.key === "payment"
-                      ? (state?.checkout?.payment_state ?? null)
-                      : null;
-                const stageDone = note ? false : reached;
-                return (
-                  <div
-                    key={stage.key}
-                    className="flex items-center justify-between gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold uppercase tracking-tight text-foreground">{stage.label}</p>
-                      <p className="truncate font-mono text-[9px] text-muted-foreground/60">
-                        {stage.endpoint}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-primary/60 px-1.5 py-0.5 rounded-sm bg-primary/5 border border-primary/10">
-                        {stage.actor === "buyer" ? "Agent" : "Server"}
-                      </span>
-                      {stageDone ? (
-                        <Check className="size-3.5 text-verified-green" />
-                      ) : (
-                        <span className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground/40">{note ?? "Pending"}</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
 
           {/* buyer state */}
           <Card>
