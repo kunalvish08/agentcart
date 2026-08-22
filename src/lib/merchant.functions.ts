@@ -261,7 +261,7 @@ export const updatePolicy = createServerFn({ method: "POST" })
       throw new Error("Approval threshold cannot exceed the maximum order value");
     }
 
-    const { error } = await supabase
+    const { data: saved, error } = await supabase
       .from("merchant_policies")
       .update({
         max_discount_percent: data.max_discount_percent,
@@ -270,10 +270,25 @@ export const updatePolicy = createServerFn({ method: "POST" })
         allow_negotiation: data.allow_negotiation,
         allow_upsell: data.allow_upsell,
       })
-      .eq("merchant_id", merchant.id);
+      .eq("merchant_id", merchant.id)
+      .select(
+        "max_discount_percent, max_order_value, approval_required_above, allow_negotiation, allow_upsell",
+      )
+      .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!saved) throw new Error("Policy could not be saved.");
 
-    return { ok: true };
+    return {
+      ok: true as const,
+      policy: {
+        max_discount_percent: Number(saved.max_discount_percent),
+        max_order_value: Number(saved.max_order_value),
+        approval_required_above: Number(saved.approval_required_above),
+        allow_negotiation: saved.allow_negotiation === true,
+        allow_upsell: saved.allow_upsell === true,
+      },
+    };
+
   });
 
 export type GrowthMetrics = {
