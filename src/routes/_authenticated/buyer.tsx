@@ -821,7 +821,6 @@ Do not change anything else." */}
             </div>
           </div>
         </section>
-
         <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
           <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
           <ul className="space-y-3">
