@@ -1162,63 +1162,137 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   if (rows.length === 0) return null;
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Receipt className="size-4 text-primary" /> Your orders
-          <Badge variant="secondary">{rows.length}</Badge>
-        </CardTitle>
-        <CardDescription>
-          Persisted server-side, so you can leave this page and come back to finish paying.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {rows.map((row: BuyerActiveOrder) => (
-          <div key={row.order_id} className="rounded-lg border border-border p-3 text-sm">
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div className="min-w-0">
-                <p className="font-medium text-foreground">
-                  {row.product_name ?? "Product"}
-                  {row.quantity ? ` × ${row.quantity}` : ""}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Order {row.order_id.slice(0, 8)} ·{" "}
-                  {new Date(row.created_at).toLocaleString("en-IN")}
-                </p>
+    <section className="space-y-4">
+      <div className="flex items-center justify-between border-b border-border/40 pb-2">
+        <h2 className="text-lg font-bold text-foreground">Orders</h2>
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+          <Clock className="size-3" />
+          <span>Persisted server-side · Continue unfinished payments anytime</span>
+        </div>
+      </div>
+      
+      <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="bg-muted/30 border-b border-border">
+                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Product</th>
+                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Order ID</th>
+                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Amount</th>
+                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/40">
+              {rows.map((row: BuyerActiveOrder) => (
+                <OrderRow key={row.order_id} row={row} buyerName={buyerName} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName?: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isCompleted = row.status === "COMPLETED";
+
+  return (
+    <>
+      <tr 
+        className={cn(
+          "group transition-colors",
+          expanded ? "bg-muted/20" : "hover:bg-muted/10 cursor-pointer"
+        )}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-3">
+            <PackageCheck className={cn("size-4", isCompleted ? "text-verified-green" : "text-muted-foreground")} />
+            <span className="font-medium text-foreground">
+              {row.product_name ?? "Product"}
+              {row.quantity ? ` × ${row.quantity}` : ""}
+            </span>
+          </div>
+        </td>
+        <td className="px-6 py-4 font-mono text-xs text-muted-foreground">
+          {row.order_id.slice(0, 8)}
+        </td>
+        <td className="px-6 py-4 font-mono font-bold text-foreground">
+          {new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: row.currency,
+            maximumFractionDigits: 0,
+          }).format(row.final_amount)}
+        </td>
+        <td className="px-6 py-4">
+          <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
+            "text-[9px] font-bold uppercase tracking-widest border-border/60",
+            row.status === "APPROVAL_REQUIRED" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20"
+          )}>
+            {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
+          </Badge>
+        </td>
+        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+          {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
+        </td>
+      </tr>
+      {expanded && (
+        <tr>
+          <td colSpan={5} className="px-6 py-6 bg-muted/20 border-b border-border/40">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Server Authority Information</h4>
+                  <div className="bg-background/50 rounded border border-border/60 p-3 space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Verification Time</span>
+                      <span className="text-foreground font-mono">{new Date(row.created_at).toLocaleTimeString()}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Payment State</span>
+                      <span className="text-foreground font-bold uppercase tracking-tight">{row.status.replace(/_/g, ' ')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {row.status === "APPROVAL_REQUIRED" ? (
+                  <div className="flex items-start gap-3 p-3 bg-approval-amber/5 border border-approval-amber/20 rounded">
+                    <Clock className="size-4 text-approval-amber shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-approval-amber uppercase tracking-widest">Waiting for merchant approval</p>
+                      <p className="text-[11px] text-approval-amber/80 mt-1">Order value exceeds automatic threshold. Audit pending.</p>
+                    </div>
+                  </div>
+                ) : null}
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-foreground">
-                  {new Intl.NumberFormat("en-IN", {
-                    style: "currency",
-                    currency: row.currency,
-                    maximumFractionDigits: 0,
-                  }).format(row.final_amount)}
-                </p>
-                <Badge variant="outline" className="mt-1">
-                  {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
-                </Badge>
+
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Payment Control</h4>
+                {["PAYMENT_PENDING", "PAYMENT_CAPTURED", "COMPLETED"].includes(row.status) ? (
+                  <div className="bg-background/50 rounded border border-border/60 p-3">
+                    <PaymentPanel
+                      orderId={row.order_id}
+                      orderStatus={row.status}
+                      amount={row.final_amount}
+                      currency={row.currency}
+                      {...(buyerName ? { buyerName } : {})}
+                    />
+                  </div>
+                ) : (
+                  <div className="p-4 border border-dashed border-border/60 rounded flex flex-col items-center justify-center text-center">
+                    <Clock className="size-6 text-muted-foreground/20 mb-2" />
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Transaction Locked</p>
+                    <p className="text-[11px] text-muted-foreground/60 mt-1">Awaiting authority state transition.</p>
+                  </div>
+                )}
               </div>
             </div>
-
-            {row.status === "APPROVAL_REQUIRED" ? (
-              <p className="mt-2 flex items-start gap-2 text-muted-foreground">
-                <Clock className="mt-0.5 size-4 shrink-0" />
-                <span>Waiting for the merchant to review this checkout.</span>
-              </p>
-            ) : null}
-
-            {["PAYMENT_PENDING", "PAYMENT_CAPTURED", "COMPLETED"].includes(row.status) ? (
-              <PaymentPanel
-                orderId={row.order_id}
-                orderStatus={row.status}
-                amount={row.final_amount}
-                currency={row.currency}
-                {...(buyerName ? { buyerName } : {})}
-              />
-            ) : null}
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
