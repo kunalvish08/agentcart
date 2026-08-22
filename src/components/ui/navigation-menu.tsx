@@ -51,31 +51,40 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            ┌──────────────────────────────────┐
-│ ☰   Agentic Commerce        👤  │
-├──────────────────────────────────┤
-│                                  │
-│        Current Page              │
-│                                  │
-└──────────────────────────────────┘
+                                            For the code present, I get the error below.
 
-        ↓ tap ☰
+Please think step-by-step in order to resolve it.
+\`\`\`
+# Error number 1:
+#################
 
-┌──────────────────────────────────┐
-│ Agentic Commerce                 │
-├──────────────────────────────────┤
-│  ▣  Dashboard                    │
-│  ◉  AI Buyer                     │
-│  ◎  External AI Buyer            │
-│  ✓  Approvals                    │
-│  □  Products                     │
-│  ◇  Policies                     │
-│  ◈  Evaluation Lab               │
-│  ⚡ Judge Mode                    │
-├──────────────────────────────────┤
-│  demo@technova.test              │
-│  Sign out                        │
-└──────────────────────────────────┘`}
+The app returned 500 while handling GET /_serverFn/eyJmaWxlIjoiL3NyYy9saWIvY2hlY2tvdXQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldENoZWNrb3V0QXVkaXRfY3JlYXRlU2VydmVyRm5faGFuZGxlciJ9. The error was handled by a route or error boundary, so no stack was captured — check the failing loader/route code and the dev server output.
+
+{
+  "timestamp": 1787394949004,
+  "error_type": "RUNTIME_ERROR",
+  "filename": "Unknown file",
+  "lineno": 0,
+  "colno": 0,
+  "stack": "Unavailable",
+  "has_blank_screen": true
+}
+
+# Error number 2:
+#################
+
+The app returned 500 while handling GET /_serverFn/eyJmaWxlIjoiL3NyYy9saWIvY2hlY2tvdXQuZnVuY3Rpb25zLnRzP3Rzcy1zZXJ2ZXJmbi1zcGxpdCIsImV4cG9ydCI6ImdldENoZWNrb3V0TWV0cmljc19jcmVhdGVTZXJ2ZXJGbl9oYW5kbGVyIn0. The error was handled by a route or error boundary, so no stack was captured — check the failing loader/route code and the dev server output.
+
+{
+  "timestamp": 1787394949011,
+  "error_type": "RUNTIME_ERROR",
+  "filename": "Unknown file",
+  "lineno": 0,
+  "colno": 0,
+  "stack": "Unavailable",
+  "has_blank_screen": true
+}
+\`\`\``}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
