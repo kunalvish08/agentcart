@@ -98,18 +98,13 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">Authority Pipeline</h3>
-           <div className="flex flex-wrap justify-between items-center gap-4">
-             <PipelineNode label="CATALOG" icon={Search} index={0} />
-             <Connector />
-             <PipelineNode label="AI BUYER" icon={Bot} index={1} />
-             <Connector />
-             <PipelineNode label="SERVER AUTHORITY" icon={ShieldCheck} active index={2} />
-             <Connector />
-             <PipelineNode label="APPROVAL" icon={ClipboardCheck} index={3} />
-             <Connector />
-             <PipelineNode label="RAZORPAY" icon={CreditCard} index={4} />
-             <Connector />
-             <PipelineNode label="COMPLETED" icon={CheckCircle2} index={5} />
+           <div className="flex flex-wrap gap-2 justify-center">
+             <PipelineNode label="CAT" icon={Search} index={0} />
+             <PipelineNode label="AI" icon={Bot} index={1} />
+             <PipelineNode label="AUTH" icon={ShieldCheck} active index={2} />
+             <PipelineNode label="APP" icon={ClipboardCheck} index={3} />
+             <PipelineNode label="RZP" icon={CreditCard} index={4} />
+             <PipelineNode label="FIN" icon={CheckCircle2} index={5} />
            </div>
         </motion.section>
 
