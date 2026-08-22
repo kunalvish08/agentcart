@@ -356,26 +356,26 @@ function Landing() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">SERVER AUTHORITY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">SERVER AUTHORITY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Price · Inventory · Policy
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">TENANT ISOLATION</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">TENANT ISOLATION</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Merchant-scoped data
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">AUDITABLE</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">AUDITABLE</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Orders · Payments · Traces
                 </div>
               </div>
               <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">RAZORPAY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">RAZORPAY</p>
+                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                    Verified payments
                 </div>
               </div>
