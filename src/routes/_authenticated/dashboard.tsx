@@ -164,9 +164,23 @@ function DashboardPage() {
                 <section className="border border-border p-6 rounded-sm">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xs font-bold uppercase tracking-widest text-foreground">Agentic Checkout</h3>
-                        <Button asChild variant="outline" size="sm" className="text-[10px] uppercase font-bold tracking-widest h-8">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] uppercase font-bold tracking-widest h-8 hover:-translate-y-0.5 transition-transform">
                             <Link to="/approvals">Open Approval Queue</Link>
                         </Button>
+                    </div>
+                    <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                        {["Requests", "Approvals", "Payment", "Verified", "Completed"].map((step, idx) => (
+                           <motion.div 
+                             key={step}
+                             initial={{ opacity: 0, x: -5 }}
+                             whileInView={{ opacity: 1, x: 0 }}
+                             transition={{ duration: 0.3, delay: idx * 0.1 }}
+                             className="flex items-center gap-2 shrink-0"
+                           >
+                             <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{step}</span>
+                             {idx < 4 && <ArrowRight className="size-2 text-muted-foreground/30" />}
+                           </motion.div>
+                        ))}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <motion.div 
