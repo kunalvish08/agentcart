@@ -417,8 +417,8 @@ function Landing() {
           </div>
           
           <div className="flex items-center gap-8">
-            <Link to="/agent-api" className="text-xs font-semibold text-muted-foreground hover:text-foreground">Agent API</Link>
-            <Link to="/login" className="text-xs font-semibold text-muted-foreground hover:text-foreground">Merchant Console</Link>
+            <Link to="/agent-api" className="text-xs font-semibold text-slate-600 hover:text-foreground">Agent API</Link>
+            <Link to="/login" className="text-xs font-semibold text-slate-600 hover:text-foreground">Merchant Console</Link>
           </div>
         </div>
       </footer>
