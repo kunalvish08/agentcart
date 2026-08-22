@@ -8,13 +8,15 @@ import {
   LogOut,
   Network,
   FlaskConical,
-
   Package,
   ShieldCheck,
   Sparkles,
+  Sun,
+  Moon,
 } from "lucide-react";
 
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
+import { useTheme } from "@/routes/__root";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -45,6 +47,7 @@ export function AppShell({
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { theme, toggleTheme } = useTheme();
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -58,12 +61,12 @@ export function AppShell({
       <aside className="hidden w-64 shrink-0 flex-col justify-between bg-sidebar px-4 py-6 text-sidebar-foreground md:flex">
         <div>
           <div className="flex items-center gap-2 px-2">
-            <span className="flex size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+            <span className="flex size-8 items-center justify-center rounded-sm bg-primary text-primary-foreground">
               <Sparkles className="size-4" />
             </span>
             <div className="leading-tight">
-              <p className="text-sm font-semibold">Agentic Commerce</p>
-              <p className="text-xs text-sidebar-foreground/60">Merchant Console</p>
+              <p className="text-sm font-bold tracking-tight">Agentic Commerce</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Infrastructure</p>
             </div>
           </div>
 
@@ -72,10 +75,10 @@ export function AppShell({
               <Link
                 key={to}
                 to={to}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                className="flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 activeProps={{
                   className:
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium bg-sidebar-accent text-sidebar-accent-foreground",
+                    "flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-bold bg-accent text-primary",
                 }}
               >
                 <Icon className="size-4" />
@@ -85,35 +88,43 @@ export function AppShell({
           </nav>
         </div>
 
-        <div className="space-y-3 px-2">
-          <p className="text-xs text-sidebar-foreground/60">Phase 06 · Razorpay test payments</p>
+        <div className="space-y-4 px-2">
+          <div className="h-px bg-border/50" />
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">v1.0.6 · RAZORPAY TEST</p>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border bg-card px-6 py-4">
           <div>
-            <h1 className="text-lg font-semibold tracking-tight text-foreground">{title}</h1>
-            {subtitle ? <p className="text-sm text-muted-foreground">{subtitle}</p> : null}
+            <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
+            {subtitle ? <p className="text-xs font-medium text-muted-foreground">{subtitle}</p> : null}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={toggleTheme}
+              className="flex size-8 items-center justify-center rounded-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+            </button>
+            <div className="h-4 w-px bg-border" />
             {accountLabel ? (
-              <span className="hidden text-sm text-muted-foreground sm:inline">{accountLabel}</span>
+              <span className="hidden text-[11px] font-bold uppercase tracking-widest text-muted-foreground sm:inline">{accountLabel}</span>
             ) : null}
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="mr-2 size-4" />
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm text-[10px] font-bold uppercase tracking-widest border-border hover:bg-accent">
+              <LogOut className="mr-2 size-3.5" />
               Sign out
             </Button>
           </div>
         </header>
 
-        <nav className="flex gap-1 border-b border-border bg-card px-4 py-2 md:hidden">
+        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden no-scrollbar">
           {NAV.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className="rounded-md px-3 py-1.5 text-sm text-muted-foreground"
-              activeProps={{ className: "rounded-md px-3 py-1.5 text-sm bg-secondary text-secondary-foreground" }}
+              className="whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
+              activeProps={{ className: "whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-accent text-primary" }}
             >
               {label}
             </Link>

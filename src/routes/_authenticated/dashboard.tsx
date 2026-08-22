@@ -88,15 +88,15 @@ function DashboardPage() {
         {/* 1. HEADER / STORE STATUS */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-6">
           <div className="flex flex-col gap-1">
-             <h2 className="text-3xl font-semibold tracking-tight text-slate-900">TechNova Store</h2>
+             <h2 className="text-3xl font-bold tracking-tight text-foreground">{data?.merchant.name ?? "TechNova Store"}</h2>
              <div className="flex items-center gap-3">
-               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.65_0.15_160)]">
-                 <div className="h-1.5 w-1.5 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
-                 STORE ACTIVE
+               <div className="flex items-center gap-1.5 rounded-full bg-verified-green/10 px-2.5 py-0.5 text-[10px] font-bold text-verified-green">
+                 <div className="h-1.5 w-1.5 rounded-full bg-verified-green animate-pulse" />
+                 STORE LIVE
                </div>
-               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.75_0.15_200)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.75_0.15_200)]">
+               <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
                  <ShieldCheck className="size-3" />
-                 AI COMMERCE ENABLED
+                 SERVER AUTHORITY ACTIVE
                </div>
              </div>
           </div>
@@ -112,7 +112,7 @@ function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-2xl border border-border bg-card p-8 shadow-sm overflow-hidden"
+          className="relative rounded-sm border border-border bg-card p-8 shadow-none overflow-hidden"
         >
           <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
                style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '32px 32px' }} />
@@ -232,13 +232,13 @@ function DashboardPage() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 text-xs">
-                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                  <div className="rounded-sm border border-border/40 bg-muted/20 p-3">
                     <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Human Decision Needed</p>
-                    <p className="text-sm font-semibold">{checkout?.pendingApprovals ?? 0} orders awaiting review</p>
+                    <p className="text-sm font-bold">{checkout?.pendingApprovals ?? 0} orders awaiting review</p>
                   </div>
-                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                  <div className="rounded-sm border border-border/40 bg-muted/20 p-3">
                     <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Payment Pending</p>
-                    <p className="text-sm font-semibold">{inr.format(checkout?.paymentPendingValue ?? 0)} in transit</p>
+                    <p className="text-sm font-bold font-mono">{inr.format(checkout?.paymentPendingValue ?? 0)} in transit</p>
                   </div>
                 </div>
               </CardContent>
@@ -265,7 +265,7 @@ function DashboardPage() {
                 <div className="pt-4 border-t border-border/40 space-y-3 opacity-80">
                   <div className="flex flex-col gap-1">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Discovery Manifest</p>
-                    <code className="text-[10px] bg-white border border-border/60 rounded px-2 py-1 truncate text-slate-500">{manifestUrl}</code>
+                    <code className="text-[10px] bg-white border border-border/60 rounded-sm px-2 py-1 truncate text-slate-500 font-mono">{manifestUrl}</code>
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-tight">
                     <span className="text-muted-foreground">API Requests (24h)</span>
@@ -319,11 +319,11 @@ function DashboardPage() {
                       .slice(0, 5)
                       .map((event) => (
                         <div key={event.id} className="relative pl-6 space-y-1">
-                          <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
-                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-[oklch(0.55_0.18_25)]' : 'bg-primary/60')} />
+                          <div className="absolute left-0 top-[5px] size-[15px] rounded-sm bg-white border border-border flex items-center justify-center">
+                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
                           </div>
-                          <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
-                          <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                          <p className="text-[9px] font-mono text-muted-foreground/60">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
                         </div>
                       ))
                   ) : (
@@ -343,8 +343,8 @@ function FlowStep({ label, icon: Icon, active = false, className }: { label: str
   return (
     <div className={cn("flex flex-col items-center gap-3 transition-all", active ? "scale-110" : "opacity-60")}>
       <div className={cn(
-        "flex size-12 items-center justify-center rounded-xl border transition-all",
-        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border",
+        "flex size-12 items-center justify-center rounded-sm border transition-all",
+        active ? "bg-primary text-primary-foreground border-primary shadow-sm" : "bg-muted/30 text-muted-foreground border-border",
         className
       )}>
         <Icon className="size-5" />
@@ -364,12 +364,12 @@ function FlowConnector() {
 
 function Stat({ label, value, icon: Icon }: { label: string; value: any; icon: any }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-none">
+    <div className="rounded-sm border border-border/60 bg-card p-4 shadow-none">
       <div className="flex items-center gap-2 mb-2">
         <Icon className="size-3.5 text-muted-foreground" />
         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</span>
       </div>
-      <p className="text-xl font-semibold tracking-tight text-slate-900">{value ?? "—"}</p>
+      <p className="text-xl font-bold tracking-tight text-foreground">{value ?? "—"}</p>
     </div>
   );
 }
@@ -378,7 +378,7 @@ function RuleItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-      <p className="text-lg font-semibold tracking-tight text-slate-900">{value}</p>
+      <p className="text-lg font-bold tracking-tight text-foreground">{value}</p>
     </div>
   );
 }
@@ -386,8 +386,8 @@ function RuleItem({ label, value }: { label: string; value: string }) {
 function StatusToggle({ label, enabled }: { label: string; enabled?: boolean }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className={cn("size-2 rounded-full", enabled ? "bg-emerald-500 shadow-[0_0_8px_oklch(0.64_0.17_153)]" : "bg-slate-300")} />
-      <span className="text-[11px] font-bold uppercase tracking-widest text-slate-600">{label}</span>
+      <div className={cn("size-2 rounded-full", enabled ? "bg-verified-green shadow-[0_0_8px_oklch(from_var(--verified-green)_l_c_h_/_0.5)]" : "bg-muted-foreground/30")} />
+      <span className="text-[11px] font-bold uppercase tracking-widest text-foreground/70">{label}</span>
     </div>
   );
 }
@@ -395,11 +395,11 @@ function StatusToggle({ label, enabled }: { label: string; enabled?: boolean }) 
 function RevenueMetric({ label, value, active = false, sub }: { label: string; value: string; active?: boolean; sub?: string }) {
   return (
     <div className={cn(
-      "flex-1 flex flex-col justify-center rounded-xl border p-4 shadow-none",
+      "flex-1 flex flex-col justify-center rounded-sm border p-4 shadow-none",
       active ? "bg-primary/[0.03] border-primary/20" : "bg-card border-border/60"
     )}>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{label}</p>
-      <p className={cn("text-xl font-bold tracking-tight", active ? "text-primary" : "text-slate-900")}>{value}</p>
+      <p className={cn("text-xl font-bold tracking-tight", active ? "text-primary" : "text-foreground")}>{value}</p>
       {sub && <p className="mt-1 text-[10px] font-bold uppercase text-primary/70">{sub}</p>}
     </div>
   );
@@ -409,7 +409,7 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
   return (
     <div>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-      <p className="text-sm font-bold text-slate-900">{value ?? 0}</p>
+      <p className="text-sm font-bold text-foreground">{value ?? 0}</p>
       {sub && <p className="text-[9px] font-bold uppercase text-muted-foreground/60 tracking-tight">{sub}</p>}
     </div>
   );
@@ -418,7 +418,7 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
 function PipelineStep({ label, value, active = false, highlight = false }: { label: string; value: any; active?: boolean; highlight?: boolean }) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 transition-all",
+      "flex flex-col items-center justify-center gap-1 rounded-sm border py-2 transition-all",
       highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm" : 
       active ? "bg-primary/5 border-primary/20 text-primary" : "bg-muted/10 border-border/40 text-muted-foreground"
     )}>
@@ -429,20 +429,19 @@ function PipelineStep({ label, value, active = false, highlight = false }: { lab
 }
 
 function StatusRow({ label, status }: { label: string; status: string }) {
-  const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
-  const isTest = status === 'test mode';
+  const isOk = ['live', 'operational', 'configured', 'enforced', 'protected', 'ok', 'active'].includes(status.toLowerCase());
+  const isWarning = ['inactive', 'pending', 'running', 'test mode'].includes(status.toLowerCase());
   
   return (
-    <div className="flex items-center justify-between text-[11px] font-semibold">
+    <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-tight">
       <span className="text-muted-foreground">{label}</span>
       <div className="flex items-center gap-2">
         <span className={cn(
-          "capitalize", 
-          isOk ? "text-[oklch(0.65_0.15_160)]" : isTest ? "text-[oklch(0.75_0.15_200)]" : "text-[oklch(0.7_0.15_80)]"
+          isOk ? "text-verified-green" : isWarning ? "text-approval-amber" : "text-destructive"
         )}>{status}</span>
         <div className={cn(
-          "size-1.5 rounded-full", 
-          isOk ? "bg-[oklch(0.65_0.15_160)]" : isTest ? "bg-[oklch(0.75_0.15_200)]" : "bg-[oklch(0.7_0.15_80)]"
+          "size-1.5 rounded-sm", 
+          isOk ? "bg-verified-green" : isWarning ? "bg-approval-amber" : "bg-destructive"
         )} />
       </div>
     </div>

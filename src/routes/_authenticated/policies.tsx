@@ -66,18 +66,22 @@ function PoliciesPage() {
 
   return (
     <AppShell
-      title="Merchant policies"
-      subtitle="Commercial limits that will later bound automated negotiation server-side"
+      title="Commercial Policies"
+      subtitle="Define the commercial boundaries enforced server-side for all AI transactions."
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <Card className="max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-base">Negotiation and order limits</CardTitle>
-          <CardDescription>
-            Stored per merchant in PostgreSQL and protected by row level security.
+      <div className="flex items-center justify-between border-b border-border/40 pb-6 mb-8">
+        <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Governance Console</h2>
+      </div>
+
+      <Card className="max-w-3xl rounded-sm border-border bg-card shadow-none overflow-hidden">
+        <CardHeader className="bg-muted/30 border-b border-border">
+          <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Negotiation & Order Limits</CardTitle>
+          <CardDescription className="text-xs">
+            Commercial limits are stored in PostgreSQL and enforced by Server Authority logic.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-8">
           {form === null ? (
             <p className="text-sm text-muted-foreground">Loading policies…</p>
           ) : (
@@ -89,73 +93,77 @@ function PoliciesPage() {
               }}
             >
               <div className="grid gap-4 sm:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="discount">Max discount (%)</Label>
-                  <Input
-                    id="discount"
-                    type="number"
-                    min={0}
-                    max={100}
-                    step="0.01"
-                    value={form.max_discount_percent}
-                    onChange={(e) => setForm({ ...form, max_discount_percent: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maxOrder">Max order value (INR)</Label>
-                  <Input
-                    id="maxOrder"
-                    type="number"
-                    min={0}
-                    step="1"
-                    value={form.max_order_value}
-                    onChange={(e) => setForm({ ...form, max_order_value: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="approval">Approval required above (INR)</Label>
-                  <Input
-                    id="approval"
-                    type="number"
-                    min={0}
-                    step="1"
-                    value={form.approval_required_above}
-                    onChange={(e) => setForm({ ...form, approval_required_above: e.target.value })}
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="discount" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Max discount (%)</Label>
+                    <Input
+                      id="discount"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step="0.01"
+                      className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 font-mono"
+                      value={form.max_discount_percent}
+                      onChange={(e) => setForm({ ...form, max_discount_percent: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="maxOrder" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Max order value (INR)</Label>
+                    <Input
+                      id="maxOrder"
+                      type="number"
+                      min={0}
+                      step="1"
+                      className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 font-mono"
+                      value={form.max_order_value}
+                      onChange={(e) => setForm({ ...form, max_order_value: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="approval" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Approval threshold (INR)</Label>
+                    <Input
+                      id="approval"
+                      type="number"
+                      min={0}
+                      step="1"
+                      className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 font-mono"
+                      value={form.approval_required_above}
+                      onChange={(e) => setForm({ ...form, approval_required_above: e.target.value })}
+                    />
+                  </div>
               </div>
 
-              <div className="space-y-4 rounded-md border border-border p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Allow negotiation</p>
-                    <p className="text-xs text-muted-foreground">
-                      Permits future agent flows to negotiate within the discount limit.
-                    </p>
+                <div className="space-y-4 rounded-sm border border-border bg-muted/20 p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-foreground">Allow negotiation</p>
+                      <p className="text-xs text-muted-foreground">
+                        Permits AI buyers to negotiate within the max discount cap.
+                      </p>
+                    </div>
+                    <Switch
+                      checked={form.allow_negotiation}
+                      onCheckedChange={(checked) => setForm({ ...form, allow_negotiation: checked })}
+                    />
                   </div>
-                  <Switch
-                    checked={form.allow_negotiation}
-                    onCheckedChange={(checked) => setForm({ ...form, allow_negotiation: checked })}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Allow upsell</p>
-                    <p className="text-xs text-muted-foreground">
-                      Permits cross-sell and upsell suggestions from product relations.
-                    </p>
+                  <div className="h-px bg-border/40" />
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-foreground">Allow upsell</p>
+                      <p className="text-xs text-muted-foreground">
+                        Permits AI buyers to receive product recommendations.
+                      </p>
+                    </div>
+                    <Switch
+                      checked={form.allow_upsell}
+                      onCheckedChange={(checked) => setForm({ ...form, allow_upsell: checked })}
+                    />
                   </div>
-                  <Switch
-                    checked={form.allow_upsell}
-                    onCheckedChange={(checked) => setForm({ ...form, allow_upsell: checked })}
-                  />
                 </div>
-              </div>
 
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-                Save policies
-              </Button>
+                <Button type="submit" disabled={mutation.isPending} className="rounded-sm font-bold uppercase tracking-[0.2em] px-8 h-10">
+                  {mutation.isPending ? <Loader2 className="mr-2 size-3.5 animate-spin" /> : null}
+                  Commit Changes
+                </Button>
             </form>
           )}
         </CardContent>

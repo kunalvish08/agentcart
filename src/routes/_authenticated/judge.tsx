@@ -18,6 +18,7 @@ import {
   RefreshCcw,
   CheckCircle2,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,21 +85,24 @@ const money = (amount: number, currency = "INR") =>
   );
 
 function StatusDot({ status }: { status: string }) {
-  const tone =
-    status === "ok" || status === "protected" || status === "completed"
-      ? "bg-emerald-500"
-      : status === "blocked" || status === "unprotected" || status === "failed"
-        ? "bg-destructive"
-        : "bg-muted-foreground";
-  return <span className={`mt-1.5 inline-block size-2 shrink-0 rounded-full ${tone}`} />;
+  const isOk = status === "ok" || status === "protected" || status === "completed";
+  const isError = status === "blocked" || status === "unprotected" || status === "failed";
+  const isWarning = status === "pending" || status === "running";
+  
+  return (
+    <span className={cn(
+      "mt-1.5 inline-block size-2 shrink-0 rounded-full",
+      isOk ? "bg-verified-green" : isError ? "bg-destructive" : isWarning ? "bg-approval-amber" : "bg-muted-foreground/30"
+    )} />
+  );
 }
 
 function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+    <div className="rounded-sm border border-border bg-card p-4 shadow-none">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</p>
+      {hint ? <p className="mt-1 text-[10px] font-bold uppercase text-primary/70 tracking-tight">{hint}</p> : null}
     </div>
   );
 }
@@ -249,47 +254,55 @@ function JudgePage() {
                   payment captured on its own.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="pt-8 space-y-6">
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => demoRun.mutate()} disabled={demoRun.isPending}>
+                  <Button 
+                    onClick={() => demoRun.mutate()} 
+                    disabled={demoRun.isPending}
+                    className="rounded-sm bg-primary text-primary-foreground font-bold uppercase tracking-widest h-9"
+                  >
                     {demoRun.isPending ? (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      <Loader2 className="mr-2 size-3.5 animate-spin" />
                     ) : (
-                      <Play className="mr-2 size-4" />
+                      <Play className="mr-2 size-3.5" />
                     )}
                     Run demo transaction
                   </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" disabled={demoReset.isPending}>
+                      <Button 
+                        variant="outline" 
+                        disabled={demoReset.isPending}
+                        className="rounded-sm border-border font-bold uppercase tracking-widest h-9"
+                      >
                         {demoReset.isPending ? (
-                          <Loader2 className="mr-2 size-4 animate-spin" />
+                          <Loader2 className="mr-2 size-3.5 animate-spin" />
                         ) : (
-                          <RefreshCcw className="mr-2 size-4" />
+                          <RefreshCcw className="mr-2 size-3.5" />
                         )}
                         Reset Judge Demo
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="rounded-sm border-border bg-card">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Reset Judge Demo?</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogTitle className="font-bold uppercase tracking-tight">Reset Judge Demo?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm">
                           This removes only designated TechNova demo transaction data.
                           Evaluation history and merchant configuration are preserved.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => demoReset.mutate()}>Confirm Reset</AlertDialogAction>
+                        <AlertDialogCancel className="rounded-sm">Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => demoReset.mutate()} className="rounded-sm bg-primary text-primary-foreground">Confirm Reset</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
 
                 {resetSummary && (
-                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm">
-                    <div className="flex items-center gap-2 font-medium text-emerald-600">
+                  <div className="rounded-sm border border-verified-green/20 bg-verified-green/5 p-4 text-sm">
+                    <div className="flex items-center gap-2 font-bold text-verified-green uppercase tracking-tight">
                       <CheckCircle2 className="size-4" />
                       Demo state reset at {new Intl.DateTimeFormat('en-IN', { timeStyle: 'medium' }).format(new Date(resetSummary.timestamp))}
                     </div>
@@ -304,7 +317,7 @@ function JudgePage() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {resetSummary.preserved.map(item => (
-                        <Badge key={item} variant="secondary" className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/10 border-emerald-500/20">
+                        <Badge key={item} variant="secondary" className="bg-verified-green/10 text-verified-green hover:bg-verified-green/10 border-verified-green/20 rounded-sm text-[9px] font-bold uppercase tracking-widest">
                           Preserved: {item}
                         </Badge>
                       ))}
@@ -343,7 +356,7 @@ function JudgePage() {
                     {activeRun.data.steps.map((step: any) => (
                       <li
                         key={step.step_number}
-                        className="flex gap-3 rounded-lg border border-border bg-muted/30 p-3"
+                        className="flex gap-3 rounded-sm border border-border bg-muted/30 p-3"
                       >
                         <StatusDot status={step.status === 'completed' ? 'ok' : step.status} />
                         <div className="min-w-0 space-y-1">

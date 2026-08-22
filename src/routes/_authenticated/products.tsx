@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Pencil, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
@@ -258,26 +259,27 @@ function ProductsPage() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{form.id ? "Edit product" : "New product"}</DialogTitle>
-            <DialogDescription>
-              Prices and stock are stored in PostgreSQL and scoped to your store.
+        <DialogContent className="rounded-sm border-border bg-card sm:max-w-[500px]">
+          <DialogHeader className="border-b border-border pb-4 -mx-6 px-6 bg-muted/30">
+            <DialogTitle className="text-base font-bold uppercase tracking-tight">{form.id ? "Edit Product" : "New Product"}</DialogTitle>
+            <DialogDescription className="text-xs">
+              Prices and inventory are stored in PostgreSQL and scoped to your merchant identity.
             </DialogDescription>
           </DialogHeader>
 
           <form
-            className="space-y-4"
+            className="space-y-6 pt-6"
             onSubmit={(event) => {
               event.preventDefault();
               saveMutation.mutate(form);
             }}
           >
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Product Name</Label>
               <Input
                 id="name"
                 required
+                className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 text-sm"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
@@ -333,10 +335,10 @@ function ProductsPage() {
               <span className="text-sm text-muted-foreground">Active in catalog</span>
             </div>
 
-            <DialogFooter>
-              <Button type="submit" disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-                {form.id ? "Save changes" : "Create product"}
+            <DialogFooter className="pt-4 border-t border-border -mx-6 px-6">
+              <Button type="submit" disabled={saveMutation.isPending} className="rounded-sm font-bold uppercase tracking-widest px-8">
+                {saveMutation.isPending ? <Loader2 className="mr-2 size-3.5 animate-spin" /> : null}
+                {form.id ? "Save Changes" : "Create Product"}
               </Button>
             </DialogFooter>
           </form>

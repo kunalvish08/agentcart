@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -280,46 +281,48 @@ function BuyerLabPage() {
   const m = metrics.data;
 
   return (
-    <AppShell
-      title="External AI Buyer Lab"
-      subtitle="An autonomous buyer agent that transacts with AgentCart over the public Agent Commerce API only — no shared database, no internal shortcuts."
-      accountLabel={workspace.data?.profile?.email ?? undefined}
+    <AppShell 
+      title="Agent Simulation Lab" 
+      subtitle="Benchmark external AI buyers transacting entirely through your public commercial API."
+      accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <div className="space-y-6">
+      <div className="flex items-center justify-between border-b border-border/40 pb-6 mb-8">
+        <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Simulator Console</h2>
+      </div>
+
+      <div className="space-y-8">
         {/* boundary banner */}
-        <Card className="border-primary/40">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Network className="size-4" /> Agent-to-agent boundary
+        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border pb-4">
+            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Network className="size-3.5" /> Simulation Boundaries
             </CardTitle>
-            <CardDescription>
-              The buyer agent runs outside the commerce core. Every action below is an HTTP call to a
-              public endpoint; prices, discounts, inventory and order state are decided by AgentCart's
-              server, never by the model.
+            <CardDescription className="text-xs">
+              Every action is a public HTTP call; commercial authority remains server-side.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
+          <CardContent className="grid gap-8 pt-6 pb-8 text-xs md:grid-cols-2">
             <div>
-              <p className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
-                <Check className="size-4 text-primary" /> The buyer agent can
+              <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-tight text-foreground">
+                <Check className="size-3.5 text-verified-green" /> Permissions
               </p>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <ul className="space-y-2">
                 {BUYER_CAN.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
+                  <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
+                    <ArrowRight className="mt-0.5 size-3 shrink-0 text-primary/40" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
-                <Ban className="size-4 text-destructive" /> The buyer agent cannot
+              <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-tight text-foreground">
+                <Ban className="size-3.5 text-destructive" /> Limitations
               </p>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <ul className="space-y-2">
                 {BUYER_CANNOT.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <Lock className="mt-0.5 size-3.5 shrink-0" />
+                  <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
+                    <Lock className="mt-0.5 size-3 shrink-0 text-muted-foreground/30" />
                     {item}
                   </li>
                 ))}
@@ -329,17 +332,16 @@ function BuyerLabPage() {
         </Card>
 
         {/* control */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Bot className="size-4" /> Run the external buyer
+        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border pb-4">
+            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Bot className="size-3.5" /> Initialize External Agent
             </CardTitle>
-            <CardDescription>
-              Pick a scenario or write your own shopping intent. The agent discovers the merchant from
-              the manifest, then works only through public endpoints.
+            <CardDescription className="text-xs">
+              Pick a scenario or write your own shopping intent. The agent discovers the merchant from the manifest.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="pt-6 space-y-6">
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_SCENARIOS.map((scenario) => (
                 <Button
@@ -347,6 +349,7 @@ function BuyerLabPage() {
                   size="sm"
                   variant="outline"
                   disabled={running}
+                  className="rounded-sm h-8 text-[10px] font-bold uppercase tracking-widest border-border hover:bg-accent"
                   onClick={() => {
                     setInput(scenario.prompt);
                     void start(scenario.prompt, scenario.id);
@@ -358,39 +361,51 @@ function BuyerLabPage() {
               ))}
             </div>
 
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              rows={3}
-              maxLength={600}
-              placeholder="e.g. Find me a developer laptop under ₹60,000 and prepare checkout."
-              disabled={running}
-            />
+            <div className="space-y-2">
+              <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Shopping Intent</Label>
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                rows={3}
+                maxLength={600}
+                placeholder="e.g. Find me a developer laptop under ₹60,000 and prepare checkout."
+                disabled={running}
+                className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-24 resize-none text-sm"
+              />
+            </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={() => void start(input)} disabled={running || input.trim().length === 0}>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button 
+                onClick={() => void start(input)} 
+                disabled={running || input.trim().length === 0}
+                className="rounded-sm bg-primary text-primary-foreground font-bold uppercase tracking-widest h-10 px-6"
+              >
                 {running ? (
                   <Loader2 className="mr-2 size-4 animate-spin" />
                 ) : (
                   <Send className="mr-2 size-4" />
                 )}
-                {running ? "Running…" : "Run buyer agent"}
+                {running ? "Simulating…" : "Launch Agent"}
               </Button>
               {running ? (
-                <Button variant="outline" onClick={() => abortRef.current?.abort()}>
+                <Button 
+                  variant="outline" 
+                  onClick={() => abortRef.current?.abort()}
+                  className="rounded-sm border-border font-bold uppercase tracking-widest h-10"
+                >
                   <Square className="mr-2 size-4" /> Stop
                 </Button>
               ) : null}
               {run.runId ? (
-                <span className="font-mono text-xs text-muted-foreground">
-                  run {run.runId.slice(0, 8)} · {run.model ?? "—"} · {run.runType ?? "—"}
+                <span className="font-mono text-[10px] text-muted-foreground/60 uppercase tracking-tight">
+                  ID: {run.runId.slice(0, 8)} · {run.model?.replace('gemini-', '') ?? "—"}
                 </span>
               ) : null}
             </div>
 
             {run.error ? (
-              <p className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground">
-                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
+              <p className="flex items-start gap-2 rounded-sm border border-destructive/20 bg-destructive/5 p-4 text-xs text-foreground">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-destructive" />
                 {run.error}
               </p>
             ) : null}
@@ -399,16 +414,16 @@ function BuyerLabPage() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* transaction journey */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Activity className="size-4" /> Agent-to-agent journey
+          <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+            <CardHeader className="bg-muted/30 border-b border-border pb-4">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <Activity className="size-3.5" /> Agent-to-Agent Journey
               </CardTitle>
-              <CardDescription>
-                Who decides at each hop. Server-decided stages are authoritative.
+              <CardDescription className="text-xs">
+                Sequential discovery and execution log.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="pt-6 space-y-2">
               {A2A_STAGES.map((stage) => {
                 const reached = run.calls.some((c) =>
                   stage.key === "manifest"
@@ -431,22 +446,22 @@ function BuyerLabPage() {
                 return (
                   <div
                     key={stage.key}
-                    className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2"
+                    className="flex items-center justify-between gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground">{stage.label}</p>
-                      <p className="truncate font-mono text-xs text-muted-foreground">
+                      <p className="text-xs font-bold uppercase tracking-tight text-foreground">{stage.label}</p>
+                      <p className="truncate font-mono text-[9px] text-muted-foreground/60">
                         {stage.endpoint}
                       </p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <Badge variant="outline" className="text-[10px] uppercase">
-                        {stage.actor === "buyer" ? "buyer decides" : `${stage.actor} decides`}
-                      </Badge>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-primary/60 px-1.5 py-0.5 rounded-sm bg-primary/5 border border-primary/10">
+                        {stage.actor === "buyer" ? "Agent" : "Server"}
+                      </span>
                       {stageDone ? (
-                        <Check className="size-4 text-primary" />
+                        <Check className="size-3.5 text-verified-green" />
                       ) : (
-                        <span className="text-xs text-muted-foreground">{note ?? "pending"}</span>
+                        <span className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground/40">{note ?? "Pending"}</span>
                       )}
                     </div>
                   </div>
