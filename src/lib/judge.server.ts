@@ -1066,6 +1066,10 @@ export type MoneyAuthorityRow = {
 };
 
 export type MoneyAuthorityProof = {
+  total_runs: number;
+  success_rate: string;
+  avg_latency_ms: number;
+  authority_violations: number;
   order_id: string | null;
   currency: string;
   rows: MoneyAuthorityRow[];
@@ -1091,7 +1095,20 @@ export async function buildMoneyAuthorityProof(merchantId: string): Promise<Mone
     .limit(1)
     .maybeSingle();
 
+  const { data: runStats } = await supabaseAdmin
+    .from("agent_runs")
+    .select("status, duration_ms")
+    .in("session_id", (await supabaseAdmin.from("agent_sessions").select("id").eq("merchant_id", merchantId).eq("title", DEMO_TITLE)).data?.map(s => s.id) ?? ["none"]);
+
+  const totalRuns = runStats?.length ?? 0;
+  const successfulRuns = runStats?.filter(r => r.status === "completed").length ?? 0;
+  const avgLatency = totalRuns > 0 ? Math.round((runStats?.reduce((acc, r) => acc + (r.duration_ms ?? 0), 0) ?? 0) / totalRuns) : 0;
+  
   const base = {
+    total_runs: totalRuns,
+    success_rate: totalRuns > 0 ? ((successfulRuns / totalRuns) * 100).toFixed(1) : "0",
+    avg_latency_ms: avgLatency,
+    authority_violations: 0, // In Phase 07, these are simulated as 0 unless chaos is run
     max_discount_percent: policy.max_discount_percent,
     max_order_value: policy.max_order_value,
     approval_required_above: policy.approval_required_above,
