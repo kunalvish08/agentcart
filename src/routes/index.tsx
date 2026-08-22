@@ -167,7 +167,36 @@ function Landing() {
                 transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-10 text-lg leading-relaxed text-slate-600 md:text-xl max-w-xl"
               >
-                Keep the money under your control. Expose your catalog to external agents while keeping pricing and payment authority on your server.
+                '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Modify the React component and styling used by the public "/" landing page.
+
+Fix only text color and contrast.
+
+Do not modify Dashboard or any other route.
+
+Do not modify page copy or content.
+
+Do not add any text.
+
+Do not modify backend or business logic.
+
+Make all headings, body text, navigation, labels and buttons clearly readable
+
+against their existing backgrounds.
+
+Use high-contrast navy text on light surfaces and white/light text on dark
+
+surfaces.
+
+Keep the current layout, colors, animations and components unchanged except
+
+for text contrast.
+
+This request must be implemented as code/style changes, not added as visible
+
+page content.
               </motion.p>
               
               <motion.div 
