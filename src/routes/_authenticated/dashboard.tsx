@@ -143,10 +143,10 @@ function DashboardPage() {
                         <TrendingUp className="size-4 text-copper" /> Negotiation & Growth
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <SmallStat label="List Value" value={growth ? inr.format(growth.listValue) : "—"} />
-                        <SmallStat label="Final Offer" value={growth ? inr.format(growth.offerValue) : "—"} />
-                        <SmallStat label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} />
-                        <SmallStat label="Negotiations" value={growth?.negotiations} />
+                        <SmallStat label="List Value" value={growth ? inr.format(growth.listValue) : "—"} index={0} />
+                        <SmallStat label="Final Offer" value={growth ? inr.format(growth.offerValue) : "—"} index={1} />
+                        <SmallStat label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
+                        <SmallStat label="Negotiations" value={growth?.negotiations} index={3} />
                     </div>
                 </section>
                 
