@@ -110,56 +110,57 @@ function DashboardPage() {
                  label="CAT" 
                  name="Catalog"
                  purpose="Product discovery"
-                 status="COMPLETED"
+                 status={pipeline.cat.status}
                  icon={Search} 
                  index={0} 
-                 state="completed"
+                 state={pipeline.cat.state}
                />
                <PipelineNode 
                  label="AI" 
                  name="AI Buyer"
                  purpose="Agent decision"
-                 status="COMPLETED"
+                 status={pipeline.ai.status}
                  icon={Bot} 
                  index={1} 
-                 state="completed"
+                 state={pipeline.ai.state}
                />
                <PipelineNode 
                  label="AUTH" 
                  name="Server Authority"
                  purpose="Policy + pricing"
-                 status="ACTIVE"
+                 status={pipeline.auth.status}
                  icon={ShieldCheck} 
                  index={2} 
-                 state="active"
+                 state={pipeline.auth.state}
                />
                <PipelineNode 
                  label="APP" 
                  name="Human Approval"
                  purpose="Merchant control"
-                 status="PENDING"
+                 status={pipeline.app.status}
                  icon={ClipboardCheck} 
                  index={3} 
-                 state="pending"
+                 state={pipeline.app.state}
                />
                <PipelineNode 
                  label="RZP" 
                  name="Razorpay"
                  purpose="Payment verification"
-                 status="WAITING"
+                 status={pipeline.rzp.status}
                  icon={CreditCard} 
                  index={4} 
-                 state="pending"
+                 state={pipeline.rzp.state}
                />
                <PipelineNode 
                  label="FIN" 
                  name="Settlement"
                  purpose="Final order state"
-                 status="LOCKED"
+                 status={pipeline.fin.status}
                  icon={CheckCircle2} 
                  index={5} 
-                 state="pending"
+                 state={pipeline.fin.state}
                />
+
              </div>
            </div>
         </motion.section>
