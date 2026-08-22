@@ -842,10 +842,8 @@ function BuyerLabPage() {
             ) : null}
           </CardContent>
         </Card>
-
-          </CardContent>
-        </Card>
       </div>
     </AppShell>
   );
 }
+
