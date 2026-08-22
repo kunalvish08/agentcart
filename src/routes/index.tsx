@@ -121,7 +121,7 @@ function Landing() {
           </div>
           
           <div className="flex items-center gap-8">
-            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground transition-all hover:text-primary relative group">
+            <Link to="/agent-api" className="text-[11px] font-bold uppercase tracking-widest text-slate-600 transition-all hover:text-primary relative group">
               Agent API
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
             </Link>
