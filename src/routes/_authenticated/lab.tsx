@@ -417,7 +417,6 @@ function LabPage() {
                   ))
                 )}
               </div>
-              </div>
             </CardContent>
           </Card>
         </aside>
