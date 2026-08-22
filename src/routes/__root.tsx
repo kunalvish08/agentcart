@@ -79,12 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Agentic Commerce Platform" },
+      { title: "Agentic Commerce · Infrastructure for AI Agents" },
       {
         name: "description",
         content: "Merchant control plane for an AI-native agentic commerce platform.",
       },
-      { property: "og:title", content: "Agentic Commerce Platform" },
+      { property: "og:title", content: "Agentic Commerce · Infrastructure for AI Agents" },
       {
         property: "og:description",
         content: "Merchant control plane for an AI-native agentic commerce platform.",
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><rect x='4' y='4' width='6' height='6' rx='1' fill='%23D59B62'/><rect x='14' y='14' width='6' height='6' rx='1' fill='%23D59B62'/><path d='M10 7H14V17H10' stroke='black' stroke-opacity='0.2' stroke-width='1.5'/><path d='M10 7L14 7M14 17L10 17' stroke='%23D59B62' stroke-width='2'/><circle cx='12' cy='12' r='1.5' fill='black'/></svg>", type: "image/svg+xml" },
     ],
   }),
   shellComponent: RootShell,
