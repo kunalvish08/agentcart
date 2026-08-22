@@ -1215,34 +1215,36 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
         )}
         onClick={() => setExpanded(!expanded)}
       >
-        <td className="px-6 py-4">
-          <div className="flex items-center gap-3">
-            <PackageCheck className={cn("size-4", isCompleted ? "text-verified-green" : "text-muted-foreground")} />
-            <span className="font-medium text-foreground">
+        <td className="px-5 py-3">
+          <div className="flex items-center gap-2.5">
+            <PackageCheck className={cn("size-3.5", isCompleted ? "text-verified-green" : "text-muted-foreground/40")} />
+            <span className="font-medium text-foreground/80">
               {row.product_name ?? "Product"}
               {row.quantity ? ` × ${row.quantity}` : ""}
             </span>
           </div>
         </td>
-        <td className="px-6 py-4 font-mono text-xs text-muted-foreground">
+        <td className="px-5 py-3 font-mono text-[10px] text-muted-foreground/50">
           {row.order_id.slice(0, 8)}
         </td>
-        <td className="px-6 py-4 font-mono font-bold text-foreground">
+        <td className="px-5 py-3 font-mono font-bold text-foreground/90">
           {new Intl.NumberFormat("en-IN", {
             style: "currency",
             currency: row.currency,
             maximumFractionDigits: 0,
           }).format(row.final_amount)}
         </td>
-        <td className="px-6 py-4">
+        <td className="px-5 py-3">
           <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
-            "text-[9px] font-bold uppercase tracking-widest border-border/60",
-            row.status === "APPROVAL_REQUIRED" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20"
+            "text-[8px] h-4 font-bold uppercase tracking-widest border-border/40",
+            row.status === "COMPLETED" && "bg-verified-green/10 text-verified-green border-verified-green/20",
+            row.status === "PAYMENT_PENDING" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20",
+            row.status === "APPROVAL_REQUIRED" && "bg-muted text-muted-foreground border-border/40"
           )}>
             {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
           </Badge>
         </td>
-        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+        <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-[11px]">
           {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
         </td>
       </tr>
