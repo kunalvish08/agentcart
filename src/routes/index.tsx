@@ -338,7 +338,7 @@ function Landing() {
 
             <motion.div 
               whileHover={{ backgroundColor: "rgba(0,0,0,0.01)" }}
-              className="group bg-white p-12 transition-all"
+              className="group bg-white p-12 transition-all border-none"
             >
               <div className="mb-8 text-primary">
                 <CreditCard size={24} strokeWidth={1.5} />
