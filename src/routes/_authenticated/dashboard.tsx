@@ -82,11 +82,11 @@ function DashboardPage() {
         </motion.header>
 
         {/* SECTION 1: HEALTH */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <Stat label="Products" value={data?.stats.totalProducts} icon={Package} index={0} />
-          <Stat label="Inventory" value={data?.stats.totalInventoryUnits.toLocaleString("en-IN")} icon={Layers} index={1} />
+          <Stat label="Units" value={data?.stats.totalInventoryUnits} icon={Layers} index={1} />
           <Stat label="Active" value={data?.stats.activeProducts} icon={CheckCircle2} index={2} />
-          <Stat label="Inventory Value" value={data ? inr.format(data.stats.inventoryValue) : "—"} icon={Store} index={3} />
+          <Stat label="Value" value={data ? inr.format(data.stats.inventoryValue) : "—"} icon={Store} index={3} />
         </section>
 
         {/* SECTION 2: AUTHORITY PIPELINE */}
