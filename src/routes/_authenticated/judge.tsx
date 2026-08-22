@@ -83,21 +83,24 @@ const money = (amount: number, currency = "INR") =>
   );
 
 function StatusDot({ status }: { status: string }) {
-  const tone =
-    status === "ok" || status === "protected" || status === "completed"
-      ? "bg-emerald-500"
-      : status === "blocked" || status === "unprotected" || status === "failed"
-        ? "bg-destructive"
-        : "bg-muted-foreground";
-  return <span className={`mt-1.5 inline-block size-2 shrink-0 rounded-full ${tone}`} />;
+  const isOk = status === "ok" || status === "protected" || status === "completed";
+  const isError = status === "blocked" || status === "unprotected" || status === "failed";
+  const isWarning = status === "pending" || status === "running";
+  
+  return (
+    <span className={cn(
+      "mt-1.5 inline-block size-2 shrink-0 rounded-full",
+      isOk ? "bg-verified-green" : isError ? "bg-destructive" : isWarning ? "bg-approval-amber" : "bg-muted-foreground/30"
+    )} />
+  );
 }
 
 function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+    <div className="rounded-sm border border-border bg-card p-4 shadow-none">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</p>
+      {hint ? <p className="mt-1 text-[10px] font-bold uppercase text-primary/70 tracking-tight">{hint}</p> : null}
     </div>
   );
 }
@@ -343,7 +346,7 @@ function JudgePage() {
                     {activeRun.data.steps.map((step: any) => (
                       <li
                         key={step.step_number}
-                        className="flex gap-3 rounded-lg border border-border bg-muted/30 p-3"
+                        className="flex gap-3 rounded-sm border border-border bg-muted/30 p-3"
                       >
                         <StatusDot status={step.status === 'completed' ? 'ok' : step.status} />
                         <div className="min-w-0 space-y-1">
