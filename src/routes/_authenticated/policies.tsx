@@ -270,7 +270,7 @@ function PoliciesPage() {
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400">SERVER-AUTHORITATIVE</h3>
                 <div className="h-px flex-1 bg-blue-500/20" />
               </div>
-              <p className="text-xs text-blue-100/70 leading-relaxed max-w-2xl italic">
+              <p className="text-xs text-blue-900/70 dark:text-blue-100/70 leading-relaxed max-w-2xl italic">
                 "AI agents may request commercial actions, but final pricing, policy enforcement and checkout authorization remain controlled by the merchant server."
               </p>
             </div>
