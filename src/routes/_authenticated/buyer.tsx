@@ -325,145 +325,242 @@ function BuyerPage() {
   return (
     <AppShell
       title="AI Buyer"
-      subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
+      subtitle="Your autonomous commerce agent"
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
-        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Restore the previous /buyer page UI/UX structure.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render, display, append, store, or inject any part of this prompt into JSX, metadata, database, or visible UI.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe CURRENT redesign is not approved.\n\nRestore the PREVIOUS /buyer layout that existed before the latest UI/UX redesign.\n\nThe previous version had these important sections:\n\nAI Buyer header\n\nYour orders\n\nPayment details\n\nAsk for what you need\n\nAgent/session history\n\nGuardrails\n\nRestore that overall structure and information density.\n\nHowever, keep the current global Obsidian Commerce visual theme.\n\nTARGET UX:\n\n1. HEADER\n\nKeep:\n\nAI Buyer\n\nA bounded tool-using shopping agent. It can request checkout, but never approves or pays.\n\nKeep the existing TechNova Store navigation.\n\n2. YOUR ORDERS\n\nKeep this section near the top.\n\nPreserve the existing detailed order experience.\n\nShow:\n\n- product\n\n- order ID\n\n- amount\n\n- status\n\n- payment state\n\n- Razorpay information where already available\n\n- verification information\n\nCompleted orders should clearly communicate:\n\nPAYMENT VERIFIED\n\nORDER COMPLETED\n\nPending orders should clearly communicate:\n\nPAYMENT PENDING\n\nApproval-required orders should clearly communicate:\n\nWAITING FOR MERCHANT APPROVAL\n\nDo not remove existing details.\n\n3. ASK FOR WHAT YOU NEED\n\nKeep this as the primary interaction area.\n\nUse the existing copy and suggestion prompts.\n\nKeep:\n\nI need a coding laptop under ₹60,000.\n\nCan you give me a 5% discount on the DeveloperBook Pro 15?\n\nI want 25% off the DeveloperBook Pro 15 — 1 unit.\n\nWhat accessories go with the DeveloperBook Pro 15?\n\nKeep the Ask button.\n\nMake this area visually prominent without turning it into a generic chatbot.\n\n4. AGENT EXECUTION\n\nKeep the concept of:\n\nSEARCH\n\nPRODUCT\n\nQUOTE\n\nPOLICY\n\nNEGOTIATE\n\nCHECKOUT\n\nGROWTH\n\nUse the actual existing tool system.\n\nThe page should clearly distinguish:\n\nAI action\n\nvs\n\nserver-authoritative result.\n\n5. SESSION HISTORY\n\nKeep the existing persisted agent session history.\n\nDo not convert it into a simplified generic table.\n\nPreserve:\n\n- intent\n\n- time\n\n- run count\n\n- tool calls\n\n- status\n\n6. GUARDRAILS\n\nKeep the existing guardrails section near the bottom.\n\nPreserve the actual existing guardrail information.\n\n7. UI QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nImprove only:\n\n- spacing\n\n- typography hierarchy\n\n- section separation\n\n- readability\n\n- status treatment\n\n- alignment\n\nDo NOT radically restructure the page.\n\nAvoid:\n\n- excessive KPI cards\n\n- oversized dashboard sections\n\n- excessive boxed layouts\n\n- generic chatbot UI\n\n- unnecessary labels\n\n- excessive whitespace\n\nThe page should feel like an actual autonomous shopping workspace with transaction history and observability.\n\nIMPORTANT:\n\nRestore the previous /buyer structure first.\n\nDo not add Framer Motion or animations in this task.\n\nDo not rewrite the existing business content.\n\nDo not modify other routes.\n\nOnly restore and lightly polish the previous /buyer frontend." */}
-
-        <section>
-          <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </section>
-
-        <section className="flex flex-col gap-6">
-          <div className="space-y-1">
-            <h2 className="text-lg font-bold text-foreground">Ask for what you need</h2>
-            <p className="text-sm text-muted-foreground">Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.</p>
-          </div>
-          <div className="relative group">
-            <div className="relative bg-card border border-border rounded-lg shadow-sm">
-              <Textarea
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    void send(input);
-                  }
-                }}
-                placeholder='e.g. Find a developer laptop under ₹60,000'
-                className="w-full min-h-[120px] bg-transparent border-0 focus-visible:ring-0 resize-none p-6 text-base font-medium placeholder:text-muted-foreground/40"
-                disabled={running}
-              />
-              <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
-                <div className="flex flex-wrap gap-2">
-                  {SUGGESTIONS.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setInput(s)}
-                      className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                {running ? (
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    onClick={() => abortRef.current?.abort()}
-                    className="h-9 px-4 text-[11px] font-bold uppercase tracking-widest"
-                  >
-                    <Loader2 className="mr-2 size-3.5 animate-spin" />
-                    Stop Agent
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => void send(input)} 
-                    disabled={!input.trim()}
-                    className="h-9 px-6 bg-copper hover:bg-copper/90 text-white text-[11px] font-bold uppercase tracking-widest"
-                  >
-                    <Send className="mr-2 size-3.5" />
-                    Ask Agent
-                  </Button>
-                )}
+      <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4">
+        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Polish ONLY the existing /buyer page UI/UX.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render or inject this prompt into JSX, UI text, metadata, or database.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe current /buyer structure is approved.\n\nDo NOT redesign the page from scratch.\n\nImprove only hierarchy, spacing, grouping and interaction clarity.\n\n1. HERO\n\nKeep:\n\nAI BUYER\n\nYour autonomous commerce agent\n\nMake the hero more compact.\n\nPlace the capability indicators:\n\nTools 7\n\nMax Steps 10\n\nMax Tool Calls 20\n\nPricing SERVER\n\nin one clean technical status bar instead of making them compete with the heading.\n\n2. AGENT WORKSPACE\n\nMake \"What are you looking for?\" the strongest interactive section.\n\nCreate a premium command-console style input area.\n\nKeep the existing suggestion chips.\n\nMake the Ask Agent button visually primary.\n\nThe workspace should immediately communicate:\n\nUSER INTENT\n\n→\n\nAI AGENT\n\n→\n\nSERVER DECISION\n\n3. AGENT WORKSPACE / SERVER AUTHORITY\n\nKeep these together but visually separate them.\n\nLeft:\n\nAgent Workspace\n\nRight:\n\nServer Authority\n\nUse a subtle vertical divider.\n\nServer Authority should have stronger visual emphasis because it is the core product principle.\n\nUse a small label:\n\nSERVER-AUTHORITATIVE\n\nDo not add explanatory marketing copy.\n\n4. AGENT CAN / SERVER CONTROLS\n\nDo not present these as two large generic cards.\n\nUse a compact comparison layout:\n\nAGENT CAN\n\nSearch · Inspect · Quote · Negotiate · Request checkout\n\nSERVER CONTROLS\n\nPrice · Discount · Inventory · Policy · State · Verification\n\nMake the distinction immediately readable.\n\n5. GUARDRAILS\n\nMove Guardrails into a compact technical trust strip below Server Authority.\n\nDo not let it dominate the page.\n\n6. ORDERS\n\nKeep Orders below the active agent workspace.\n\nImprove the table:\n\nProduct\n\nOrder\n\nAmount\n\nStatus\n\nDate\n\nMake the status the strongest secondary visual element.\n\nUse semantic status treatment:\n\nCompleted → verified green\n\nPayment pending → amber\n\nWaiting for merchant approval → neutral/amber\n\nKeep all existing order data.\n\nIf the existing UI supports row expansion, make the row expandable rather than showing all details by default.\n\n7. AGENT SESSIONS\n\nKeep this as a secondary observability section.\n\nUse compact rows.\n\nPrioritize:\n\nIntent\n\nTime\n\nTool calls\n\nStatus\n\nTruncate long intents cleanly instead of allowing them to dominate the layout.\n\nDo not remove the underlying data.\n\n8. VISUAL HIERARCHY\n\nThe final page hierarchy should be:\n\nAI Buyer\n\n↓\n\nAsk Agent\n\n↓\n\nAgent / Server Authority\n\n↓\n\nCurrent Orders\n\n↓\n\nAgent Sessions\n\n↓\n\nGuardrails\n\nThe page should feel like an AI commerce operating workspace, not a dashboard.\n\n9. RESPONSIVE\n\nDesktop:\n\nAgent Workspace + Server Authority can sit side-by-side.\n\nMobile:\n\nStack them vertically.\n\nOrders remain readable without horizontal overflow.\n\n10. DESIGN QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nIncrease:\n\n- information density\n\n- alignment\n\n- whitespace consistency\n\n- typography hierarchy\n\n- technical clarity\n\nReduce:\n\n- oversized cards\n\n- repetitive borders\n\n- unnecessary visual weight\n\n- empty space\n\n- dashboard-like KPI treatment\n\nDo NOT change the global theme.\n\nFINAL REQUIREMENT:\n\nThis task is UI/UX polish only.\n\nNO animations.\n\nNO Framer Motion.\n\nNO copy rewrite.\n\nNO backend changes.\n\nNO new functionality.\n\nNO changes to other routes.\n\nAfter this is complete, stop. Animation will be implemented in a separate task." */}
+        {/* 1. COMPACT HERO & STATUS BAR */}
+        <header className="flex flex-col gap-4 pb-4 border-b border-border/40">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</p>
+              <h1 className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</h1>
+            </div>
+            
+            <div className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
+                <span className="text-xs font-mono font-bold text-foreground">7</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
+                <span className="text-xs font-mono font-bold text-foreground">10</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
+                <span className="text-xs font-mono font-bold text-foreground">20</span>
+              </div>
+              <div className="h-3 w-px bg-border/40" />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
+                <span className="text-[10px] font-bold text-verified-green">SERVER</span>
               </div>
             </div>
           </div>
+        </header>
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="flex flex-col gap-6 min-w-0">
+            {/* 2. AGENT WORKSPACE (COMMAND CONSOLE) */}
+            <section className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <h2 className="text-sm font-bold text-foreground">What are you looking for?</h2>
+                <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span>USER INTENT</span>
+                  <ChevronRight className="size-3" />
+                  <span>AI AGENT</span>
+                  <ChevronRight className="size-3" />
+                  <span className="text-copper">SERVER DECISION</span>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-20 group-focus-within:opacity-60 transition duration-500" />
+                <div className="relative bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+                  <Textarea
+                    value={input}
+                    onChange={(event) => setInput(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                        void send(input);
+                      }
+                    }}
+                    placeholder='Enter your commerce intent...'
+                    className="w-full min-h-[100px] bg-transparent border-0 focus-visible:ring-0 resize-none p-5 text-sm font-medium placeholder:text-muted-foreground/30"
+                    disabled={running}
+                  />
+                  <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-t border-border/40">
+                    <div className="flex flex-wrap gap-2">
+                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setInput(s)}
+                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                    {running ? (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => abortRef.current?.abort()}
+                        className="h-8 px-3 text-[10px] font-bold uppercase tracking-widest"
+                      >
+                        <Loader2 className="mr-2 size-3 animate-spin" />
+                        Stop Agent
+                      </Button>
+                    ) : (
+                      <Button 
+                        onClick={() => void send(input)} 
+                        disabled={!input.trim()}
+                        className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
+                      >
+                        <Send className="mr-2 size-3" />
+                        Ask Agent
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
+            <div className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+              {/* LEFT: AGENT WORKSPACE */}
+              <section className="flex-1 flex flex-col gap-4 p-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
+                  {sessionId && (
+                    <span className="text-[9px] font-mono text-muted-foreground/60 uppercase">Session: {sessionId.slice(0, 8)}</span>
+                  )}
+                </div>
+
+                {turns.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 border border-dashed border-border/60 rounded bg-muted/5">
+                    <Bot className="size-8 text-muted-foreground/20 mb-3" />
+                    <p className="text-[9px] font-bold tracking-widest text-muted-foreground/40 uppercase">Ready to Shop</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {turns.map((turn) =>
+                      turn.role === "user" ? (
+                        <div key={turn.id} className="flex flex-col gap-1.5 opacity-60">
+                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
+                           <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
+                             <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
+                           </div>
+                        </div>
+                      ) : (
+                        <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
+                      )
+                    )}
+                    <div ref={bottomRef} />
+                  </div>
+                )}
+              </section>
+
+              <div className="hidden md:block w-px bg-border/40" />
+
+              {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
+              <aside className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</span>
+                    <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                  </div>
+                  
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-2.5">Agent Can</p>
+                      <p className="text-[11px] font-medium text-foreground/80 leading-relaxed">
+                        Search · Inspect · Quote · Negotiate · Request checkout
+                      </p>
+                    </div>
+
+                    <Separator className="bg-border/40" />
+
+                    <div>
+                      <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-2.5">Server Controls</p>
+                      <p className="text-[11px] font-bold text-copper leading-relaxed">
+                        Price · Discount · Inventory · Policy · State · Verification
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-border/40">
+                  <h3 className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mb-3">Guardrails</h3>
+                  <ul className="space-y-2">
+                    {[
+                      "Registered tools only",
+                      "Argument validation",
+                      "Computed pricing",
+                      "Server checkout",
+                      "No auto-payment"
+                    ].map(rule => (
+                      <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground/70">
+                        <Check className="size-3 text-verified-green/60 shrink-0 mt-0.5" />
+                        <span>{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. YOUR ORDERS */}
+        <section className="mt-8">
+          <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
         </section>
 
-        <section className="flex flex-col gap-6">
-           <div className="flex items-center justify-between">
-             <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Execution</h2>
-             {sessionId && (
-               <span className="text-[10px] font-mono text-muted-foreground">SESSION: {sessionId.slice(0, 8)}</span>
-             )}
-           </div>
-
-           {turns.length === 0 ? (
-             <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
-               <Bot className="size-10 text-muted-foreground/20 mb-4" />
-               <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
-               <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
-             </div>
-           ) : (
-             <div className="flex flex-col gap-6">
-               {turns.map((turn) =>
-                 turn.role === "user" ? (
-                   <div key={turn.id} className="flex flex-col gap-2 opacity-60">
-                      <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest ml-4">Intent</p>
-                      <div className="ml-4 border-l-2 border-border pl-4 py-1">
-                        <p className="text-sm font-medium text-foreground">{turn.content}</p>
-                      </div>
-                   </div>
-                 ) : (
-                   <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
-                 )
-               )}
-               <div ref={bottomRef} />
-             </div>
-           )}
-        </section>
-
+        {/* 7. SESSION HISTORY */}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
           </div>
           
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="bg-card border border-border/40 rounded-lg overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-[13px]">
                 <thead>
-                  <tr className="bg-muted/30 border-b border-border">
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Intent</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Time</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                  <tr className="bg-muted/30 border-b border-border/40">
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Intent</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Time</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Tool Calls</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/40">
+                <tbody className="divide-y divide-border/20">
                   {sessions.isLoading ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></tr>
+                    <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">Loading sessions…</td></tr>
                   ) : (sessions.data?.length ?? 0) === 0 ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
+                    <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">No sessions recorded</td></tr>
                   ) : (
                     sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/10 transition-colors">
-                        <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
+                      <tr key={session.id} className="hover:bg-muted/5 transition-colors">
+                        <td className="px-5 py-3 font-medium text-foreground/80 max-w-[240px] truncate">
                           {session.title ?? "General Request"}
                         </td>
-                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+                        <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-xs">
                           {new Date(session.created_at).toLocaleString("en-IN", { 
                             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
                           })}
                         </td>
-                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
-                          {session.runs} run{session.runs === 1 ? "" : "s"} · {session.total_tool_calls} tool calls
+                        <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap font-mono text-xs">
+                          {session.total_tool_calls} calls
                         </td>
-                        <td className="px-6 py-4">
-                          <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-border/60">
+                        <td className="px-5 py-3">
+                          <Badge variant="outline" className="text-[8px] h-4 font-bold uppercase tracking-widest border-border/40 text-muted-foreground/60">
                             {session.status}
                           </Badge>
                         </td>
@@ -474,24 +571,6 @@ function BuyerPage() {
               </table>
             </div>
           </div>
-        </section>
-
-        <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
-          <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
-          <ul className="space-y-3">
-            {[
-              "Registered tools only",
-              "Server-side argument validation",
-              "Server-computed pricing",
-              "Server-authoritative checkout",
-              "No autonomous payment capture"
-            ].map(rule => (
-              <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground">
-                <Check className="size-3 text-verified-green shrink-0 mt-0.5" />
-                <span>{rule}</span>
-              </li>
-            ))}
-          </ul>
         </section>
       </div>
     </AppShell>
