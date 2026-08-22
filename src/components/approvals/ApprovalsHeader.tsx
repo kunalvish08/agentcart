@@ -2,7 +2,7 @@ import { ClipboardCheck, ShieldAlert, User } from "lucide-react";
 
 interface ApprovalsHeaderProps {
   pendingCount: number;
-  email?: string;
+  email?: string | null;
   totalPendingValue?: number;
 }
 
