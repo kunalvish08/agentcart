@@ -528,38 +528,38 @@ function BuyerPage() {
             <History className="size-4 text-muted-foreground/40" />
           </div>
           
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="bg-card border border-border/40 rounded-lg overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-[13px]">
                 <thead>
-                  <tr className="bg-muted/30 border-b border-border">
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Intent</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Time</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity</th>
-                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                  <tr className="bg-muted/30 border-b border-border/40">
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Intent</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Time</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Tool Calls</th>
+                    <th className="px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/40">
+                <tbody className="divide-y divide-border/20">
                   {sessions.isLoading ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading sessions…</td></tr>
+                    <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">Loading sessions…</td></tr>
                   ) : (sessions.data?.length ?? 0) === 0 ? (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
+                    <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">No sessions recorded</td></tr>
                   ) : (
                     sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/10 transition-colors">
-                        <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
+                      <tr key={session.id} className="hover:bg-muted/5 transition-colors">
+                        <td className="px-5 py-3 font-medium text-foreground/80 max-w-[240px] truncate">
                           {session.title ?? "General Request"}
                         </td>
-                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+                        <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-xs">
                           {new Date(session.created_at).toLocaleString("en-IN", { 
                             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
                           })}
                         </td>
-                        <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
-                          {session.runs} run{session.runs === 1 ? "" : "s"} · {session.total_tool_calls} tool calls
+                        <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap font-mono text-xs">
+                          {session.total_tool_calls} calls
                         </td>
-                        <td className="px-6 py-4">
-                          <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-border/60">
+                        <td className="px-5 py-3">
+                          <Badge variant="outline" className="text-[8px] h-4 font-bold uppercase tracking-widest border-border/40 text-muted-foreground/60">
                             {session.status}
                           </Badge>
                         </td>
