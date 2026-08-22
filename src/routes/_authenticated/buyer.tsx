@@ -22,6 +22,7 @@ import {
   User,
 
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentPanel } from "@/components/PaymentPanel";
@@ -328,7 +329,7 @@ function BuyerPage() {
       subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
