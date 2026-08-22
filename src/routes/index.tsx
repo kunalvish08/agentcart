@@ -200,13 +200,34 @@ function Landing() {
 
         <section className="py-32 border-t border-slate">
           <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
-          <div className="mt-16 grid md:grid-cols-4 gap-4">
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
              {["AI REQUESTS", "MERCHANT POLICY BOUNDS", "SERVER DECIDES", "RAZORPAY VERIFIES"].map((title, i) => (
-                <div key={title} className={cn("border p-6", i === 2 ? "border-copper" : "border-slate")}>
+                <motion.div 
+                  key={title} 
+                  initial={{ opacity: 0.5, borderColor: "var(--color-slate)" }}
+                  whileInView={{ 
+                    opacity: 1, 
+                    borderColor: i === 2 ? "var(--color-copper)" : "var(--color-slate)",
+                    backgroundColor: i === 2 ? "rgba(213, 155, 98, 0.05)" : "transparent"
+                  }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 }}
+                  className="border p-6"
+                >
                     <p className="text-[10px] font-bold uppercase text-steel">{title}</p>
-                </div>
+                    <div className="mt-4 h-[1px] w-full bg-slate relative overflow-hidden">
+                       {i === 2 && (
+                         <motion.div 
+                           animate={{ x: ["-100%", "100%"] }}
+                           transition={{ repeat: Infinity, duration: 2 }}
+                           className="absolute inset-0 bg-copper/40"
+                         />
+                       )}
+                    </div>
+                </motion.div>
              ))}
           </div>
+
         </section>
  
         <section className="py-20 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-slate">
