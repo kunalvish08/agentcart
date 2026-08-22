@@ -203,17 +203,36 @@ function DashboardPage() {
                 </section>
 
                 {/* SECTION 8: ACTIVITY */}
-                <section className="border border-border p-6 rounded-sm">
+                <motion.section 
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.8 }}
+                  className="border border-border p-6 rounded-sm"
+                >
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-6">Recent Activity</h3>
                     <div className="space-y-4">
-                        {audit?.slice(0, 5).map(e => (
-                            <div key={e.id} className="text-[10px] font-bold border-b border-border/40 pb-2">
-                                <p className="text-foreground uppercase">{e.event.replace(/_/g, ' ')}</p>
+                        {audit?.slice(0, 5).map((e, idx) => (
+                            <motion.div 
+                              key={e.id}
+                              initial={{ opacity: 0, x: 5 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.4, delay: idx * 0.1 }}
+                              className="text-[10px] font-bold border-b border-border/40 pb-2 relative group"
+                            >
+                                {idx === 0 && (
+                                  <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: [0.2, 0.6, 0.2] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="absolute -left-2 top-2 size-1 rounded-full bg-copper"
+                                  />
+                                )}
+                                <p className="text-foreground uppercase group-hover:text-copper transition-colors">{e.event.replace(/_/g, ' ')}</p>
                                 <p className="text-muted-foreground font-mono mt-0.5">{new Date(e.created_at).toLocaleTimeString()}</p>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
-                </section>
+                </motion.section>
             </aside>
         </div>
       </div>
