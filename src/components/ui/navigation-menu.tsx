@@ -51,67 +51,55 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Redesign the mobile navigation for the entire Agentic Commerce platform.
+                                            STOP making any navigation redesign or content changes.
 
-IMPORTANT:
+The existing navigation, routes, labels, sidebar, mobile menu, and page layouts are already correct. DO NOT restructure, rename, reorder, or recreate them.
 
-Keep the existing desktop sidebar/navigation unchanged.
-
-For mobile screens (<768px), replace the desktop sidebar with a compact mobile header:
-
-[☰] Agentic Commerce                         [User]
-
-When the hamburger button is tapped, open a polished dropdown / slide-down navigation menu containing ALL existing routes:
-
-- Dashboard
-
-- AI Buyer
-
-- External AI Buyer
-
-- Approvals
-
-- Products
-
-- Policies
-
-- Evaluation Lab
-
-- Judge Mode
+Fix ONLY the current issue where the navigation menu component is causing unexpected changes/issues after the recent updates.
 
 Requirements:
 
-- Menu opens/closes smoothly with a subtle animation.
+- Preserve the current navigation text exactly as it is.
 
-- Active page is clearly highlighted.
+- Preserve all existing routes and links.
 
-- Each item has its existing icon + label.
+- Preserve the current desktop sidebar.
 
-- Menu should fit the mobile viewport and never create page-level horizontal overflow.
+- Preserve the current mobile hamburger/dropdown behavior.
 
-- Close menu after selecting a route.
+- Preserve active-route highlighting.
 
-- Add a subtle backdrop when the menu is open.
+- Preserve light/dark theme behavior.
 
-- Touch targets should be at least 44px.
+- Do not add, remove, rename, or regroup navigation items.
 
-- Keep Sign Out / account action accessible inside the mobile menu or header.
+- Do not modify Agent Commerce API page content.
 
-- Preserve the existing desktop navigation exactly as it is.
+- Do not modify any backend, API, database, authentication, or business logic.
 
-- Use existing light/dark theme tokens so the menu looks correct in BOTH themes.
+- Do not modify other pages.
 
-- Do not hardcode black/white colors.
+Only inspect the navigation implementation for the regression introduced by the recent changes and fix that regression.
 
-- Do not change backend, routes, APIs, database, or page functionality.
+After the fix, verify:
 
-Responsive:
+1. Desktop navigation works normally.
 
-320px → 767px: mobile hamburger + dropdown navigation
+2. Mobile hamburger opens correctly.
 
-768px+: existing desktop sidebar
+3. Mobile menu closes after navigation.
 
-Implement this centrally in AppShell so it works consistently across every page.`}
+4. All existing links work.
+
+5. No duplicate navigation appears.
+
+6. No unexpected text/content appears in the menu.
+
+7. No horizontal page overflow is introduced.
+
+8. Both light and dark themes remain correct.
+
+This is a targeted bug fix only. Do not redesign anything.`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
