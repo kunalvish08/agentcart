@@ -115,12 +115,12 @@ function DashboardPage() {
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground flex items-center gap-2 mb-6">
                        <ShieldCheck className="size-4 text-copper" /> Commercial Rules
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
                         <Rule label="Max Discount" value={`${data?.policy.max_discount_percent}%`} index={0} />
                         <Rule label="Max Order" value={data ? inr.format(data.policy.max_order_value) : "—"} index={1} />
-                        <Rule label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} index={2} />
-                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "Enabled" : "Disabled"} index={3} />
-                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} index={4} />
+                        <Rule label="Approval" value={data ? inr.format(data.policy.approval_required_above) : "—"} index={2} />
+                        <Rule label="Negotiation" value={data?.policy.allow_negotiation ? "ON" : "OFF"} index={3} />
+                        <Rule label="Upsell" value={data?.policy.allow_upsell ? "ON" : "OFF"} index={4} />
                     </div>
                     <motion.div 
                       initial={{ opacity: 0 }}
