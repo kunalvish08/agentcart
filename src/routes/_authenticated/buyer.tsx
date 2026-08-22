@@ -22,7 +22,7 @@ import {
   User,
 
 } from "lucide-react";
-import { motion } from "framer-motion";
+
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentPanel } from "@/components/PaymentPanel";
@@ -329,67 +329,57 @@ function BuyerPage() {
       subtitle="A bounded tool-using shopping agent. It can request checkout, but never approves or pays."
       accountLabel={merchant?.name}
     >
-      <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-8">
+      <div>
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
+
                                             
-                                            Animate ONLY the existing /buyer page.
+                                            Restore the previously approved /buyer UI exactly.
 
 IMPORTANT:
 
 This is an implementation instruction, NOT page content.
 
-NEVER render, display, append, store, or inject this prompt into JSX, metadata, database, or visible UI.
+NEVER render or inject this instruction into JSX, UI, metadata, database, or visible text.
 
-ABSOLUTE SCOPE:
+The last change incorrectly altered the approved /buyer layout.
 
-- Modify ONLY the /buyer route.
+Undo ONLY those layout/content changes.
 
-- Do NOT modify any other route.
+Do NOT modify:
 
-- Do NOT redesign the UI.
+- backend
 
-- Do NOT change text or copy.
+- database
 
-- Do NOT change colors or theme.
+- API
 
-- Do NOT change spacing or layout.
+- authentication
 
-- Do NOT change components or information architecture.
+- Razorpay
 
-- Do NOT change backend, database, API, authentication, agent logic, Razorpay or business logic.
+- agent logic
 
-The current UI is APPROVED and must remain visually identical when animations are disabled.
+- business logic
 
-Use Framer Motion only for purposeful interaction and state animation.
+- data
 
-ANIMATION SYSTEM:
+- global theme
 
-1. PAGE ENTRY
+- any other route
 
-On initial load:
+RESTORE THESE EXISTING UI ELEMENTS:
 
-- page header fades in
+1. AI BUYER HEADER
 
-- "AI BUYER" label reveals
+Keep:
 
-- heading slides upward subtly
+AI Buyer
 
-- capability metrics reveal sequentially
+Your autonomous commerce agent
 
-- Ask Agent section reveals next
+2. CAPABILITY STRIP
 
-- Agent Workspace reveals after it
-
-- Orders and Sessions reveal last
-
-Use subtle staggered timing.
-
-No dramatic movement.
-
-2. CAPABILITY METRICS
-
-Animate the existing values:
+Restore:
 
 Tools 7
 
@@ -397,291 +387,95 @@ Max Steps 10
 
 Max Tool Calls 20
 
-Use a short number count-up.
-
-"Pricing SERVER" should appear with a subtle server-authority emphasis.
-
-Do not continuously pulse.
+Pricing SERVER
 
 3. ASK FOR WHAT YOU NEED
 
-The suggestion chips should reveal sequentially.
+Restore the approved interactive section with:
 
-On hover:
+- description
 
-- translate upward 1–2px
+- existing suggestion prompts
 
-- subtle border/accent transition
-
-Ask Agent button:
-
-- subtle hover movement
-
-- slight arrow/icon movement if an icon already exists
-
-- pressed state should feel responsive
-
-Do not redesign the button.
+- Ask Agent button
 
 4. AGENT WORKSPACE
 
-When idle:
+Restore:
+
+Agent Workspace
 
 Ready to Shop
 
-should have a very subtle static readiness indicator.
+5. SERVER AUTHORITY
 
-When an actual agent run starts, animate the EXISTING execution state.
+Restore the complete section containing:
 
-Represent the real sequence:
-
-USER INTENT
-
-→
-
-SEARCH
-
-→
-
-PRODUCT
-
-→
-
-QUOTE
-
-→
-
-POLICY
-
-→
-
-NEGOTIATE
-
-→
-
-CHECKOUT
-
-Only animate steps that actually occur.
-
-Do NOT invent steps.
-
-5. TOOL CALLS
-
-When a real tool call starts:
-
-- active tool gets a subtle highlight
-
-- completed tool transitions to a completed state
-
-- next tool becomes active
-
-Use approximately 250–400ms transitions.
-
-The animation should make it obvious:
-
-AI REQUEST
-
-→
-
-TOOL
-
-→
-
-SERVER RESPONSE
-
-6. SERVER AUTHORITY
-
-When a server-authoritative result arrives:
-
-briefly emphasize:
+Server Authority
 
 SERVER-AUTHORITATIVE
 
-and the corresponding result.
+Agent Can:
 
-Examples:
+Search · Inspect · Quote · Negotiate · Request checkout
 
-- server-computed quote
+Server Controls:
 
-- discount policy
+Price · Discount · Inventory · Policy · State · Verification
 
-- inventory result
+6. GUARDRAILS
 
-- checkout result
+Restore the existing guardrail section and its complete content.
 
-Use a restrained accent highlight.
+7. ACTIVE ORDERS
 
-Do not imply that the AI controls the result.
+Restore the approved Orders section with the existing order data.
 
-7. GUARDRAILS
+Preserve the existing detailed order/payment information and status handling.
 
-Reveal guardrail items with a small stagger when entering viewport.
+8. AGENT SESSIONS
 
-Do not continuously animate them.
+Restore the existing Agent Sessions section with:
 
-8. ACTIVE ORDERS
+- intent
 
-Order rows/cards should reveal sequentially on page load.
+- time
 
-Do NOT animate all rows repeatedly.
+- run information
 
-Status changes should animate only when the underlying status actually changes.
+- tool calls
 
-Completed:
+- status
 
-subtle verified/check transition.
+Do not simplify or remove information.
 
-Payment pending:
+IMPORTANT:
 
-subtle amber transition.
+Do not redesign anything.
 
-Waiting for merchant approval:
+Do not simplify anything.
 
-subtle neutral/amber transition.
+Do not create a new layout.
 
-9. PAYMENT STATES
+Do not rewrite copy.
 
-For an existing payment status component, if the application transitions through actual states:
+Do not add new sections.
 
-PENDING
+The goal is to return /buyer to the LAST APPROVED UI state before the animation implementation.
 
-→ AUTHORIZED
+AFTER RESTORING:
 
-→ CAPTURED
+Stop.
 
-→ VERIFIED
+Do not add animations.
 
-animate the transition smoothly.
+Do not make further visual changes.''' */}
 
-For VERIFIED:
-
-- brief checkmark scale
-
-- subtle success highlight
-
-- then settle into the normal static state
-
-Do NOT simulate payment progress.
-
-Do NOT change payment state.
-
-10. ORDER DETAILS
-
-If existing order details are expandable:
-
-Opening:
-
-height + opacity transition
-
-Closing:
-
-reverse transition
-
-Use 200–300ms.
-
-Do not change the information displayed.
-
-11. AGENT SESSIONS
-
-Reveal session rows with a subtle stagger.
-
-For:
-
-running
-
-use a very subtle active indicator.
-
-For:
-
-completed
-
-use a quiet completion transition.
-
-Do not create fake activity or continuously animate completed sessions.
-
-12. SCROLL REVEALS
-
-Sections entering the viewport may use:
-
-opacity
-
-translateY 8–12px
-
-Keep the movement extremely subtle.
-
-Do not use parallax.
-
-13. MICRO INTERACTIONS
-
-Buttons:
-
-150–200ms
-
-Chips:
-
-150–200ms
-
-Rows/cards:
-
-200–300ms
-
-Major state transitions:
-
-400–700ms
-
-Use ease-out / smooth easing.
-
-DO NOT USE:
-
-- bouncing
-
-- spinning
-
-- particles
-
-- neon effects
-
-- excessive glow
-
-- floating elements
-
-- large scale transforms
-
-- constant looping animations
-
-- flashy AI effects
-
-- dramatic page transitions
-
-14. REDUCED MOTION
-
-Respect prefers-reduced-motion.
-
-When reduced motion is enabled:
-
-- remove translate/scale animations
-
-- use simple opacity transitions
-
-- preserve all functionality
-
-FINAL REQUIREMENT:
-
-The current /buyer UI is approved.
-
-After implementation, compare the page with the current version.
-
-If animation is disabled, the page should look essentially identical to the current approved design.
-
-ONLY add the motion layer.
-
-Do not change anything else." */}
-
-        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
+        <section>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </motion.section>
+        </section>
 
-        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
+        <section>
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-foreground">Ask for what you need</h2>
             <p className="text-sm text-muted-foreground">Describe the product, budget or deal you want. The agent will work through the merchant's public commerce tools.</p>
@@ -702,22 +496,15 @@ Do not change anything else." */}
                 disabled={running}
               />
               <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
-                <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} className="flex flex-wrap gap-2">
+                <div>
                   {SUGGESTIONS.map((s) => (
-                    <motion.button
-                      key={s}
-                      variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }}
-                      
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      type="button"
-                      onClick={() => setInput(s)}
+                    <button> setInput(s)}
                       className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
                     >
                       {s}
-                    </motion.button>
+                    </button>
                   ))}
-                </motion.div>
+                </div>
                 {running ? (
                   <Button 
                     variant="destructive" 
@@ -741,9 +528,9 @@ Do not change anything else." */}
               </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-6">
+        <section>
            <div className="flex items-center justify-between">
              <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Execution</h2>
              {sessionId && (
@@ -754,18 +541,11 @@ Do not change anything else." */}
            {turns.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
                <Bot className="size-10 text-muted-foreground/20 mb-4" />
-               <div className="flex items-center gap-2">
-                 <motion.div 
-                   animate={{ opacity: [0.4, 1, 0.4] }} 
-                   transition={{ duration: 2, repeat: Infinity }} 
-                   className="size-1.5 rounded-full bg-verified-green" 
-                 />
-                 <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
-               </div>
+               <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
                <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
              </div>
            ) : (
-             <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="flex flex-col gap-6">
+             <div>
                {turns.map((turn) =>
                  turn.role === "user" ? (
                    <div key={turn.id} className="flex flex-col gap-2 opacity-60">
@@ -779,11 +559,11 @@ Do not change anything else." */}
                  )
                )}
                <div ref={bottomRef} />
-              </motion.div>
+              </div>
            )}
-        </motion.section>
+        </section>
 
-        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
+        <section>
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
@@ -807,7 +587,7 @@ Do not change anything else." */}
                     <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No sessions recorded</td></tr>
                   ) : (
                     sessions.data!.map((session, idx) => (
-                      <motion.tr initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} key={session.id} className="hover:bg-muted/10 transition-colors">
+                      <tr>
                         <td className="px-6 py-4 font-medium text-foreground max-w-xs truncate">
                           {session.title ?? "General Request"}
                         </td>
@@ -824,15 +604,15 @@ Do not change anything else." */}
                             {session.status}
                           </Badge>
                         </td>
-                      </motion.tr>
+                      </tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
           </div>
-        </motion.section>
-        <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="bg-muted/10 border border-border/40 rounded-lg p-5">
+        </section>
+        <section>
           <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
           <ul className="space-y-3">
             {[
@@ -848,8 +628,8 @@ Do not change anything else." */}
               </li>
             ))}
           </ul>
-        </motion.section>
-      </motion.div>
+        </section>
+      </div>
     </AppShell>
   );
 }
@@ -912,7 +692,7 @@ function AssistantTurn({
   const quote = rec?.quote?.quote ?? rec?.quote ?? null;
 
   return (
-    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col gap-3">
+    <div>
       <div className="flex items-start gap-3">
         <span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary border border-primary/20">
           <Bot className="size-4" />
@@ -939,7 +719,7 @@ function AssistantTurn({
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
-                    <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} key={step.step_number} className="flex items-center gap-3 text-sm">
+                    <div>
                       {stepIcon(step)}
                       <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
                       {step.tool_name ? (
@@ -953,7 +733,7 @@ function AssistantTurn({
                           {step.latency_ms} ms
                         </span>
                       ) : null}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               ) : null}
@@ -1110,7 +890,7 @@ function AssistantTurn({
           ) : null}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -1447,7 +1227,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
   if (rows.length === 0) return null;
 
   return (
-    <motion.section variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="space-y-4">
+    <section>
       <div className="flex items-center justify-between border-b border-border/40 pb-2">
         <h2 className="text-sm font-bold text-foreground">Active Orders</h2>
         <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
@@ -1476,7 +1256,7 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
           </table>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
