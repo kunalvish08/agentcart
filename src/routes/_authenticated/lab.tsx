@@ -358,7 +358,7 @@ function LabPage() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                        {[
                          {l: "Conversion delta", v: signed(metrics.lift.conversion_rate_pp, "pp")},
-                         {l: "Revenue/session delta", v: signed(metrics.lift.revenue_per_session_pct, "%")},
+                         {l: "Revenue/session delta", v: metrics.lift.revenue_per_session_pct !== null ? signed(metrics.lift.revenue_per_session_pct, "%") : "n/a"},
                          {l: "Discount impact", v: signed(metrics.lift.discount_rate_pp, "pp")},
                          {l: "Measured revenue delta", v: money(metrics.lift.revenue_delta)}
                        ].map((m, i) => (
