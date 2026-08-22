@@ -568,11 +568,22 @@ function BuyerPage() {
                       "Computed pricing",
                       "Server checkout",
                       "No auto-payment"
-                    ].map(rule => (
-                      <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground/70">
+                    ].map((rule, idx) => (
+                      <motion.li 
+                        key={rule} 
+                        variants={{
+                          hidden: { opacity: 0, x: -5 },
+                          show: { 
+                            opacity: 1, 
+                            x: 0,
+                            transition: { delay: 0.5 + idx * 0.05 } 
+                          }
+                        }}
+                        className="flex items-start gap-2 text-[10px] text-muted-foreground/70"
+                      >
                         <Check className="size-3 text-verified-green/60 shrink-0 mt-0.5" />
                         <span>{rule}</span>
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
