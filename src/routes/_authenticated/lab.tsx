@@ -821,7 +821,6 @@ function LabPage() {
                 </TabsContent>
               </Tabs>
             ) : null}
-          </div>
         </div>
       </div>
     </AppShell>
