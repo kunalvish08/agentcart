@@ -98,74 +98,7 @@ function DashboardPage() {
           className="border border-border bg-card p-6 rounded-sm"
         >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">
-             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            Design a premium enterprise logo for “Agentic Commerce”.
-
-Create a distinctive, minimal geometric symbol that subtly combines:
-
-- autonomous AI agents
-
-- commerce / transactions
-
-- secure authority / trust
-
-- infrastructure / protocol
-
-Avoid obvious clichés: no robot head, shopping cart, dollar symbol, brain, chatbot bubble, infinity loop, or generic AI sparkle.
-
-The logo should feel like a serious B2B infrastructure product used by AI agents and merchants. Think Stripe, Linear, Vercel, Cloudflare-level simplicity and precision, but create a completely original mark.
-
-Design:
-
-- compact geometric icon
-
-- strong silhouette
-
-- intelligent negative space
-
-- balanced proportions
-
-- works as a standalone app icon
-
-- wordmark: “Agentic Commerce”
-
-- clean modern sans-serif typography
-
-- subtle technical character
-
-- premium, restrained, trustworthy
-
-- no unnecessary decorative elements
-
-Color:
-
-- Must work perfectly in both light and dark themes
-
-- Use the existing Obsidian Commerce visual language
-
-- Prefer a restrained dark graphite / near-black foundation with one sophisticated accent color
-
-- No RGB/neon gaming aesthetic
-
-- No excessive gradients
-
-- Ensure the mark remains recognizable in monochrome
-
-Create:
-
-1. Primary horizontal logo: icon + Agentic Commerce wordmark
-
-2. Standalone symbol
-
-3. Compact favicon/app-icon version
-
-4. Light-theme version
-
-5. Dark-theme version
-
-The final result should look like a real enterprise product identity, not an AI-generated startup logo.`}
+             Authority Pipeline
            </h3>
            <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
              <div className="flex min-w-max md:min-w-0 md:w-full items-center justify-between gap-1 relative">
