@@ -786,7 +786,8 @@ function AssistantTurn({
               {open ? (
                 <div className="space-y-3 px-4 py-4">
                   {turn.steps.map((step) => (
-                    <div>
+                    <div key={step.step_number} className="flex items-center gap-3 py-1 border-b border-border/20 last:border-0">
+
                       {stepIcon(step)}
                       <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
                       {step.tool_name ? (
