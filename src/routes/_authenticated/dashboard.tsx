@@ -568,16 +568,3 @@ function StatusRow({ label, status, index = 0 }: any) {
     )
 }
 
-function Connector() {
-    return (
-        <div className="text-muted-foreground/30 hidden md:block relative overflow-hidden">
-            <ArrowRight className="size-4" />
-            <motion.div 
-                initial={{ x: "-100%" }}
-                animate={{ x: "200%" }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-copper/40 to-transparent"
-            />
-        </div>
-    )
-}
