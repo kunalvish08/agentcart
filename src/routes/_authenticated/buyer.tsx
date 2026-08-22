@@ -1268,11 +1268,11 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
                 </div>
 
                 {row.status === "APPROVAL_REQUIRED" ? (
-                  <div className="flex items-start gap-3 p-3 bg-approval-amber/5 border border-approval-amber/20 rounded">
-                    <Clock className="size-4 text-approval-amber shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2.5 p-3 bg-approval-amber/5 border border-approval-amber/20 rounded">
+                    <Clock className="size-3.5 text-approval-amber shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-bold text-approval-amber uppercase tracking-widest">Waiting for merchant approval</p>
-                      <p className="text-[11px] text-approval-amber/80 mt-1">Order value exceeds automatic threshold. Audit pending.</p>
+                      <p className="text-[9px] font-bold text-approval-amber uppercase tracking-widest">Waiting for merchant approval</p>
+                      <p className="text-[10px] text-approval-amber/70 mt-1 leading-tight">Order value exceeds automatic threshold. Audit pending.</p>
                     </div>
                   </div>
                 ) : null}
