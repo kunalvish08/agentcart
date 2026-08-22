@@ -248,7 +248,7 @@ function ApprovalsPage() {
             </section>
           </div>
 
-          <aside className="space-y-12">
+          <aside className="space-y-12 min-w-0">
             {/* 8. PAYMENTS */}
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">
