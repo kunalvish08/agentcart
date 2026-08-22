@@ -14,19 +14,43 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-function ObsidianNode({ title, subtitle, active = false, copper = false }: { title: string, subtitle?: string, active?: boolean, copper?: boolean }) {
+function ObsidianNode({ title, subtitle, active = false, copper = false, delay = 0 }: { title: string, subtitle?: string, active?: boolean, copper?: boolean, delay?: number }) {
   return (
     <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.5 }}
       className={cn(
-        "rounded-sm border p-4 transition-colors duration-300",
-        active ? (copper ? "border-copper bg-slate" : "border-ice/20 bg-slate") : "border-slate bg-graphite",
+        "relative rounded-sm border p-4 transition-all duration-500 overflow-hidden",
+        active ? (copper ? "border-copper bg-slate shadow-[0_0_20px_rgba(213,155,98,0.1)]" : "border-ice/20 bg-slate") : "border-slate bg-graphite",
       )}
     >
+      {active && copper && (
+        <motion.div 
+          animate={{ opacity: [0.2, 0.4, 0.2] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute inset-0 bg-copper/5"
+        />
+      )}
       <p className={cn("text-[10px] font-bold uppercase tracking-[0.2em]", active ? "text-white" : "text-steel")}>{title}</p>
       {subtitle && <p className={cn("mt-1 text-[11px] font-mono", copper ? "text-copper" : "text-ice")}>{subtitle}</p>}
     </motion.div>
   );
 }
+
+function Signal() {
+  return (
+    <div className="relative h-8 flex justify-center">
+      <motion.div 
+        animate={{ y: [0, 32], opacity: [0, 1, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+        className="w-px h-8 bg-copper"
+      />
+    </div>
+  );
+}
+
 
 function Landing() {
   return (
