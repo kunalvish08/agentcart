@@ -3,25 +3,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AlertTriangle, ArrowRight, Check, ClipboardCheck, Loader2, ScrollText, X } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentLedgerCard } from "@/components/PaymentLedgerCard";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
-import { cn } from "@/lib/utils";
 import {
   getApprovalQueue,
   getCheckoutAudit,
   reviewCheckoutApproval,
-  type ApprovalQueueRow,
 } from "@/lib/checkout.functions";
 import { getWorkspace } from "@/lib/merchant.functions";
+import { ApprovalsHeader } from "@/components/approvals/ApprovalsHeader";
+import { ApprovalCard } from "@/components/approvals/ApprovalCard";
+import { AuditTrail } from "@/components/approvals/AuditTrail";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_authenticated/approvals")({
   head: () => ({
