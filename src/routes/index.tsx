@@ -167,7 +167,84 @@ function Landing() {
                 transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-10 text-lg leading-relaxed text-slate-600 md:text-xl max-w-xl"
               >
-                Expose your catalog to external AI agents, let them discover products and negotiate within your rules — while pricing, checkout and payment remain server-authoritative.
+                '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            IMPORTANT: IMPLEMENT THIS REQUEST AS CODE ONLY.
+
+DO NOT DISPLAY, INSERT, SAVE, APPEND, OR RENDER ANY PART OF THIS REQUEST AS VISIBLE WEBSITE TEXT, COPY, CONTENT, DESCRIPTION, REQUIREMENT TEXT, DATABASE CONTENT, OR UI LABEL.
+
+Modify ONLY the React/Framer Motion code responsible for the hero architecture visualization on the public "/" landing page.
+
+Improve ONLY its animation.
+
+Do not change any text, layout, colors, routes, backend, database, API, authentication, Razorpay or business logic.
+
+Animate the existing flow:
+
+MERCHANT
+
+↓
+
+AI BUYER
+
+↓
+
+PUBLIC AGENT API
+
+↓
+
+SERVER AUTHORITY
+
+↓
+
+RAZORPAY
+
+↓
+
+COMPLETED
+
+Requirements:
+
+- Nodes reveal sequentially.
+
+- Connectors animate progressively.
+
+- One subtle signal travels through the connectors.
+
+- Active node gets a subtle highlight.
+
+- SERVER AUTHORITY gets strongest emphasis.
+
+- RAZORPAY activates after SERVER AUTHORITY.
+
+- COMPLETED ends with a restrained emerald success state.
+
+- Smooth, professional motion.
+
+- No bouncing, particles, blobs, spinning elements or neon effects.
+
+- Respect prefers-reduced-motion.
+
+Timing:
+
+- Node reveal: 400–600ms
+
+- Connector: 300–500ms
+
+- Signal travel: 2–3 seconds
+
+- Active state: 200–300ms
+
+CRITICAL:
+
+Make these changes directly in the existing React/Framer Motion implementation.
+
+Do not create or modify any text/content/requirement field.
+
+Do not replace existing page copy with this instruction.
+
+After implementation, the page must contain only the intended landing-page content.
               </motion.p>
               
               <motion.div 
