@@ -251,19 +251,29 @@ function LabPage() {
       <div className="space-y-8">
         {/* Methodology Panel */}
         <div className="grid gap-4 md:grid-cols-3 bg-muted/20 border border-border p-6 rounded-sm">
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">ISOLATING VARIABLES</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Zap className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">ISOLATING VARIABLES</p>
+            </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">Both arms execute against identical buyer profiles, catalog data, and merchant policies.</p>
           </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">BASELINE PARITY</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Microscope className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">BASELINE PARITY</p>
+            </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">The control arm implements standard storefront logic, lacking negotiation agency.</p>
           </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">DETERMINISTIC SIGNAL</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Fingerprint className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">DETERMINISTIC SIGNAL</p>
+            </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">Scenarios are seeded for reproducible outcomes, not stochastic projections.</p>
           </div>
         </div>
+
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-6">
