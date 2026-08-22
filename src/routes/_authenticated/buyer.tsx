@@ -499,6 +499,7 @@ Do not make further visual changes.''' */}
         </div>
 
 
+
         <section>
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
         </section>
