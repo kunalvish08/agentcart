@@ -180,73 +180,54 @@ function Landing() {
 
             {/* 3. RIGHT SIDE — CORE PRODUCT VISUAL */}
             <div className="relative order-first lg:order-last">
-              <div className="relative rounded-xl border border-border bg-muted/30 p-6 md:p-8">
-                <div className="flex flex-col gap-4">
+              <div className="relative rounded border border-border/60 bg-[#0B1220] p-8">
+                <div className="flex flex-col gap-2">
                   <SchematicNode 
                     title="MERCHANT" 
-                    items={["TechNova Store", "Products · Inventory", "Discount Policies"]} 
-                    className="border-primary/20 bg-primary/[0.02]"
-                    delay={0.4}
+                    items={["Catalog", "Policies"]} 
+                    delay={0.2}
                   />
                   
-                  <Connector vertical delay={0.6} />
+                  <Connector vertical delay={0.4} />
                   
+                  <SchematicNode 
+                    title="AI BUYER" 
+                    items={['"Laptop under ₹60k"']} 
+                    delay={0.6}
+                  />
+
+                  <Connector vertical delay={0.8} />
+
                   <SchematicNode 
                     title="PUBLIC AGENT API" 
                     items={["/search · /quote", "/negotiate · /checkout"]} 
-                    className="bg-card"
-                    delay={0.8}
+                    delay={1.0}
                   />
 
-                  <div className="flex items-center">
-                     <div className="flex-1">
-                        <Connector vertical delay={1.0} />
-                        <SchematicNode 
-                          title="AI BUYER" 
-                          items={['"Laptop under ₹60k"']} 
-                          className="border-dashed"
-                          delay={1.2}
-                        />
-                     </div>
-                     <div className="flex-none px-4 text-muted-foreground/30">
-                        <ArrowRight size={20} />
-                     </div>
-                     <div className="flex-1">
-                        <Connector vertical delay={1.4} />
-                        <SchematicNode 
-                          title="SERVER AUTHORITY" 
-                          items={["Price · Inventory", "Verified Order"]} 
-                          className="border-primary bg-primary/[0.03] ring-1 ring-primary/20"
-                          delay={1.6}
-                        />
-                     </div>
-                  </div>
+                  <Connector vertical delay={1.2} />
 
-                  <Connector vertical delay={1.8} />
+                  <SchematicNode 
+                    title="SERVER AUTHORITY" 
+                    items={["Price", "Inventory", "Policy"]} 
+                    isServerAuthority={true}
+                    delay={1.4}
+                  />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <Connector vertical delay={1.6} />
+
+                  <div className="grid grid-cols-2 gap-2">
                     <SchematicNode 
                       title="RAZORPAY" 
                       items={["Verified payment"]} 
-                      delay={2.0}
+                      delay={1.8}
+                      className="bg-[#0B1220]"
                     />
                     <SchematicNode 
                       title="STATUS" 
-                      items={["COMPLETED ORDER"]} 
-                      className="border-[oklch(0.65_0.15_160)]/20 bg-[oklch(0.65_0.15_160)]/[0.02]"
-                      delay={2.2}
+                      items={["COMPLETED"]} 
+                      className="border-[#18A878]/30 bg-[#0B1220] text-[#18A878]"
+                      delay={2.0}
                     />
-                  </div>
-                </div>
-
-                {/* Status indicators */}
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
-                    <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
-                    LIVE
-                  </div>
-                  <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary">
-                    ENFORCED
                   </div>
                 </div>
               </div>
