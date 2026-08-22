@@ -29,7 +29,7 @@ export type DiscountDecision = {
  */
 export function decideDiscount(input: {
   requestedPercent: number;
-  policy: Pick<PublicPolicy, "allow_negotiation" | "max_discount_percent">;
+  policy: Pick<PublicPolicy, "allow_negotiation" | "max_discount_percent" | "merchant_agent_commerce_enabled">;
 }): DiscountDecision {
   const requested = Number.isFinite(input.requestedPercent) ? input.requestedPercent : 0;
   const limit = (input.policy.allow_negotiation && input.policy.merchant_agent_commerce_enabled)
@@ -444,14 +444,14 @@ export async function eligibleGrowthRecommendations(args: {
   const policy = await getPolicy(args.merchant.id);
   const { recordRevenueEvent } = await import("@/lib/revenue.server");
 
-  if (!policy.allow_upsell) {
+  if (!policy.allow_upsell || !policy.merchant_agent_commerce_enabled) {
     // Record that we blocked a recommendation attempt due to policy
     await recordRevenueEvent({
       merchantId: args.merchant.id,
       event: "REVENUE_OPPORTUNITY_DETECTED",
       buyerSessionId: args.buyerSessionId ?? null,
       sourceProductId: args.productId,
-      reason: "Blocked by merchant policy (allow_upsell is OFF)",
+      reason: `Blocked by merchant policy (allow_upsell=${policy.allow_upsell}, commerce_enabled=${policy.merchant_agent_commerce_enabled})`,
       detail: { allow_upsell: false, policy_authority: "server" },
     });
     return {
