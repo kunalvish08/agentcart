@@ -1102,7 +1102,7 @@ function AssistantTurn({
           ) : null}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
