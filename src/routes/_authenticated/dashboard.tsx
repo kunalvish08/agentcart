@@ -101,153 +101,145 @@ function DashboardPage() {
              {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Redesign ONLY the /dashboard “Authority Pipeline” section.
+                                            Restore the original Authority Pipeline visual and animation behavior.
 
-Keep all backend logic, data, routes and existing pipeline states unchanged.
+The current implementation changed the original pipeline structure too much. Keep the new semantic information, but restore the original visual composition and animation system.
 
-Current pipeline:
+Requirements:
 
-CAT → AI → AUTH → APP → RZP → FIN
+- Preserve the existing CAT → AI → AUTH → APP → RZP → FIN pipeline.
 
-Make it look like a premium enterprise transaction-authority pipeline, not just six icons.
+- Keep the existing icons.
 
-Each stage should have:
+- Keep the existing animation behavior and timing from the original Dashboard.
 
-- Existing icon
+- Keep staggered entrance/reveal animations.
 
-- Short label
+- Keep the active-stage animation.
 
-- Clear stage name
+- Keep connector/flow animations if they existed originally.
 
-- One-line purpose
+- Do not replace the pipeline with a generic vertical timeline.
 
-- Current status indicator
+- Do not turn each stage into a large standalone card.
 
-Stages:
+- Do not remove existing motion, transitions, hover states or status animations.
 
-CAT — Catalog
+- Keep the pipeline visually compact and connected.
 
-“Product discovery”
+Desktop:
 
-AI — AI Buyer
+- Restore the original horizontal pipeline composition.
 
-“Agent decision”
+- Six stages should visually read as ONE connected system.
 
-AUTH — Server Authority
+- Use the stage labels and descriptions, but keep them compact.
 
-“Policy + pricing”
+- Connector lines should visually connect each stage.
 
-APP — Human Approval
+- Status should be communicated through subtle badges/indicators rather than oversized blocks.
 
-“Merchant control”
+Mobile:
 
-RZP — Razorpay
+- Preserve the same pipeline component and animation logic.
 
-“Payment verification”
+- Make only the minimum responsive CSS/layout changes necessary.
 
-FIN — Settlement
+- Use an internal horizontal scroll container if required.
 
-“Final order state”
+- Never create page-level horizontal overflow.
 
-Visual:
+- Do not change the component into a different visual structure on mobile.
 
-- Horizontal connected pipeline on desktop.
+Theme:
 
-- Clear connector lines between stages.
+- Preserve existing light/dark theme tokens.
 
-- Active/current stage should be visually emphasized.
+- No hardcoded black/white colors.
 
-- Completed stages should look completed.
+- Preserve existing semantic status colors.
 
-- Pending stages should look neutral.
+IMPORTANT:
 
-- Failed stages should use semantic error styling.
+- Do not modify any other Dashboard section.
 
-- Use subtle animation only for active transitions.
+- Do not modify navigation-menu.tsx.
 
-- Keep it dense and technical, matching the Obsidian Commerce design system.
+- Do not modify backend/API/database/business logic.
 
-- Avoid excessive cards, gradients or decorative effects.
+- Do not remove or rewrite existing animation components.
 
-Light/Dark:
+- Do not introduce new animation libraries.
 
-- Use existing theme tokens.
+- Do not redesign the entire Dashboard.
 
-- Do NOT hardcode black/white colors.
+The priority is:
 
-- Status colors must remain readable in both themes.
+1. Restore original structure.
 
-Mobile (<768px):
+2. Restore original animations.
 
-- Do NOT force the six stages into a tiny horizontal row.
+3. Keep the new labels/status information.
 
-- Convert the pipeline into a vertically stacked connected timeline OR a horizontally scrollable INTERNAL pipeline container.
-
-- The page itself must never horizontally scroll.
-
-- Each stage must remain readable and touch-friendly.
-
-Do not modify any other Dashboard sections.
-
-Do not modify navigation-menu.tsx.
-
-Do not modify backend/API/database/business logic.`}
+4. Add only minimal responsive CSS.`}
            </h3>
-           <div className="flex flex-col md:flex-row gap-4 md:gap-2 justify-between items-stretch">
-             <PipelineNode 
-               label="CAT" 
-               name="Catalog"
-               purpose="Product discovery"
-               status="COMPLETED"
-               icon={Search} 
-               index={0} 
-               state="completed"
-             />
-             <PipelineNode 
-               label="AI" 
-               name="AI Buyer"
-               purpose="Agent decision"
-               status="COMPLETED"
-               icon={Bot} 
-               index={1} 
-               state="completed"
-             />
-             <PipelineNode 
-               label="AUTH" 
-               name="Server Authority"
-               purpose="Policy + pricing"
-               status="ACTIVE"
-               icon={ShieldCheck} 
-               index={2} 
-               state="active"
-             />
-             <PipelineNode 
-               label="APP" 
-               name="Human Approval"
-               purpose="Merchant control"
-               status="PENDING"
-               icon={ClipboardCheck} 
-               index={3} 
-               state="pending"
-             />
-             <PipelineNode 
-               label="RZP" 
-               name="Razorpay"
-               purpose="Payment verification"
-               status="WAITING"
-               icon={CreditCard} 
-               index={4} 
-               state="pending"
-             />
-             <PipelineNode 
-               label="FIN" 
-               name="Settlement"
-               purpose="Final order state"
-               status="LOCKED"
-               icon={CheckCircle2} 
-               index={5} 
-               state="pending"
-             />
+           <div className="relative overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
+             <div className="flex min-w-max md:min-w-0 md:w-full items-center justify-between gap-1 relative">
+               <PipelineNode 
+                 label="CAT" 
+                 name="Catalog"
+                 purpose="Product discovery"
+                 status="COMPLETED"
+                 icon={Search} 
+                 index={0} 
+                 state="completed"
+               />
+               <PipelineNode 
+                 label="AI" 
+                 name="AI Buyer"
+                 purpose="Agent decision"
+                 status="COMPLETED"
+                 icon={Bot} 
+                 index={1} 
+                 state="completed"
+               />
+               <PipelineNode 
+                 label="AUTH" 
+                 name="Server Authority"
+                 purpose="Policy + pricing"
+                 status="ACTIVE"
+                 icon={ShieldCheck} 
+                 index={2} 
+                 state="active"
+               />
+               <PipelineNode 
+                 label="APP" 
+                 name="Human Approval"
+                 purpose="Merchant control"
+                 status="PENDING"
+                 icon={ClipboardCheck} 
+                 index={3} 
+                 state="pending"
+               />
+               <PipelineNode 
+                 label="RZP" 
+                 name="Razorpay"
+                 purpose="Payment verification"
+                 status="WAITING"
+                 icon={CreditCard} 
+                 index={4} 
+                 state="pending"
+               />
+               <PipelineNode 
+                 label="FIN" 
+                 name="Settlement"
+                 purpose="Final order state"
+                 status="LOCKED"
+                 icon={CheckCircle2} 
+                 index={5} 
+                 state="pending"
+               />
+             </div>
            </div>
         </motion.section>
 
@@ -460,62 +452,59 @@ function PipelineNode({ label, name, purpose, status, icon: Icon, state, index =
     const isCompleted = state === "completed";
     
     return (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          className={cn(
-            "flex flex-1 flex-col p-3 border rounded-sm transition-all duration-300 relative group",
-            isActive ? "bg-copper/5 border-copper shadow-[0_0_15px_rgba(213,155,98,0.1)]" : "bg-card border-border",
-            isCompleted && "border-verified-green/30"
-          )}
-        >
-            <div className="flex items-start justify-between mb-3">
-                <div className={cn(
-                    "size-8 flex items-center justify-center border rounded-sm shrink-0",
-                    isActive ? "bg-copper/10 border-copper text-copper" : 
-                    isCompleted ? "bg-verified-green/5 border-verified-green/20 text-verified-green" : 
-                    "bg-muted/5 border-border text-muted-foreground"
-                )}>
-                    <Icon className={cn("size-3.5", isActive && "animate-pulse")} />
+        <div className="flex-1 flex flex-col items-center relative">
+            {/* Horizontal Connector Line (Desktop) */}
+            {index < 5 && (
+                <div className="hidden md:block absolute top-6 left-[60%] w-[80%] h-[1px] bg-border z-0">
+                    {isCompleted && (
+                        <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 0.8, delay: index * 0.1 }}
+                            className="h-full bg-verified-green"
+                        />
+                    )}
+                </div>
+            )}
+
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className={cn(
+                    "relative z-10 size-12 flex items-center justify-center border rounded-sm mb-3 transition-all duration-300",
+                    isActive ? "bg-copper/20 border-copper shadow-[0_0_20px_rgba(213,155,98,0.2)]" : 
+                    isCompleted ? "bg-verified-green/10 border-verified-green/40 text-verified-green" : 
+                    "bg-card border-border text-muted-foreground"
+                )}
+            >
+                <Icon className={cn("size-5", isActive && "text-copper animate-pulse")} />
+                
+                {/* Active Pulse Ring */}
+                {isActive && (
+                    <motion.div 
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="absolute inset-0 border border-copper rounded-sm"
+                    />
+                )}
+            </motion.div>
+
+            <div className="text-center w-24">
+                <div className="flex flex-col items-center gap-0.5">
+                    <span className="text-[9px] font-mono font-bold text-muted-foreground/60">{label}</span>
+                    <h4 className={cn("text-[10px] font-bold tracking-tight uppercase", isActive ? "text-copper" : "text-foreground")}>{name}</h4>
                 </div>
                 <div className={cn(
-                    "text-[8px] font-bold tracking-tighter uppercase px-1.5 py-0.5 rounded-full border",
+                    "mt-2 text-[8px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full border inline-block",
                     isActive ? "bg-copper/10 border-copper/30 text-copper" :
                     isCompleted ? "bg-verified-green/10 border-verified-green/30 text-verified-green" :
-                    "bg-muted/10 border-border text-muted-foreground"
+                    "bg-muted/10 border-border text-muted-foreground/50"
                 )}>
                     {status}
                 </div>
             </div>
-
-            <div>
-                <div className="flex items-baseline gap-1.5 mb-0.5">
-                    <span className="text-[9px] font-mono font-bold text-muted-foreground">{label}</span>
-                    <h4 className={cn("text-xs font-bold tracking-tight", isActive ? "text-foreground" : "text-muted-foreground")}>{name}</h4>
-                </div>
-                <p className="text-[10px] text-muted-foreground/70 leading-tight">{purpose}</p>
-            </div>
-
-            {isActive && !shouldReduceMotion && (
-                <motion.div 
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "100%" }}
-                    transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                    className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent"
-                />
-            )}
-            
-            {/* Desktop Connector */}
-            {index < 5 && (
-                <div className="hidden md:block absolute -right-1 top-1/2 -translate-y-1/2 z-10">
-                    <div className={cn(
-                        "w-2 h-[1px]",
-                        isCompleted ? "bg-verified-green/30" : "bg-border"
-                    )} />
-                </div>
-            )}
-        </motion.div>
+        </div>
     )
 }
 
