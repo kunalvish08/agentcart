@@ -51,167 +51,67 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Redesign and properly integrate the existing Agent Commerce API page as a Developer/API Console.
+                                            Redesign the mobile navigation for the entire Agentic Commerce platform.
 
-Do NOT change any backend, API routes, authentication, business logic, request/response behavior, or data.
+IMPORTANT:
 
-Navigation:
+Keep the existing desktop sidebar/navigation unchanged.
 
-- Keep existing desktop navigation unchanged.
+For mobile screens (<768px), replace the desktop sidebar with a compact mobile header:
 
-- Add “Developer” as a navigation section with “Agent Commerce API”.
+[☰] Agentic Commerce                         [User]
 
-- Keep Evaluation Lab and Judge Mode under Evaluation.
+When the hamburger button is tapped, open a polished dropdown / slide-down navigation menu containing ALL existing routes:
 
-- On mobile, show the navigation through the existing hamburger menu.
+- Dashboard
 
-Page structure:
+- AI Buyer
 
-1. Header
+- External AI Buyer
 
-Agent Commerce API
+- Approvals
 
-“Public infrastructure for autonomous AI buyers.”
+- Products
 
-Badges: API Operational · v1.0.6 · Public API
+- Policies
 
-2. Authority banner
+- Evaluation Lab
 
-Clearly show:
+- Judge Mode
 
-“Server-authoritative commerce API”
+Requirements:
 
-Pricing, discounts, checkout state and payment authority remain server-side.
+- Menu opens/closes smoothly with a subtle animation.
 
-3. Endpoint navigation
+- Active page is clearly highlighted.
 
-Group endpoints into:
+- Each item has its existing icon + label.
 
-DISCOVERY
+- Menu should fit the mobile viewport and never create page-level horizontal overflow.
 
-GET /.well-known/agent-manifest
+- Close menu after selecting a route.
 
-CATALOG
+- Add a subtle backdrop when the menu is open.
 
-GET /api/public/catalog
+- Touch targets should be at least 44px.
 
-GET /api/public/products/:id
+- Keep Sign Out / account action accessible inside the mobile menu or header.
 
-GET /api/public/search
+- Preserve the existing desktop navigation exactly as it is.
 
-COMMERCE
+- Use existing light/dark theme tokens so the menu looks correct in BOTH themes.
 
-POST /api/public/quote
+- Do not hardcode black/white colors.
 
-POST /api/public/negotiate
+- Do not change backend, routes, APIs, database, or page functionality.
 
-POST /api/public/checkout
+Responsive:
 
-GET /api/public/orders/:id
+320px → 767px: mobile hamburger + dropdown navigation
 
-4. Endpoint viewer
+768px+: existing desktop sidebar
 
-Clicking an endpoint opens its details:
-
-- HTTP method + path
-
-- Description
-
-- Authentication
-
-- Request example
-
-- Response example
-
-- Errors
-
-Use compact enterprise developer-console styling with monospace typography for paths, headers, JSON and curl.
-
-5. API explorer
-
-Keep the existing “Execute Call” functionality, but make it visually secondary to the documentation.
-
-Show:
-
-Method
-
-Resource Path
-
-Execute Call
-
-Live response
-
-HTTP status
-
-Latency
-
-6. Security / Authority panel
-
-Add a compact section showing:
-
-Agent CAN:
-
-- Discover catalog
-
-- Search products
-
-- Request quotes
-
-- Request bounded negotiation
-
-- Request checkout
-
-- Observe orders
-
-Agent CANNOT:
-
-- Set final price
-
-- Override policy
-
-- Approve checkout
-
-- Capture payment
-
-- Modify inventory
-
-- Write directly to database
-
-7. Visual system
-
-Match the existing Obsidian Commerce design system.
-
-Use theme-aware colors/tokens for BOTH light and dark mode.
-
-Never hardcode black or white text/backgrounds.
-
-Use subtle semantic colors for HTTP methods and status badges.
-
-Premium enterprise developer-console aesthetic, dense but readable.
-
-Avoid excessive cards, gradients, or decorative UI.
-
-8. Responsive behavior
-
-Desktop: two-column layout — endpoint navigation + documentation/explorer.
-
-Mobile (<768px):
-
-- endpoint navigation becomes a dropdown/collapsible section
-
-- documentation becomes single-column
-
-- code blocks scroll internally
-
-- tables scroll internally when necessary
-
-- NO page-level horizontal overflow
-
-- touch targets ≥44px
-
-- preserve readable typography and spacing
-
-Keep all existing API content and examples intact. Only redesign the presentation and information architecture.`}
+Implement this centrally in AppShell so it works consistently across every page.`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
