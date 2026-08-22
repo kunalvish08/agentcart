@@ -254,7 +254,7 @@ function asProductCard(value: unknown): ProductCard | null {
   };
 }
 
-type Observed = {
+export type Observed = {
   products: Map<string, ProductCard>;
   related: ProductCard[];
   quote: any | null;
@@ -271,7 +271,21 @@ type Observed = {
  * every price, discount and availability figure shown in the UI came from the
  * server — never from model text.
  */
-function buildRecommendation(observed: Observed) {
+export function createObserved(): Observed {
+  return {
+    products: new Map<string, ProductCard>(),
+    related: [],
+    quote: null,
+    searchCount: null,
+    quoteError: null,
+    policy: null,
+    negotiation: null,
+    growth: [],
+    checkout: null,
+  };
+}
+
+export function buildRecommendation(observed: Observed) {
   const negotiationQuote = observed.negotiation?.quote ?? null;
   const quote = negotiationQuote ?? observed.quote;
   const quotedId: string | undefined =
@@ -382,17 +396,7 @@ export async function runAgent(options: {
   let usage: ModelTurn["usage"] = null;
   let gatewayRunId: string | null = null;
 
-  const observed: Observed = {
-    products: new Map<string, ProductCard>(),
-    related: [],
-    quote: null,
-    searchCount: null,
-    quoteError: null,
-    policy: null,
-    negotiation: null,
-    growth: [],
-    checkout: null,
-  };
+  const observed: Observed = createObserved();
 
 
   const recordStep = async (step: {
@@ -404,6 +408,7 @@ export async function runAgent(options: {
     output_summary?: string;
     latency_ms?: number;
     tool_name?: string;
+    output_max?: number;
   }) => {
     emit({
       type: "step",
@@ -422,7 +427,7 @@ export async function runAgent(options: {
         step_type: step.step_type,
         status: step.status,
         input_summary: summarize(step.input_summary ?? step.label),
-        output_summary: summarize(step.output_summary ?? ""),
+        output_summary: summarize(step.output_summary ?? "", step.output_max ?? 300),
         latency_ms: step.latency_ms ?? null,
       })
       .select("id")
@@ -479,8 +484,9 @@ export async function runAgent(options: {
         output_summary:
           turn.toolCalls.length > 0
             ? turn.toolCalls.map((c) => c.name).join(", ")
-            : summarize(turn.content),
+            : summarize(turn.content, 8000),
         latency_ms: Date.now() - modelStart,
+        output_max: 8000,
       });
 
       if (turn.toolCalls.length === 0) {
@@ -628,7 +634,7 @@ function safeJson(value: string) {
   }
 }
 
-function collectObservations(
+export function collectObservations(
   toolName: string,
   result: { ok: boolean; data?: unknown; error?: { code: string; message: string } },
   observed: Observed,

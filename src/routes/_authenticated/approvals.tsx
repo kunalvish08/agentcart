@@ -88,6 +88,12 @@ function ApprovalsPage() {
       void queryClient.invalidateQueries({ queryKey: ["approval-queue"] });
       void queryClient.invalidateQueries({ queryKey: ["checkout-audit"] });
       void queryClient.invalidateQueries({ queryKey: ["checkout-metrics"] });
+      void queryClient.invalidateQueries({ queryKey: ["revenue-agent-metrics"] });
+      void queryClient.invalidateQueries({ queryKey: ["growth-metrics"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-active-orders"] });
+      void queryClient.invalidateQueries({ queryKey: ["payment-metrics"] });
+      void queryClient.invalidateQueries({ queryKey: ["payment-ledger"] });
     },
     onError: (error) =>
       toast.error(error instanceof Error ? error.message : "Could not record the decision"),

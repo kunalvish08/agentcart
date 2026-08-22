@@ -44,6 +44,7 @@ import {
   type BuyerActiveOrder,
 } from "@/lib/checkout.functions";
 import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
+import { getBuyerConversation } from "@/lib/buyer-conversation.functions";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/buyer")({
@@ -100,6 +101,8 @@ type GrowthPick = {
   recommendation_type: "upsell" | "cross_sell";
   reason: string;
   in_stock: boolean;
+  /** Persisted decision replayed from growth_recommendations. */
+  accepted?: boolean;
 };
 
 type NegotiationOutcome = {
@@ -191,6 +194,8 @@ function BuyerPage() {
   const fetchSessions = useServerFn(listAgentSessions);
   const queryClient = useQueryClient();
 
+  const fetchConversation = useServerFn(getBuyerConversation);
+
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const sessions = useQuery({ queryKey: ["agent-sessions"], queryFn: () => fetchSessions() });
 
@@ -200,6 +205,24 @@ function BuyerPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Persistence: the conversation is rebuilt from the database on every mount and
+   * hard refresh, so navigating away and back restores the same server state.
+   * Local state only holds the run that is streaming right now.
+   */
+  const conversation = useQuery({
+    queryKey: ["buyer-conversation"],
+    queryFn: () => fetchConversation(),
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+
+  useEffect(() => {
+    if (running || !conversation.data) return;
+    setTurns(conversation.data.turns as unknown as Turn[]);
+    setSessionId(conversation.data.session_id);
+  }, [conversation.data, running]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -320,6 +343,8 @@ function BuyerPage() {
       setRunning(false);
       abortRef.current = null;
       void queryClient.invalidateQueries({ queryKey: ["agent-sessions"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-active-orders"] });
     }
   }
 
@@ -989,6 +1014,7 @@ function CheckoutSection({
 }) {
   const startCheckout = useServerFn(requestBuyerCheckout);
   const fetchOrderStatus = useServerFn(getOrderStatus);
+  const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
   const [local, setLocal] = useState<CheckoutToolResult | null>(null);
   const outcome = result ?? local;
@@ -1041,6 +1067,9 @@ function CheckoutSection({
       });
     } finally {
       setPending(false);
+      // The order now exists server-side: re-read it instead of trusting local state.
+      void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-active-orders"] });
     }
   }
 
@@ -1215,6 +1244,7 @@ function NegotiationPanel({ outcome }: { outcome: NegotiationOutcome }) {
  */
 function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
   const respond = useServerFn(respondToRecommendation);
+  const queryClient = useQueryClient();
   const [state, setState] = useState<Record<string, RecommendationResponse | "rejected">>({});
   const [pending, setPending] = useState<string | null>(null);
   const [failed, setFailed] = useState<Record<string, string>>({});
@@ -1230,6 +1260,7 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
           const result = state[key];
           const accepted = result && result !== "rejected" ? result : null;
           const rejected = result === "rejected";
+          const persistedAccepted = pick.accepted === true && !result;
           return (
             <div
               key={key}
@@ -1271,6 +1302,12 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
                 </div>
               ) : null}
 
+              {persistedAccepted ? (
+                <p className="mt-2 flex items-center gap-2 text-xs text-foreground">
+                  <Check className="size-3.5 text-primary" /> Accepted — priced and added by the server.
+                </p>
+              ) : null}
+
               {rejected ? (
                 <p className="mt-2 text-xs text-muted-foreground">
                   Dismissed — nothing was added to your order.
@@ -1281,7 +1318,7 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
                 <p className="mt-2 text-xs text-destructive">{failed[key]}</p>
               ) : null}
 
-              {pick.recommendation_id && !result ? (
+              {pick.recommendation_id && !result && !persistedAccepted ? (
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Button
                     size="sm"
@@ -1295,6 +1332,8 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
                           data: { recommendationId: pick.recommendation_id!, action: "accept" },
                         });
                         setState((prev) => ({ ...prev, [key]: response }));
+                        void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
+                        void queryClient.invalidateQueries({ queryKey: ["buyer-active-orders"] });
                       } catch (error) {
                         setFailed((prev) => ({
                           ...prev,
@@ -1328,6 +1367,7 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
                           data: { recommendationId: pick.recommendation_id!, action: "reject" },
                         });
                         setState((prev) => ({ ...prev, [key]: "rejected" }));
+                        void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
                       } catch {
                         setState((prev) => ({ ...prev, [key]: "rejected" }));
                       } finally {
