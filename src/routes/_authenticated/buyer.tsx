@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import {
   AlertTriangle,
   Bot,
@@ -11,7 +11,6 @@ import {
   Clock,
   Handshake,
   History,
-
   Loader2,
   PackageCheck,
   Receipt,
@@ -19,12 +18,12 @@ import {
   Send,
   ShoppingBag,
   Sparkles,
-  User,
-
 } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentPanel } from "@/components/PaymentPanel";
+import { CountUp } from "@/components/dashboard/CountUp";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
