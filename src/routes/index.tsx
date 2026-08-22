@@ -40,20 +40,37 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-function SchematicNode({ title, items, className, delay = 0 }: { title: string, items: string[], className?: string, delay?: number }) {
+function SchematicNode({ title, items, className, delay = 0, isServerAuthority = false }: { title: string, items: string[], className?: string, delay?: number, isServerAuthority?: boolean }) {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.5 }}
-      className={cn("rounded border border-border bg-card p-3 shadow-sm", className)}
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={cn(
+        "relative rounded-sm border border-border/60 bg-card/50 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40",
+        isServerAuthority && "border-primary/40 bg-primary/[0.03] ring-1 ring-primary/20 shadow-[0_0_30px_-10px_rgba(49,87,255,0.2)]",
+        className
+      )}
     >
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{title}</p>
-      <div className="space-y-1.5">
+      {isServerAuthority && (
+        <div className="absolute -top-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      )}
+      <p className={cn(
+        "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
+        isServerAuthority ? "text-primary" : "text-muted-foreground/60"
+      )}>{title}</p>
+      <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <div className="h-1 w-1 rounded-full bg-primary/40" />
-            <span className="text-[11px] font-medium text-foreground/80">{item}</span>
+          <div key={i} className="flex items-center gap-2.5">
+            <div className={cn(
+              "h-[1px] w-2",
+              isServerAuthority ? "bg-primary/40" : "bg-border"
+            )} />
+            <span className={cn(
+              "text-[11px] font-medium tracking-tight",
+              isServerAuthority ? "text-foreground" : "text-foreground/80"
+            )}>{item}</span>
           </div>
         ))}
       </div>
@@ -61,24 +78,33 @@ function SchematicNode({ title, items, className, delay = 0 }: { title: string, 
   );
 }
 
-function Connector({ vertical = false, delay = 0 }: { vertical?: boolean, delay?: number }) {
+function Connector({ vertical = false, delay = 0, active = false }: { vertical?: boolean, delay?: number, active?: boolean }) {
   return (
-    <div className={cn("flex items-center justify-center", vertical ? "h-8 w-full" : "h-full w-8")}>
-      <motion.div 
-        initial={vertical ? { height: 0 } : { width: 0 }}
-        animate={vertical ? { height: "100%" } : { width: "100%" }}
-        transition={{ delay, duration: 0.5 }}
-        className={cn("bg-border relative", vertical ? "w-[1px]" : "h-[1px]")}
-      >
+    <div className={cn("flex items-center justify-center relative", vertical ? "h-12 w-full" : "h-full w-12")}>
+      <div className={cn(
+        "bg-border/40 relative", 
+        vertical ? "w-px h-full" : "h-px w-full"
+      )}>
         <motion.div 
-          animate={vertical ? { y: [0, 32], opacity: [0, 1, 0] } : { x: [0, 32], opacity: [0, 1, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "linear", delay: delay + 0.5 }}
-          className={cn("absolute bg-primary/40", vertical ? "left-[-1px] h-2 w-[3px]" : "top-[-1px] h-[3px] w-2")}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: delay + 0.3 }}
+          className={cn(
+            "absolute bg-primary/40",
+            vertical 
+              ? "left-[-1px] w-[3px] h-4 top-0" 
+              : "top-[-1px] h-[3px] w-4 left-0"
+          )}
+          style={{
+            animation: `flow-${vertical ? 'v' : 'h'} 3s linear infinite`,
+            animationDelay: `${delay}s`
+          }}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }
+
 
 function Landing() {
   return (
