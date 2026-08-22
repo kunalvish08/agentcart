@@ -197,49 +197,49 @@ function Landing() {
                   <SchematicNode 
                     title="MERCHANT" 
                     items={["Catalog", "Policies"]} 
-                    delay={0.2}
+                    delay={0.5}
                   />
                   
-                  <Connector vertical delay={0.4} />
+                  <Connector vertical delay={1.1} />
                   
                   <SchematicNode 
                     title="AI BUYER" 
                     items={['"Laptop under ₹60k"']} 
-                    delay={0.6}
+                    delay={1.6}
                     className="!text-[#36C5D8]"
                   />
-
-                  <Connector vertical delay={0.8} />
-
+ 
+                  <Connector vertical delay={2.2} />
+ 
                   <SchematicNode 
                     title="PUBLIC AGENT API" 
                     items={["/search · /quote", "/negotiate · /checkout"]} 
-                    delay={1.0}
+                    delay={2.7}
                   />
-
-                  <Connector vertical delay={1.2} />
-
+ 
+                  <Connector vertical delay={3.3} />
+ 
                   <SchematicNode 
                     title="SERVER AUTHORITY" 
                     items={["Price", "Inventory", "Policy"]} 
                     isServerAuthority={true}
-                    delay={1.4}
+                    delay={3.8}
                   />
-
-                  <Connector vertical delay={1.6} />
-
+ 
+                  <Connector vertical delay={4.4} />
+ 
                   <div className="grid grid-cols-2 gap-2">
                     <SchematicNode 
                       title="RAZORPAY" 
                       items={["Verified payment"]} 
-                      delay={1.8}
+                      delay={4.9}
                       className="bg-[#0B1220]"
                     />
                     <SchematicNode 
                       title="STATUS" 
                       items={["COMPLETED"]} 
                       className="border-[#18A878]/30 bg-[#0B1220] !text-[#18A878]"
-                      delay={2.0}
+                      delay={5.4}
                     />
                   </div>
                 </div>
