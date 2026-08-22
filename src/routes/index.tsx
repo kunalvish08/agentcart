@@ -266,10 +266,10 @@ function Landing() {
                 
                 <h2 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]">
                   AI decides what to ask. <br />
-                  <span className="text-white/40">Your server decides what can happen.</span>
+                  <span className="text-[#B8C4D6]">Your server decides what can happen.</span>
                 </h2>
                 
-                <p className="mt-8 text-lg text-white/50 max-w-md leading-relaxed">
+                <p className="mt-8 text-lg text-[#B8C4D6] max-w-md leading-relaxed">
                   Every commercial action is evaluated against merchant-defined policies before execution.
                 </p>
               </div>
