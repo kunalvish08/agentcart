@@ -32,7 +32,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { acceptRecommendation, listAgentSessions } from "@/lib/agent.functions";
+import {
+  listAgentSessions,
+  respondToRecommendation,
+  type RecommendationResponse,
+} from "@/lib/agent.functions";
 import {
   getMyActiveOrders,
   getOrderStatus,
