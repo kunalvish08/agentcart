@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Polish only the existing dashboard. Do not change backend, database, APIs, payments, evaluation data or business logic.\n\n1. Fix the Recent Activity section if PAYMENT CAPTURED is being duplicated by the UI. Do not delete persisted events; if both events are real, visually distinguish them.\n\n2. Make the Agentic Checkout Pipeline visually read as a progression:\n\nRequests → Approval → Payment → Verified → Completed\n\nUse subtle connectors and clear status hierarchy. Keep the existing numbers and data unchanged.\n\n3. Keep the current visual design exactly as the foundation:\n\npremium B2B SaaS, technical, clean, restrained sapphire/navy palette, minimal cards, no neon, no excessive gradients, no generic AI-dashboard styling.\n\nNo further redesign. Visual polish only."
+      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">
@@ -223,15 +223,11 @@ function DashboardPage() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-center gap-1">
+                <div className="grid grid-cols-5 gap-2">
                   <PipelineStep label="Requests" value={checkout?.orders} active={Boolean(checkout?.orders)} />
-                  <div className="flex-1 h-[1px] bg-border/40" />
-                  <PipelineStep label="Approval" value={checkout?.pendingApprovals} active={Boolean(checkout?.pendingApprovals)} highlight />
-                  <div className="flex-1 h-[1px] bg-border/40" />
+                  <PipelineStep label="Approvals" value={checkout?.pendingApprovals} active={Boolean(checkout?.pendingApprovals)} highlight />
                   <PipelineStep label="Payment" value={checkout?.awaitingPayment} active={Boolean(checkout?.awaitingPayment)} />
-                  <div className="flex-1 h-[1px] bg-border/40" />
                   <PipelineStep label="Verified" value={payments?.verified} active={Boolean(payments?.verified)} />
-                  <div className="flex-1 h-[1px] bg-border/40" />
                   <PipelineStep label="Completed" value={payments?.completedOrders} active={Boolean(payments?.completedOrders)} />
                 </div>
                 
@@ -322,16 +318,11 @@ function DashboardPage() {
                       )
                       .slice(0, 5)
                       .map((event) => (
-                        <div key={event.id} className="relative pl-6 space-y-1 group">
+                        <div key={event.id} className="relative pl-6 space-y-1">
                           <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
                             <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
                           </div>
-                          <div className="flex items-center gap-2">
-                            <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
-                            {audit.filter(e => e.event === event.event && e.created_at === event.created_at).length > 1 && (
-                              <span className="text-[9px] font-bold text-primary/60 bg-primary/5 px-1 rounded border border-primary/10">DUPLICATE EVENT DETECTED</span>
-                            )}
-                          </div>
+                          <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
                           <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
                         </div>
                       ))
@@ -427,8 +418,8 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
 function PipelineStep({ label, value, active = false, highlight = false }: { label: string; value: any; active?: boolean; highlight?: boolean }) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 px-3 transition-all min-w-[64px]",
-      highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm ring-2 ring-primary/5" : 
+      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 transition-all",
+      highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm" : 
       active ? "bg-primary/5 border-primary/20 text-primary" : "bg-muted/10 border-border/40 text-muted-foreground"
     )}>
       <span className="text-xs font-bold">{value ?? 0}</span>
