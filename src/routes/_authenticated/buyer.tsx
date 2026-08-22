@@ -576,7 +576,7 @@ function BuyerPage() {
         </motion.section>
 
         {/* 7. SESSION HISTORY */}
-        <section className="space-y-4">
+        <motion.section variants={itemReveal} className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
@@ -599,8 +599,15 @@ function BuyerPage() {
                   ) : (sessions.data?.length ?? 0) === 0 ? (
                     <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">No sessions recorded</td></tr>
                   ) : (
-                    sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/5 transition-colors">
+                    sessions.data!.map((session, idx) => (
+                      <motion.tr 
+                        key={session.id} 
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="hover:bg-muted/5 transition-colors"
+                      >
                         <td className="px-5 py-3 font-medium text-foreground/80 max-w-[240px] truncate">
                           {session.title ?? "General Request"}
                         </td>
@@ -617,14 +624,14 @@ function BuyerPage() {
                             {session.status}
                           </Badge>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
           </div>
-        </section>
+        </motion.section>
       </motion.div>
     </AppShell>
   );
