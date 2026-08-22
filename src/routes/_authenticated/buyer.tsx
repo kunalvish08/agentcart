@@ -44,6 +44,7 @@ import {
   type BuyerActiveOrder,
 } from "@/lib/checkout.functions";
 import { CHECKOUT_STATE_LABELS, type CheckoutState } from "@/lib/checkout-state";
+import { getBuyerConversation } from "@/lib/buyer-conversation.functions";
 import { getWorkspace } from "@/lib/merchant.functions";
 
 export const Route = createFileRoute("/_authenticated/buyer")({
@@ -191,6 +192,8 @@ function BuyerPage() {
   const fetchSessions = useServerFn(listAgentSessions);
   const queryClient = useQueryClient();
 
+  const fetchConversation = useServerFn(getBuyerConversation);
+
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const sessions = useQuery({ queryKey: ["agent-sessions"], queryFn: () => fetchSessions() });
 
@@ -200,6 +203,24 @@ function BuyerPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Persistence: the conversation is rebuilt from the database on every mount and
+   * hard refresh, so navigating away and back restores the same server state.
+   * Local state only holds the run that is streaming right now.
+   */
+  const conversation = useQuery({
+    queryKey: ["buyer-conversation"],
+    queryFn: () => fetchConversation(),
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+
+  useEffect(() => {
+    if (running || !conversation.data) return;
+    setTurns(conversation.data.turns as unknown as Turn[]);
+    setSessionId(conversation.data.session_id);
+  }, [conversation.data, running]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -320,6 +341,8 @@ function BuyerPage() {
       setRunning(false);
       abortRef.current = null;
       void queryClient.invalidateQueries({ queryKey: ["agent-sessions"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-conversation"] });
+      void queryClient.invalidateQueries({ queryKey: ["buyer-active-orders"] });
     }
   }
 
