@@ -872,7 +872,7 @@ function AssistantTurn({
                         </>
                       ) : null}
                     </dl>
-                  </div>
+                  </motion.div>
                 ) : rec.quote_error ? (
                   <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
                     No valid quote was returned ({rec.quote_error.code}), so no price is estimated.
