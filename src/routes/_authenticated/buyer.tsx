@@ -766,11 +766,22 @@ function AssistantTurn({
           ) : null}
 
           {turn.content ? (
-            <div className="space-y-1.5 rounded-sm border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground shadow-none">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-1.5 rounded-sm border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground shadow-none"
+            >
               <AssistantText content={turn.content} />
-            </div>
+            </motion.div>
           ) : running ? (
-            <p className="text-sm text-muted-foreground">Working…</p>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              className="text-sm text-muted-foreground"
+            >
+              Working…
+            </motion.p>
           ) : null}
 
           {turn.notices.map((notice, index) => (
