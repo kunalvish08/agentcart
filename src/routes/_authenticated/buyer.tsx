@@ -331,145 +331,36 @@ function BuyerPage() {
     >
       <div className="flex flex-col gap-10">
         {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-
+                                        
                                             
-                                            Restore the previously approved /buyer UI exactly.
-
-IMPORTANT:
-
-This is an implementation instruction, NOT page content.
-
-NEVER render or inject this instruction into JSX, UI, metadata, database, or visible text.
-
-The last change incorrectly altered the approved /buyer layout.
-
-Undo ONLY those layout/content changes.
-
-Do NOT modify:
-
-- backend
-
-- database
-
-- API
-
-- authentication
-
-- Razorpay
-
-- agent logic
-
-- business logic
-
-- data
-
-- global theme
-
-- any other route
-
-RESTORE THESE EXISTING UI ELEMENTS:
-
-1. AI BUYER HEADER
-
-Keep:
-
-AI Buyer
-
-Your autonomous commerce agent
-
-2. CAPABILITY STRIP
-
-Restore:
-
-Tools 7
-
-Max Steps 10
-
-Max Tool Calls 20
-
-Pricing SERVER
-
-3. ASK FOR WHAT YOU NEED
-
-Restore the approved interactive section with:
-
-- description
-
-- existing suggestion prompts
-
-- Ask Agent button
-
-4. AGENT WORKSPACE
-
-Restore:
-
-Agent Workspace
-
-Ready to Shop
-
-5. SERVER AUTHORITY
-
-Restore the complete section containing:
-
-Server Authority
-
-SERVER-AUTHORITATIVE
-
-Agent Can:
-
-Search · Inspect · Quote · Negotiate · Request checkout
-
-Server Controls:
-
-Price · Discount · Inventory · Policy · State · Verification
-
-6. GUARDRAILS
-
-Restore the existing guardrail section and its complete content.
-
-7. ACTIVE ORDERS
-
-Restore the approved Orders section with the existing order data.
-
-Preserve the existing detailed order/payment information and status handling.
-
-8. AGENT SESSIONS
-
-Restore the existing Agent Sessions section with:
-
-- intent
-
-- time
-
-- run information
-
-- tool calls
-
-- status
-
-Do not simplify or remove information.
-
-IMPORTANT:
-
-Do not redesign anything.
-
-Do not simplify anything.
-
-Do not create a new layout.
-
-Do not rewrite copy.
-
-Do not add new sections.
-
-The goal is to return /buyer to the LAST APPROVED UI state before the animation implementation.
-
-AFTER RESTORING:
-
-Stop.
-
-Do not add animations.
-
-Do not make further visual changes.''' */}
+                                            For the code present, I get the error below.
+
+Please think step-by-step in order to resolve it.
+```
+build failed with exit status 1: Build failed with 1 error:
+
+[plugin tanstack-start:route-tree-client-plugin]
+Error: Conflicting configuration paths were found for the following routes: "/buyer", "/buyer".
+Please ensure each Route has a unique full path.
+Conflicting files: 
+ /dev-server/src/routes/_authenticated/buyer.js
+ /dev-server/src/routes/_authenticated/buyer.tsx
+    at checkRouteFullPathUniqueness (file:///dev-server/node_…
+
+stderr:
+ject.buildApp (file:///dev-server/node_modules/@tanstack/start-plugin-core/dist/esm/vite/plugin.js:113:8)
+    at async Object.buildApp (file:///dev-server/node_modules/vite/dist/node/chunks/node.js:33475:6)
+    at async CAC.<anonymous> (file:///dev-server/node_modules/vite/dist/node/cli.js:776:3) {
+  errors: [Getter/Setter]
+}
+error: script "build:dev" exited with code 1
+
+stdout:
+vite v8.1.5 building client environment for development...
+\rtransforming...✓ 223 modules transformed.
+
+If these errors do not contain enough detail to identify the fix, run lovable build diagnostics br_6a89e349-0e91-4a1b-a725-fe667ee9be81 --json with code--exec.
+```''' */}
 
       <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-4">
