@@ -276,12 +276,12 @@ function Landing() {
 
               <div className="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-sm overflow-hidden">
                 <div className="bg-[#0B1220] p-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">AI BUYER</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8291A8]">AI BUYER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Capabilities</h3>
                   <ul className="mt-8 space-y-5">
                     {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item) => (
-                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-white/50 tracking-wide">
-                        <div className="h-px w-3 bg-white/20" />
+                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-[#B8C4D6] tracking-wide">
+                        <div className="h-px w-3 bg-[#8291A8]/20" />
                         {item}
                       </li>
                     ))}
