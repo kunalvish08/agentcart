@@ -299,13 +299,13 @@ function DashboardPage() {
   );
 }
 
-function Stat({ label, value, icon: Icon }: any) {
+function Stat({ label, value, icon: Icon, index = 0 }: any) {
     return (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="border border-border p-4 rounded-sm bg-card"
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          className="border border-border p-4 rounded-sm bg-card hover:border-copper/30 transition-colors"
         >
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
                 <Icon className="size-3.5" />
