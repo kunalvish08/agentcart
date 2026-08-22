@@ -519,10 +519,10 @@ function BuyerPage() {
                 )}
               </motion.section>
 
-              <div className="hidden md:block w-px bg-border/40" />
+              <div className="hidden lg:block w-px bg-border/40" />
 
               {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
-              <motion.aside variants={itemReveal} className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+              <motion.aside variants={itemReveal} className="w-full lg:w-[280px] flex flex-col gap-6 p-4 md:p-5 bg-muted/10">
                 <motion.div
                   initial={false}
                   animate={turns.some(t => t.role === 'assistant' && (t.recommendation || t.steps.some(s => s.tool_name === 'get_quote'))) ? { scale: [1, 1.02, 1], backgroundColor: ["rgba(213, 155, 98, 0.05)", "transparent"] } : {}}
