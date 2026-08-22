@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
+      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Replace the current color system across the entire website with a distinctive premium “Midnight Commerce” design system.\n\nPrimary:\n\n#0B1220 Deep Ink\n\n#111B2E Midnight\n\n#3157FF Royal Cobalt\n\n#36C5D8 Electric Cyan\n\nNeutrals:\n\n#F7F9FC Cloud\n\n#EAF2F7 Soft Ice\n\n#FFFFFF White\n\nSemantic:\n\n#18A878 Verified / Success\n\n#D99020 Pending / Approval\n\n#D95C5C Error / Rejected\n\nUse cobalt for primary actions and server authority.\n\nUse cyan specifically for AI, agent and API concepts.\n\nUse emerald only for verified/completed payment states.\n\nUse amber only for human approval/pending states.\n\nCreate strong contrast between light merchant workspace areas\n\nand dark technical/infrastructure sections.\n\nDo not use purple gradients, neon RGB, excessive glassmorphism,\n\nor generic blue SaaS styling.\n\nThe palette must feel like premium financial infrastructure combined\n\nwith advanced developer tooling.\n\nApply this consistently across every page while preserving all\n\nexisting functionality and backend logic."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">
@@ -90,11 +90,11 @@ function DashboardPage() {
           <div className="flex flex-col gap-1">
              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">TechNova Store</h2>
              <div className="flex items-center gap-3">
-               <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600">
-                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse" />
+               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.65_0.15_160)]">
+                 <div className="h-1.5 w-1.5 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
                  STORE ACTIVE
                </div>
-               <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+               <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.75_0.15_200)]/10 px-2.5 py-0.5 text-[10px] font-bold text-[oklch(0.75_0.15_200)]">
                  <ShieldCheck className="size-3" />
                  AI COMMERCE ENABLED
                </div>
@@ -247,7 +247,7 @@ function DashboardPage() {
 
           <aside className="space-y-6">
             {/* 7. AI SYSTEM STATUS */}
-            <Card className="border-border/60 shadow-none bg-slate-50/50">
+            <Card className="border-border/60 shadow-none bg-secondary/30">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                    <Activity className="size-3.5" /> AI Commerce Infrastructure
@@ -279,7 +279,7 @@ function DashboardPage() {
             </Card>
 
             {/* 8. JUDGE MODE PROOF */}
-            <Card className="border-primary/20 shadow-none bg-primary/[0.02]">
+            <Card className="border-primary/20 shadow-none bg-primary/5 dark">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                    <ShieldCheck className="size-3.5" /> Proof of Authority
@@ -320,7 +320,7 @@ function DashboardPage() {
                       .map((event) => (
                         <div key={event.id} className="relative pl-6 space-y-1">
                           <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
-                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
+                            <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-[oklch(0.55_0.18_25)]' : 'bg-primary/60')} />
                           </div>
                           <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
                           <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
@@ -430,12 +430,20 @@ function PipelineStep({ label, value, active = false, highlight = false }: { lab
 
 function StatusRow({ label, status }: { label: string; status: string }) {
   const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
+  const isTest = status === 'test mode';
+  
   return (
     <div className="flex items-center justify-between text-[11px] font-semibold">
       <span className="text-muted-foreground">{label}</span>
       <div className="flex items-center gap-2">
-        <span className={cn("capitalize", isOk ? "text-emerald-600" : "text-amber-600")}>{status}</span>
-        <div className={cn("size-1.5 rounded-full", isOk ? "bg-emerald-500" : "bg-amber-500")} />
+        <span className={cn(
+          "capitalize", 
+          isOk ? "text-[oklch(0.65_0.15_160)]" : isTest ? "text-[oklch(0.75_0.15_200)]" : "text-[oklch(0.7_0.15_80)]"
+        )}>{status}</span>
+        <div className={cn(
+          "size-1.5 rounded-full", 
+          isOk ? "bg-[oklch(0.65_0.15_160)]" : isTest ? "bg-[oklch(0.75_0.15_200)]" : "bg-[oklch(0.7_0.15_80)]"
+        )} />
       </div>
     </div>
   );

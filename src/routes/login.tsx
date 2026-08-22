@@ -140,7 +140,7 @@ function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background selection:bg-primary/10">
       {/* LEFT SIDE — PRODUCT CONTEXT */}
-      <div className="relative hidden w-full max-w-sm flex-col bg-slate-950 p-10 text-white lg:flex xl:max-w-md">
+      <div className="relative hidden w-full max-w-sm flex-col bg-[oklch(0.12_0.025_240)] p-10 text-white lg:flex xl:max-w-md">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
              style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         
@@ -183,8 +183,8 @@ function LoginPage() {
 
         <div className="mt-auto z-10 space-y-6">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 rounded-full bg-green-500/10 px-2 py-0.5 text-[9px] font-bold text-green-400">
-              <div className="h-1 w-1 rounded-full bg-green-400 animate-pulse" />
+            <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
+              <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
               SYSTEM
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Secure merchant environment</span>

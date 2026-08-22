@@ -113,7 +113,7 @@ function Landing() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 inline-flex items-center rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary"
+                className="mb-6 inline-flex items-center rounded-full border border-[oklch(0.75_0.15_200)]/10 bg-[oklch(0.75_0.15_200)]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[oklch(0.75_0.15_200)]"
               >
                 AI-NATIVE COMMERCE INFRASTRUCTURE
               </motion.div>
@@ -207,7 +207,7 @@ function Landing() {
                     <SchematicNode 
                       title="STATUS" 
                       items={["COMPLETED ORDER"]} 
-                      className="border-green-500/20 bg-green-500/[0.02]"
+                      className="border-[oklch(0.65_0.15_160)]/20 bg-[oklch(0.65_0.15_160)]/[0.02]"
                       delay={2.2}
                     />
                   </div>
@@ -215,8 +215,8 @@ function Landing() {
 
                 {/* Status indicators */}
                 <div className="absolute top-4 right-4 flex gap-2">
-                  <div className="flex items-center gap-1.5 rounded-full bg-green-500/10 px-2 py-0.5 text-[9px] font-bold text-green-600">
-                    <div className="h-1 w-1 rounded-full bg-green-600 animate-pulse" />
+                  <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
+                    <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
                     LIVE
                   </div>
                   <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary">
