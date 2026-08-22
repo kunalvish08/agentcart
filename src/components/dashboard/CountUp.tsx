@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface CountUpProps {
   value: string | number;
@@ -22,7 +22,6 @@ export function CountUp({ value, duration = 600 }: CountUpProps) {
        return;
     }
 
-    // Try to parse numeric value from string (e.g., "₹1,00,000" or "12%")
     const stringValue = String(value);
     const numericMatch = stringValue.replace(/,/g, '').match(/\d+/);
     
@@ -58,5 +57,5 @@ export function CountUp({ value, duration = 600 }: CountUpProps) {
     requestAnimationFrame(animate);
   }, [value, duration, shouldReduceMotion, hasAnimated]);
 
-  return <span>{displayValue}</span>;
+  return <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{displayValue}</motion.span>;
 }
