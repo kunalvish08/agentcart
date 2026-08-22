@@ -408,7 +408,7 @@ function BuyerPage() {
                 </div>
               </div>
 
-              <div className="relative group">
+              <motion.div variants={itemReveal} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-20 group-focus-within:opacity-60 transition duration-500" />
                 <div className="relative bg-card border border-border rounded-lg overflow-hidden shadow-sm">
                   <Textarea
@@ -426,15 +426,25 @@ function BuyerPage() {
                   />
                   <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-t border-border/40">
                     <div className="flex flex-wrap gap-2">
-                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s) => (
-                        <button
+                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s, idx) => (
+                        <motion.button
                           key={s}
                           type="button"
                           onClick={() => setInput(s)}
-                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
+                          variants={{
+                            hidden: { opacity: 0, y: 5 },
+                            show: { 
+                              opacity: 1, 
+                              y: 0,
+                              transition: { delay: 0.1 + idx * 0.05 } 
+                            }
+                          }}
+                          whileHover={{ y: -2, borderColor: "rgba(213, 155, 98, 0.4)", backgroundColor: "rgba(213, 155, 98, 0.05)" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background transition-colors"
                         >
                           {s}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                     {running ? (
@@ -448,19 +458,24 @@ function BuyerPage() {
                         Stop Agent
                       </Button>
                     ) : (
-                      <Button 
-                        onClick={() => void send(input)} 
-                        disabled={!input.trim()}
-                        className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
+                      <motion.div
+                        whileHover={{ y: -1 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <Send className="mr-2 size-3" />
-                        Ask Agent
-                      </Button>
+                        <Button 
+                          onClick={() => void send(input)} 
+                          disabled={!input.trim()}
+                          className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
+                        >
+                          <Send className="mr-2 size-3" />
+                          Ask Agent
+                        </Button>
+                      </motion.div>
                     )}
                   </div>
                 </div>
-              </div>
-            </section>
+              </motion.div>
+            </motion.section>
 
             {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
             <div className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
