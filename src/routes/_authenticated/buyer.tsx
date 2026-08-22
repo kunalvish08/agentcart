@@ -779,7 +779,7 @@ Do not change anything else." */}
                  )
                )}
                <div ref={bottomRef} />
-             </div>
+              </motion.div>
            )}
         </motion.section>
 
