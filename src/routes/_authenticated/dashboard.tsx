@@ -90,22 +90,28 @@ function DashboardPage() {
         </section>
 
         {/* SECTION 2: AUTHORITY PIPELINE */}
-        <section className="border border-border bg-card p-6 rounded-sm">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          className="border border-border bg-card p-6 rounded-sm"
+        >
            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-8">Authority Pipeline</h3>
            <div className="flex flex-wrap justify-between items-center gap-4">
-             <PipelineNode label="CATALOG" icon={Search} />
-             <div className="text-muted-foreground/30"><ArrowRight /></div>
-             <PipelineNode label="AI BUYER" icon={Bot} />
-             <div className="text-muted-foreground/30"><ArrowRight /></div>
-             <PipelineNode label="SERVER AUTHORITY" icon={ShieldCheck} active />
-             <div className="text-muted-foreground/30"><ArrowRight /></div>
-             <PipelineNode label="APPROVAL" icon={ClipboardCheck} />
-             <div className="text-muted-foreground/30"><ArrowRight /></div>
-             <PipelineNode label="RAZORPAY" icon={CreditCard} />
-             <div className="text-muted-foreground/30"><ArrowRight /></div>
-             <PipelineNode label="COMPLETED" icon={CheckCircle2} />
+             <PipelineNode label="CATALOG" icon={Search} index={0} />
+             <Connector />
+             <PipelineNode label="AI BUYER" icon={Bot} index={1} />
+             <Connector />
+             <PipelineNode label="SERVER AUTHORITY" icon={ShieldCheck} active index={2} />
+             <Connector />
+             <PipelineNode label="APPROVAL" icon={ClipboardCheck} index={3} />
+             <Connector />
+             <PipelineNode label="RAZORPAY" icon={CreditCard} index={4} />
+             <Connector />
+             <PipelineNode label="COMPLETED" icon={CheckCircle2} index={5} />
            </div>
-        </section>
+        </motion.section>
 
         <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
