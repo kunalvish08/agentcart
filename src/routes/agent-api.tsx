@@ -313,43 +313,46 @@ function AgentApiPage() {
       <main className="mx-auto max-w-5xl px-6 py-8">
         <TryApi />
 
-        <div className="mt-10 space-y-6">
+        <div className="mt-12 space-y-8">
           {ENDPOINTS.map((endpoint) => (
-            <Card key={endpoint.id} id={endpoint.id}>
-              <CardHeader>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant={endpoint.method === "GET" ? "secondary" : "default"}>
+            <Card key={endpoint.id} id={endpoint.id} className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge className="rounded-sm bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-2 h-6">
                     {endpoint.method}
                   </Badge>
-                  <CardTitle className="font-mono text-base break-all">{endpoint.path}</CardTitle>
+                  <CardTitle className="font-mono text-sm break-all text-foreground">{endpoint.path}</CardTitle>
                 </div>
-                <p className="mt-2 text-sm text-muted-foreground">{endpoint.purpose}</p>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed font-medium">{endpoint.purpose}</p>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Authentication:</span> {endpoint.auth}
-                </p>
+              <CardContent className="pt-6 space-y-6">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+                    Authentication
+                  </p>
+                  <p className="text-xs font-mono text-foreground">{endpoint.auth}</p>
+                </div>
                 <CodeBlock label="Request" code={endpoint.request} />
                 <CodeBlock label="Response" code={endpoint.response} />
                 <div>
                   <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Errors
                   </p>
-                  <div className="overflow-x-auto rounded-md border border-border">
-                    <table className="w-full text-sm">
-                      <thead className="bg-muted/50 text-xs uppercase tracking-wide text-muted-foreground">
+                  <div className="overflow-x-auto rounded-sm border border-border">
+                    <table className="w-full text-xs">
+                      <thead className="bg-muted/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         <tr>
-                          <th className="px-3 py-2 text-left">Status</th>
-                          <th className="px-3 py-2 text-left">Code</th>
-                          <th className="px-3 py-2 text-left">When</th>
+                          <th className="px-4 py-3 text-left border-r border-border/50">Status</th>
+                          <th className="px-4 py-3 text-left border-r border-border/50">Code</th>
+                          <th className="px-4 py-3 text-left">Condition</th>
                         </tr>
                       </thead>
                       <tbody>
                         {endpoint.errors.map((err) => (
-                          <tr key={err.code} className="border-t border-border">
-                            <td className="px-3 py-2 font-mono">{err.status}</td>
-                            <td className="px-3 py-2 font-mono">{err.code}</td>
-                            <td className="px-3 py-2 text-muted-foreground">{err.when}</td>
+                          <tr key={err.code} className="border-t border-border bg-card/50">
+                            <td className="px-4 py-3 font-mono font-bold text-foreground">{err.status}</td>
+                            <td className="px-4 py-3 font-mono text-primary">{err.code}</td>
+                            <td className="px-4 py-3 text-muted-foreground font-medium">{err.when}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -368,8 +371,8 @@ function AgentApiPage() {
 function CodeBlock({ label, code }: { label: string; code: string }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-      <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs leading-relaxed text-foreground">
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <pre className="overflow-x-auto rounded-sm border border-border bg-muted/50 p-4 text-[11px] font-mono leading-relaxed text-foreground">
         <code>{code}</code>
       </pre>
     </div>
@@ -427,23 +430,23 @@ function TryApi() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Terminal className="size-4" /> Try the API
+    <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+      <CardHeader className="bg-muted/30 border-b border-border">
+        <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          <Terminal className="size-3.5" /> Simulation Console
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Call the live endpoints from this page. Tip: run the catalog request first to copy a real
-          product id into the quote body.
+        <p className="text-xs text-muted-foreground font-medium">
+          Execute live API calls directly against the commerce authority.
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="pt-6 space-y-6">
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((preset) => (
             <Button
               key={preset.label}
               size="sm"
               variant="outline"
+              className="rounded-sm h-8 text-[10px] font-bold uppercase tracking-widest border-border hover:bg-accent"
               onClick={() => {
                 setMethod(preset.method);
                 setPath(preset.path);
@@ -457,10 +460,10 @@ function TryApi() {
 
         <div className="grid gap-3 sm:grid-cols-[7rem_1fr]">
           <div>
-            <Label htmlFor="try-method">Method</Label>
+            <Label htmlFor="try-method" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Method</Label>
             <select
               id="try-method"
-              className="mt-1 h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+              className="mt-1.5 flex h-10 w-full rounded-sm border border-border bg-background px-3 py-2 text-xs font-bold uppercase tracking-widest text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               value={method}
               onChange={(event) => setMethod(event.target.value as "GET" | "POST")}
             >
@@ -469,10 +472,10 @@ function TryApi() {
             </select>
           </div>
           <div>
-            <Label htmlFor="try-path">Path</Label>
+            <Label htmlFor="try-path" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Resource Path</Label>
             <Input
               id="try-path"
-              className="mt-1 font-mono"
+              className="mt-1.5 rounded-sm border-border bg-background focus-visible:ring-primary/20 h-10 font-mono text-xs"
               value={path}
               onChange={(event) => setPath(event.target.value)}
             />
@@ -481,11 +484,11 @@ function TryApi() {
 
         {method === "POST" ? (
           <div>
-            <Label htmlFor="try-body">JSON body</Label>
+            <Label htmlFor="try-body" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Payload (JSON)</Label>
             <textarea
               id="try-body"
               rows={6}
-              className="mt-1 w-full rounded-md border border-input bg-background p-3 font-mono text-xs"
+              className="mt-1.5 w-full rounded-sm border border-border bg-background p-4 font-mono text-[11px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               value={body}
               onChange={(event) => setBody(event.target.value)}
             />
@@ -493,19 +496,29 @@ function TryApi() {
         ) : null}
 
         <div className="flex items-center gap-3">
-          <Button onClick={run} disabled={pending}>
-            <Play className="mr-2 size-4" />
-            {pending ? "Sending…" : "Send request"}
+          <Button 
+            onClick={run} 
+            disabled={pending}
+            className="rounded-sm bg-primary text-primary-foreground font-bold uppercase tracking-widest h-10 px-8"
+          >
+            {pending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Play className="mr-2 size-4" />}
+            {pending ? "Executing…" : "Execute Call"}
           </Button>
           {status !== null ? (
-            <Badge variant={status < 400 ? "secondary" : "destructive"}>HTTP {status}</Badge>
+            <Badge className={cn(
+              "rounded-sm h-10 px-4 text-[10px] font-bold uppercase tracking-widest border-border",
+              status < 400 ? "bg-verified-green/10 text-verified-green border-verified-green/20" : "bg-destructive/10 text-destructive border-destructive/20"
+            )}>HTTP {status}</Badge>
           ) : null}
         </div>
 
         {output ? (
-          <pre className="max-h-96 overflow-auto rounded-md bg-muted p-3 text-xs leading-relaxed">
-            <code>{output}</code>
-          </pre>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Response Output</Label>
+            <pre className="max-h-[500px] overflow-auto rounded-sm border border-border bg-muted/30 p-4 text-[11px] font-mono leading-relaxed text-foreground">
+              <code>{output}</code>
+            </pre>
+          </div>
         ) : null}
       </CardContent>
     </Card>
