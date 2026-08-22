@@ -19,6 +19,7 @@ export type PublicPolicy = {
   approval_required_above: number;
   allow_negotiation: boolean;
   allow_upsell: boolean;
+  merchant_agent_commerce_enabled: boolean;
 };
 
 /* ------------------------------ money helpers ----------------------------- */
@@ -172,17 +173,20 @@ export async function getPolicy(merchantId: string): Promise<PublicPolicy> {
   const { data, error } = await supabaseAdmin
     .from("merchant_policies")
     .select(
-      "max_discount_percent, max_order_value, approval_required_above, allow_negotiation, allow_upsell",
+      "max_discount_percent, max_order_value, approval_required_above, allow_negotiation, allow_upsell, merchants(agent_commerce_enabled)",
     )
     .eq("merchant_id", merchantId)
     .maybeSingle();
   if (error) throw new Error(error.message);
+  
+  const m = data?.merchants as any;
   return {
     max_discount_percent: Number(data?.max_discount_percent ?? 0),
     max_order_value: Number(data?.max_order_value ?? 0),
     approval_required_above: Number(data?.approval_required_above ?? 0),
     allow_negotiation: data?.allow_negotiation ?? false,
     allow_upsell: data?.allow_upsell ?? false,
+    merchant_agent_commerce_enabled: m?.agent_commerce_enabled ?? false,
   };
 }
 

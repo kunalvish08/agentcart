@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { decideDiscount } from "./negotiation.server";
 
-const open = { allow_negotiation: true, max_discount_percent: 12 };
+const open = { allow_negotiation: true, max_discount_percent: 12, merchant_agent_commerce_enabled: true };
 
 describe("deterministic discount policy engine", () => {
   it("accepts a request within the merchant limit", () => {
@@ -27,7 +27,7 @@ describe("deterministic discount policy engine", () => {
   });
 
   it("approves zero discount when negotiation is disabled", () => {
-    const closed = { allow_negotiation: false, max_discount_percent: 12 };
+    const closed = { allow_negotiation: false, max_discount_percent: 12, merchant_agent_commerce_enabled: true };
     const d = decideDiscount({ requestedPercent: 10, policy: closed });
     expect(d.approved_discount_percent).toBe(0);
     expect(d.policy_limit_percent).toBe(0);
