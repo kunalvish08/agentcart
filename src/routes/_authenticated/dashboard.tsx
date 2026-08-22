@@ -430,12 +430,20 @@ function PipelineStep({ label, value, active = false, highlight = false }: { lab
 
 function StatusRow({ label, status }: { label: string; status: string }) {
   const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
+  const isTest = status === 'test mode';
+  
   return (
     <div className="flex items-center justify-between text-[11px] font-semibold">
       <span className="text-muted-foreground">{label}</span>
       <div className="flex items-center gap-2">
-        <span className={cn("capitalize", isOk ? "text-emerald-600" : "text-amber-600")}>{status}</span>
-        <div className={cn("size-1.5 rounded-full", isOk ? "bg-emerald-500" : "bg-amber-500")} />
+        <span className={cn(
+          "capitalize", 
+          isOk ? "text-[oklch(0.65_0.15_160)]" : isTest ? "text-[oklch(0.75_0.15_200)]" : "text-[oklch(0.7_0.15_80)]"
+        )}>{status}</span>
+        <div className={cn(
+          "size-1.5 rounded-full", 
+          isOk ? "bg-[oklch(0.65_0.15_160)]" : isTest ? "bg-[oklch(0.75_0.15_200)]" : "bg-[oklch(0.7_0.15_80)]"
+        )} />
       </div>
     </div>
   );

@@ -215,8 +215,8 @@ function Landing() {
 
                 {/* Status indicators */}
                 <div className="absolute top-4 right-4 flex gap-2">
-                  <div className="flex items-center gap-1.5 rounded-full bg-green-500/10 px-2 py-0.5 text-[9px] font-bold text-green-600">
-                    <div className="h-1 w-1 rounded-full bg-green-600 animate-pulse" />
+                  <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
+                    <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
                     LIVE
                   </div>
                   <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary">
