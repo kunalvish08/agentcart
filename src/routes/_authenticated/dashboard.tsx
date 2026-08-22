@@ -322,11 +322,16 @@ function DashboardPage() {
                       )
                       .slice(0, 5)
                       .map((event) => (
-                        <div key={event.id} className="relative pl-6 space-y-1">
+                        <div key={event.id} className="relative pl-6 space-y-1 group">
                           <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
                             <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
                           </div>
-                          <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                            {audit.filter(e => e.event === event.event && e.created_at === event.created_at).length > 1 && (
+                              <span className="text-[9px] font-bold text-primary/60 bg-primary/5 px-1 rounded border border-primary/10">DUPLICATE EVENT DETECTED</span>
+                            )}
+                          </div>
                           <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
                         </div>
                       ))
