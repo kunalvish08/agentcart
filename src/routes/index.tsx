@@ -58,7 +58,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
       )}
       <p className={cn(
         "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
-        isServerAuthority ? "text-primary" : "text-[#8291A8]"
+        isServerAuthority ? "text-primary" : (className?.includes("!text-[#36C5D8]") ? "text-[#36C5D8]" : "text-[#8291A8]")
       )}>{title}</p>
       <div className="space-y-2">
         {items.map((item, i) => (
