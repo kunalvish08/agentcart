@@ -208,14 +208,29 @@ function Stat({ label, value, icon: Icon }: any) {
     )
 }
 
-function PipelineNode({ label, icon: Icon, active }: any) {
+function PipelineNode({ label, icon: Icon, active, index = 0 }: any) {
+    const shouldReduceMotion = useReducedMotion();
+    
     return (
-        <div className={cn("flex flex-col items-center gap-2", active ? "text-copper" : "text-muted-foreground")}>
-            <div className={cn("size-10 flex items-center justify-center border rounded-sm", active ? "bg-copper/10 border-copper" : "bg-card border-border")}>
-                <Icon className="size-4" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          className={cn("flex flex-col items-center gap-2", active ? "text-copper" : "text-muted-foreground")}
+        >
+            <div className={cn("size-10 flex items-center justify-center border rounded-sm relative overflow-hidden", active ? "bg-copper/10 border-copper" : "bg-card border-border")}>
+                <Icon className={cn("size-4 z-10", active && "animate-pulse")} />
+                {active && !shouldReduceMotion && (
+                  <motion.div 
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "100%" }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-copper/20 to-transparent z-0"
+                  />
+                )}
             </div>
             <span className="text-[8px] font-bold tracking-widest uppercase">{label}</span>
-        </div>
+        </motion.div>
     )
 }
 
