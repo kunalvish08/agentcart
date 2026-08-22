@@ -485,7 +485,10 @@ function LabPage() {
               </Card>
             )}
 
-            {metrics ? (
+            </aside>
+
+            <div className="space-y-6">
+              {metrics ? (
               <Tabs defaultValue="impact">
                 <TabsList>
                   <TabsTrigger value="impact">Merchant impact</TabsTrigger>
