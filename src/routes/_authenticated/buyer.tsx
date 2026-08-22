@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import {
   AlertTriangle,
   Bot,
@@ -11,7 +11,6 @@ import {
   Clock,
   Handshake,
   History,
-
   Loader2,
   PackageCheck,
   Receipt,
@@ -19,12 +18,12 @@ import {
   Send,
   ShoppingBag,
   Sparkles,
-  User,
-
 } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { PaymentPanel } from "@/components/PaymentPanel";
+import { CountUp } from "@/components/dashboard/CountUp";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
@@ -321,6 +320,27 @@ function BuyerPage() {
   }
 
   const merchant = workspace.data?.merchant;
+  const shouldReduceMotion = useReducedMotion();
+
+  const staggerContainer: any = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        duration: 0.5
+      }
+    }
+  };
+
+  const itemReveal: any = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 5 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" }
+    }
+  };
 
   return (
     <AppShell
@@ -328,44 +348,55 @@ function BuyerPage() {
       subtitle="Your autonomous commerce agent"
       accountLabel={merchant?.name}
     >
-      <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4">
-        {/* '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Polish ONLY the existing /buyer page UI/UX.\n\nIMPORTANT:\n\nThis is an implementation instruction, NOT page content.\n\nNEVER render or inject this prompt into JSX, UI text, metadata, or database.\n\nDo NOT modify:\n\n- backend\n\n- database\n\n- API\n\n- authentication\n\n- Razorpay\n\n- agent logic\n\n- business logic\n\n- existing data\n\n- any other route\n\nDo NOT add animations yet.\n\nThe current /buyer structure is approved.\n\nDo NOT redesign the page from scratch.\n\nImprove only hierarchy, spacing, grouping and interaction clarity.\n\n1. HERO\n\nKeep:\n\nAI BUYER\n\nYour autonomous commerce agent\n\nMake the hero more compact.\n\nPlace the capability indicators:\n\nTools 7\n\nMax Steps 10\n\nMax Tool Calls 20\n\nPricing SERVER\n\nin one clean technical status bar instead of making them compete with the heading.\n\n2. AGENT WORKSPACE\n\nMake \"What are you looking for?\" the strongest interactive section.\n\nCreate a premium command-console style input area.\n\nKeep the existing suggestion chips.\n\nMake the Ask Agent button visually primary.\n\nThe workspace should immediately communicate:\n\nUSER INTENT\n\n→\n\nAI AGENT\n\n→\n\nSERVER DECISION\n\n3. AGENT WORKSPACE / SERVER AUTHORITY\n\nKeep these together but visually separate them.\n\nLeft:\n\nAgent Workspace\n\nRight:\n\nServer Authority\n\nUse a subtle vertical divider.\n\nServer Authority should have stronger visual emphasis because it is the core product principle.\n\nUse a small label:\n\nSERVER-AUTHORITATIVE\n\nDo not add explanatory marketing copy.\n\n4. AGENT CAN / SERVER CONTROLS\n\nDo not present these as two large generic cards.\n\nUse a compact comparison layout:\n\nAGENT CAN\n\nSearch · Inspect · Quote · Negotiate · Request checkout\n\nSERVER CONTROLS\n\nPrice · Discount · Inventory · Policy · State · Verification\n\nMake the distinction immediately readable.\n\n5. GUARDRAILS\n\nMove Guardrails into a compact technical trust strip below Server Authority.\n\nDo not let it dominate the page.\n\n6. ORDERS\n\nKeep Orders below the active agent workspace.\n\nImprove the table:\n\nProduct\n\nOrder\n\nAmount\n\nStatus\n\nDate\n\nMake the status the strongest secondary visual element.\n\nUse semantic status treatment:\n\nCompleted → verified green\n\nPayment pending → amber\n\nWaiting for merchant approval → neutral/amber\n\nKeep all existing order data.\n\nIf the existing UI supports row expansion, make the row expandable rather than showing all details by default.\n\n7. AGENT SESSIONS\n\nKeep this as a secondary observability section.\n\nUse compact rows.\n\nPrioritize:\n\nIntent\n\nTime\n\nTool calls\n\nStatus\n\nTruncate long intents cleanly instead of allowing them to dominate the layout.\n\nDo not remove the underlying data.\n\n8. VISUAL HIERARCHY\n\nThe final page hierarchy should be:\n\nAI Buyer\n\n↓\n\nAsk Agent\n\n↓\n\nAgent / Server Authority\n\n↓\n\nCurrent Orders\n\n↓\n\nAgent Sessions\n\n↓\n\nGuardrails\n\nThe page should feel like an AI commerce operating workspace, not a dashboard.\n\n9. RESPONSIVE\n\nDesktop:\n\nAgent Workspace + Server Authority can sit side-by-side.\n\nMobile:\n\nStack them vertically.\n\nOrders remain readable without horizontal overflow.\n\n10. DESIGN QUALITY\n\nUse the existing Obsidian Commerce theme.\n\nIncrease:\n\n- information density\n\n- alignment\n\n- whitespace consistency\n\n- typography hierarchy\n\n- technical clarity\n\nReduce:\n\n- oversized cards\n\n- repetitive borders\n\n- unnecessary visual weight\n\n- empty space\n\n- dashboard-like KPI treatment\n\nDo NOT change the global theme.\n\nFINAL REQUIREMENT:\n\nThis task is UI/UX polish only.\n\nNO animations.\n\nNO Framer Motion.\n\nNO copy rewrite.\n\nNO backend changes.\n\nNO new functionality.\n\nNO changes to other routes.\n\nAfter this is complete, stop. Animation will be implemented in a separate task." */}
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-4"
+      >
         {/* 1. COMPACT HERO & STATUS BAR */}
-        <header className="flex flex-col gap-4 pb-4 border-b border-border/40">
+        <motion.header variants={itemReveal} className="flex flex-col gap-4 pb-4 border-b border-border/40">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</p>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</h1>
+              <motion.p variants={itemReveal} className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</motion.p>
+              <motion.h1 variants={itemReveal} className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</motion.h1>
             </div>
             
-            <div className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
-                <span className="text-xs font-mono font-bold text-foreground">7</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
-                <span className="text-xs font-mono font-bold text-foreground">10</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
-                <span className="text-xs font-mono font-bold text-foreground">20</span>
-              </div>
-              <div className="h-3 w-px bg-border/40" />
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
-                <span className="text-[10px] font-bold text-verified-green">SERVER</span>
-              </div>
-            </div>
+            <motion.div variants={itemReveal} className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={7} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Steps</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={10} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Max Tool Calls</span>
+                  <span className="text-xs font-mono font-bold text-foreground"><CountUp value={20} /></span>
+                </div>
+                <div className="h-3 w-px bg-border/40" />
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pricing</span>
+                  <motion.span 
+                    initial={{ backgroundColor: "transparent" }}
+                    animate={{ backgroundColor: ["#22c55e10", "transparent"] }}
+                    transition={{ duration: 1.5 }}
+                    className="text-[10px] font-bold text-verified-green px-1.5 rounded"
+                  >
+                    SERVER
+                  </motion.span>
+                </div>
+            </motion.div>
           </div>
-        </header>
+        </motion.header>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+        <motion.div variants={itemReveal} className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="flex flex-col gap-6 min-w-0">
             {/* 2. AGENT WORKSPACE (COMMAND CONSOLE) */}
-            <section className="flex flex-col gap-4">
+            <motion.section variants={itemReveal} className="flex flex-col gap-4">
               <div className="space-y-1">
                 <h2 className="text-sm font-bold text-foreground">What are you looking for?</h2>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
@@ -377,7 +408,7 @@ function BuyerPage() {
                 </div>
               </div>
 
-              <div className="relative group">
+              <motion.div variants={itemReveal} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-copper/20 to-verified-green/20 rounded-lg blur opacity-20 group-focus-within:opacity-60 transition duration-500" />
                 <div className="relative bg-card border border-border rounded-lg overflow-hidden shadow-sm">
                   <Textarea
@@ -395,15 +426,25 @@ function BuyerPage() {
                   />
                   <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-t border-border/40">
                     <div className="flex flex-wrap gap-2">
-                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s) => (
-                        <button
+                      {["Laptop under ₹60,000", "5% discount", "25% off", "Accessories"].map((s, idx) => (
+                        <motion.button
                           key={s}
                           type="button"
                           onClick={() => setInput(s)}
-                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
+                          variants={{
+                            hidden: { opacity: 0, y: 5 },
+                            show: { 
+                              opacity: 1, 
+                              y: 0,
+                              transition: { delay: 0.1 + idx * 0.05 } 
+                            }
+                          }}
+                          whileHover={{ y: -2, borderColor: "rgba(213, 155, 98, 0.4)", backgroundColor: "rgba(213, 155, 98, 0.05)" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded border border-border/60 bg-background transition-colors"
                         >
                           {s}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                     {running ? (
@@ -417,24 +458,29 @@ function BuyerPage() {
                         Stop Agent
                       </Button>
                     ) : (
-                      <Button 
-                        onClick={() => void send(input)} 
-                        disabled={!input.trim()}
-                        className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
+                      <motion.div
+                        whileHover={{ y: -1 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <Send className="mr-2 size-3" />
-                        Ask Agent
-                      </Button>
+                        <Button 
+                          onClick={() => void send(input)} 
+                          disabled={!input.trim()}
+                          className="h-8 px-4 bg-copper hover:bg-copper/90 text-white text-[10px] font-bold uppercase tracking-widest"
+                        >
+                          <Send className="mr-2 size-3" />
+                          Ask Agent
+                        </Button>
+                      </motion.div>
                     )}
                   </div>
                 </div>
-              </div>
-            </section>
+              </motion.div>
+            </motion.section>
 
             {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
-            <div className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+            <motion.div variants={itemReveal} className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
               {/* LEFT: AGENT WORKSPACE */}
-              <section className="flex-1 flex flex-col gap-4 p-5">
+              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
                   {sessionId && (
@@ -449,31 +495,47 @@ function BuyerPage() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {turns.map((turn) =>
-                      turn.role === "user" ? (
-                        <div key={turn.id} className="flex flex-col gap-1.5 opacity-60">
-                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
-                           <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
-                             <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
-                           </div>
-                        </div>
-                      ) : (
-                        <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
-                      )
-                    )}
+                    <AnimatePresence mode="popLayout" initial={false}>
+                      {turns.map((turn) =>
+                        turn.role === "user" ? (
+                          <motion.div 
+                            key={turn.id} 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 0.6, y: 0 }}
+                            className="flex flex-col gap-1.5"
+                          >
+                             <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
+                             <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
+                               <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
+                             </div>
+                          </motion.div>
+                        ) : (
+                          <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
+                        )
+                      )}
+                    </AnimatePresence>
                     <div ref={bottomRef} />
                   </div>
                 )}
-              </section>
+              </motion.section>
 
               <div className="hidden md:block w-px bg-border/40" />
 
               {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
-              <aside className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
-                <div>
+              <motion.aside variants={itemReveal} className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+                <motion.div
+                  initial={false}
+                  animate={turns.some(t => t.role === 'assistant' && (t.recommendation || t.steps.some(s => s.tool_name === 'get_quote'))) ? { scale: [1, 1.02, 1], backgroundColor: ["rgba(213, 155, 98, 0.05)", "transparent"] } : {}}
+                  transition={{ duration: 1 }}
+                >
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</span>
-                    <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                    <motion.div
+                      animate={turns.some(t => t.role === 'assistant' && t.recommendation) ? { opacity: [0.5, 1, 0.5] } : {}}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                    </motion.div>
                   </div>
                   
                   <div className="space-y-5">
@@ -486,14 +548,16 @@ function BuyerPage() {
 
                     <Separator className="bg-border/40" />
 
-                    <div>
+                    <motion.div
+                      animate={turns.some(t => t.role === 'assistant' && t.recommendation) ? { color: ["#D59B62", "#46B58A", "#D59B62"] } : {}}
+                    >
                       <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-2.5">Server Controls</p>
                       <p className="text-[11px] font-bold text-copper leading-relaxed">
                         Price · Discount · Inventory · Policy · State · Verification
                       </p>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
 
                 <div className="mt-auto pt-6 border-t border-border/40">
                   <h3 className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mb-3">Guardrails</h3>
@@ -504,26 +568,37 @@ function BuyerPage() {
                       "Computed pricing",
                       "Server checkout",
                       "No auto-payment"
-                    ].map(rule => (
-                      <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground/70">
+                    ].map((rule, idx) => (
+                      <motion.li 
+                        key={rule} 
+                        variants={{
+                          hidden: { opacity: 0, x: -5 },
+                          show: { 
+                            opacity: 1, 
+                            x: 0,
+                            transition: { delay: 0.5 + idx * 0.05 } 
+                          }
+                        }}
+                        className="flex items-start gap-2 text-[10px] text-muted-foreground/70"
+                      >
                         <Check className="size-3 text-verified-green/60 shrink-0 mt-0.5" />
                         <span>{rule}</span>
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
-              </aside>
-            </div>
+              </motion.aside>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* 5. YOUR ORDERS */}
-        <section className="mt-8">
+        <motion.section variants={itemReveal} className="mt-8">
           <ActiveOrdersCard {...(workspace.data?.profile.full_name ? { buyerName: workspace.data.profile.full_name } : {})} />
-        </section>
+        </motion.section>
 
         {/* 7. SESSION HISTORY */}
-        <section className="space-y-4">
+        <motion.section variants={itemReveal} className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-2">
             <h2 className="text-lg font-bold text-foreground">Agent Sessions</h2>
             <History className="size-4 text-muted-foreground/40" />
@@ -546,8 +621,15 @@ function BuyerPage() {
                   ) : (sessions.data?.length ?? 0) === 0 ? (
                     <tr><td colSpan={4} className="px-5 py-6 text-center text-muted-foreground/50 text-xs">No sessions recorded</td></tr>
                   ) : (
-                    sessions.data!.map((session) => (
-                      <tr key={session.id} className="hover:bg-muted/5 transition-colors">
+                    sessions.data!.map((session, idx) => (
+                      <motion.tr 
+                        key={session.id} 
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="hover:bg-muted/5 transition-colors"
+                      >
                         <td className="px-5 py-3 font-medium text-foreground/80 max-w-[240px] truncate">
                           {session.title ?? "General Request"}
                         </td>
@@ -564,15 +646,15 @@ function BuyerPage() {
                             {session.status}
                           </Badge>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
           </div>
-        </section>
-      </div>
+        </motion.section>
+      </motion.div>
     </AppShell>
   );
 }
@@ -661,34 +743,67 @@ function AssistantTurn({
               </button>
               {open ? (
                 <div className="space-y-3 px-4 py-4">
-                  {turn.steps.map((step) => (
-                    <div key={step.step_number} className="flex items-center gap-3 text-sm">
-                      {stepIcon(step)}
-                      <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
-                      {step.tool_name ? (
-                        <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                          {step.tool_name}
-                        </code>
-                      ) : null}
-                      {step.latency_ms !== undefined ? (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Clock className="size-3" />
-                          {step.latency_ms} ms
-                        </span>
-                      ) : null}
-                    </div>
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {turn.steps.map((step, idx) => (
+                      <motion.div 
+                        key={step.step_number} 
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className={cn(
+                          "flex items-center gap-3 text-sm transition-all duration-300",
+                          running && idx === turn.steps.length - 1 ? "border-l-2 border-copper/50 pl-2 bg-copper/5 rounded-r" : ""
+                        )}
+                      >
+                        <motion.span
+                          animate={running && idx === turn.steps.length - 1 ? { scale: [1, 1.05, 1] } : {}}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                        >
+                          {stepIcon(step)}
+                        </motion.span>
+                        <span className="min-w-0 flex-1 truncate text-foreground">{step.label}</span>
+                        {step.tool_name ? (
+                          <code className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                            {step.tool_name}
+                          </code>
+                        ) : null}
+                        <AnimatePresence>
+                          {step.latency_ms !== undefined && (
+                            <motion.span 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="flex items-center gap-1 text-xs text-muted-foreground"
+                            >
+                              <Clock className="size-3" />
+                              {step.latency_ms} ms
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               ) : null}
             </div>
           ) : null}
 
           {turn.content ? (
-            <div className="space-y-1.5 rounded-sm border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground shadow-none">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-1.5 rounded-sm border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground shadow-none"
+            >
               <AssistantText content={turn.content} />
-            </div>
+            </motion.div>
           ) : running ? (
-            <p className="text-sm text-muted-foreground">Working…</p>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              className="text-sm text-muted-foreground"
+            >
+              Working…
+            </motion.p>
           ) : null}
 
           {turn.notices.map((notice, index) => (
@@ -739,7 +854,11 @@ function AssistantTurn({
                 </div>
 
                 {quote ? (
-                  <div className="rounded-sm border border-border bg-muted/40 p-4 text-xs">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="rounded-sm border border-border bg-muted/40 p-4 text-xs"
+                  >
                     <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-widest text-foreground">
                       <Receipt className="size-3.5" /> Authority Quote
                     </p>
@@ -775,7 +894,7 @@ function AssistantTurn({
                         </>
                       ) : null}
                     </dl>
-                  </div>
+                  </motion.div>
                 ) : rec.quote_error ? (
                   <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
                     No valid quote was returned ({rec.quote_error.code}), so no price is estimated.
@@ -1192,8 +1311,17 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/20">
-              {rows.map((row: BuyerActiveOrder) => (
-                <OrderRow key={row.order_id} row={row} buyerName={buyerName ?? undefined} />
+              {rows.map((row: BuyerActiveOrder, idx: number) => (
+                <motion.div 
+                  key={row.order_id} 
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05 }}
+                  style={{ display: 'contents' }}
+                >
+                  <OrderRow row={row} buyerName={buyerName ?? undefined} />
+                </motion.div>
               ))}
             </tbody>
           </table>
@@ -1236,14 +1364,33 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
           }).format(row.final_amount)}
         </td>
         <td className="px-5 py-3">
-          <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
-            "text-[8px] h-4 font-bold uppercase tracking-widest border-border/40",
-            row.status === "COMPLETED" && "bg-verified-green/10 text-verified-green border-verified-green/20",
-            row.status === "PAYMENT_PENDING" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20",
-            row.status === "APPROVAL_REQUIRED" && "bg-muted text-muted-foreground border-border/40"
-          )}>
-            {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
-          </Badge>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={row.status}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
+                "text-[8px] h-4 font-bold uppercase tracking-widest border-border/40",
+                row.status === "COMPLETED" && "bg-verified-green/10 text-verified-green border-verified-green/20",
+                row.status === "PAYMENT_PENDING" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20",
+                row.status === "APPROVAL_REQUIRED" && "bg-muted text-muted-foreground border-border/40"
+              )}>
+                {isCompleted && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="mr-1"
+                  >
+                    <Check className="size-2.5" />
+                  </motion.span>
+                )}
+                {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
+              </Badge>
+            </motion.div>
+          </AnimatePresence>
         </td>
         <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-[11px]">
           {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
