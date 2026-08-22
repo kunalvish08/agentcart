@@ -262,7 +262,7 @@ function LoginPage() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Merchant Console</span>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">Sign in to your commerce control plane.</h1>
+            <h1 className="mt-4 text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Sign in to your commerce control plane.</h1>
             <p className="mt-2 text-sm text-muted-foreground">Manage your catalog, policies and AI commerce activity.</p>
           </motion.div>
 
