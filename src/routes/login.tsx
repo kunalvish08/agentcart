@@ -247,7 +247,16 @@ function LoginPage() {
       {/* RIGHT: AUTH PANEL */}
       <div className="relative flex flex-1 flex-col items-center justify-center bg-background px-6 py-12 lg:px-20">
         <div className="absolute top-6 right-6 z-20">
-          <ThemeToggle />
+          <button 
+            onClick={toggleTheme}
+            className="flex size-9 items-center justify-center rounded-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors border border-border"
+          >
+            {mounted ? (
+              theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />
+            ) : (
+              <Sun className="size-4" />
+            )}
+          </button>
         </div>
 
         <div className="z-10 w-full max-w-[400px]">
