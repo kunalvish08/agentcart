@@ -483,7 +483,7 @@ export async function requestCheckout(args: {
         allow_negotiation: policy.allow_negotiation,
         quoted_discount_percent: baseQuoteDiscountPercent,
         requested_discount_percent: Number(quote.requested_discount_percent),
-        add_on_count: (addOns ?? []).length,
+        add_on_count: resolvedAddOns.length,
       } as never,
       expires_at: new Date(Date.now() + ORDER_TTL_HOURS * 3_600_000).toISOString(),
     })
