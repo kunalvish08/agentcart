@@ -511,7 +511,7 @@ export async function requestCheckout(args: {
   add("Checkout requested");
 
   // Add the base product
-  await supabaseAdmin.from("order_items").insert({
+  const baseItem = await supabaseAdmin.from("order_items").insert({
     order_id: orderId,
     product_id: product.id,
     quantity: quote.quantity,
@@ -519,19 +519,43 @@ export async function requestCheckout(args: {
     discount_amount: baseQuoteDiscount,
     final_unit_price: Number((baseQuoteFinal / quote.quantity).toFixed(2)),
   });
+  if (baseItem.error) throw new Error(baseItem.error.message);
 
-  // Add the add-ons
-  for (const addOn of (addOns ?? [])) {
-    await supabaseAdmin.from("order_items").insert({
+  // Add each accepted add-on with its server price, quantity and quote reference.
+  const { recordRevenueEvent } = await import("@/lib/revenue.server");
+  for (const addOn of resolvedAddOns) {
+    const addOnItem = await supabaseAdmin.from("order_items").insert({
       order_id: orderId,
-      product_id: addOn.recommended_product_id,
-      quantity: 1,
-      unit_price: Number(addOn.recommended_price),
+      product_id: addOn.productId,
+      quantity: addOn.quantity,
+      unit_price: addOn.unitPrice,
       discount_amount: 0,
-      final_unit_price: Number(addOn.recommended_price),
-      metadata: { source: "revenue_agent_recommendation" } as never,
+      final_unit_price: addOn.unitPrice,
+    });
+    if (addOnItem.error) throw new Error(addOnItem.error.message);
+
+    const incremental = Number((addOn.unitPrice * addOn.quantity).toFixed(2));
+    await recordRevenueEvent({
+      merchantId,
+      event: addOn.recommendationType === "upsell" ? "UPSELL_ACCEPTED" : "CROSS_SELL_ACCEPTED",
+      buyerSessionId: args.buyerSessionId,
+      recommendationId: addOn.recommendationId,
+      sourceProductId: addOn.sourceProductId,
+      productId: addOn.productId,
+      recommendationType: addOn.recommendationType,
+      amount: incremental,
+      currency: addOn.currency,
+      reason: "Incremental revenue added to order at checkout",
+      detail: {
+        order_id: orderId,
+        quote_id: addOn.quoteId,
+        quantity: addOn.quantity,
+        unit_price: addOn.unitPrice,
+        pricing_authority: "server",
+      },
     });
   }
+
 
 
   await writeAudit({
