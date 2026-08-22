@@ -306,23 +306,44 @@ function Landing() {
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8291A8]">AI BUYER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Capabilities</h3>
                   <ul className="mt-8 space-y-5">
-                    {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item) => (
-                      <li key={item} className="flex items-center gap-4 text-[11px] font-medium text-[#B8C4D6] tracking-wide">
+                    {["Discover products", "Search catalog", "Request quotes", "Negotiate", "Request checkout"].map((item, i) => (
+                      <motion.li 
+                        key={item} 
+                        initial={{ opacity: 0, x: -5 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.3 + (i * 0.1), duration: 0.4 }}
+                        className="flex items-center gap-4 text-[11px] font-medium text-[#B8C4D6] tracking-wide"
+                      >
                         <div className="h-px w-3 bg-[#8291A8]/20" />
                         {item}
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-primary/[0.03] p-10">
+                <div className="bg-primary/[0.03] p-10 relative overflow-hidden">
+                  <motion.div 
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.8, duration: 1, ease: "easeInOut" }}
+                    className="absolute left-0 top-0 bottom-0 w-[1px] bg-primary/20 origin-top"
+                  />
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#36C5D8]">SERVER</p>
                   <h3 className="mt-6 text-sm font-bold uppercase tracking-widest">Controls</h3>
                   <ul className="mt-8 space-y-5">
-                    {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item) => (
-                      <li key={item} className="flex items-center gap-4 text-[11px] font-bold text-white tracking-wide">
+                    {["Price authority", "Inventory validation", "Discount limits", "Order state machine", "Payment verification"].map((item, i) => (
+                      <motion.li 
+                        key={item} 
+                        initial={{ opacity: 0, x: -5 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.9 + (i * 0.1), duration: 0.4 }}
+                        className="flex items-center gap-4 text-[11px] font-bold text-white tracking-wide"
+                      >
                         <CheckCircle2 size={12} className="text-primary" />
                         {item}
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
