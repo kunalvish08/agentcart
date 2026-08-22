@@ -57,9 +57,9 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-background font-sans">
-      {/* Desktop Sidebar (>= 768px) */}
-      <aside className="hidden w-64 shrink-0 flex-col justify-between border-r border-border bg-card px-4 py-6 md:flex">
+    <div className="flex min-h-screen bg-background">
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-64 shrink-0 flex-col justify-between bg-sidebar px-4 py-6 text-sidebar-foreground lg:flex">
         <div>
           <div className="flex items-center gap-2 px-2">
             <span className="flex size-8 items-center justify-center rounded-sm bg-primary text-primary-foreground">
@@ -96,40 +96,38 @@ export function AppShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Header - Shared between Desktop and Mobile layout */}
-        <header className="sticky top-0 z-50 flex h-16 items-center justify-between gap-4 border-b border-border bg-card/80 px-4 backdrop-blur-md md:px-6">
-          <div className="flex items-center gap-3 overflow-hidden">
-            {/* Logo/Brand (Always visible) */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <span className="flex size-7 items-center justify-center rounded-sm bg-primary text-primary-foreground md:hidden">
-                <Sparkles className="size-3.5" />
-              </span>
-              <div className="leading-tight">
-                <h1 className="text-xs font-bold tracking-tight text-foreground md:text-sm">Agentic Commerce</h1>
-                <p className="hidden text-[9px] font-bold uppercase tracking-widest text-muted-foreground md:block">Infrastructure</p>
-              </div>
-            </Link>
-
-            <div className="hidden h-4 w-px bg-border md:block" />
-            
-            <div className="flex flex-col overflow-hidden">
-              <h2 className="truncate text-[11px] font-bold uppercase tracking-widest text-foreground md:text-xs">{title}</h2>
-              {subtitle && <p className="hidden truncate text-[9px] font-medium text-muted-foreground md:block">{subtitle}</p>}
+        <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 md:px-6">
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="size-8 text-muted-foreground"
+                asChild
+              >
+                <Link to="/dashboard">
+                  <Sparkles className="size-4 text-primary" />
+                </Link>
+              </Button>
+            </div>
+            <div>
+              <h1 className="text-sm font-bold tracking-tight text-foreground md:text-lg">{title}</h1>
+              {subtitle ? <p className="hidden text-[10px] font-medium text-muted-foreground md:block">{subtitle}</p> : null}
             </div>
           </div>
-
           <div className="flex items-center gap-2 md:gap-4">
             <button 
               onClick={toggleTheme}
-              className="flex size-9 items-center justify-center rounded-sm border border-border hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+              className="flex size-8 items-center justify-center rounded-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
             >
               {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
             </button>
             <div className="h-4 w-px bg-border" />
-            {accountLabel && (
-              <span className="hidden text-[9px] font-bold uppercase tracking-widest text-muted-foreground lg:inline-block">{accountLabel}</span>
-            )}
-            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-9 rounded-sm px-2 text-[9px] font-bold uppercase tracking-widest border-border hover:bg-accent md:px-3 flex-shrink-0">
+            {accountLabel ? (
+              <span className="hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground sm:inline-block">{accountLabel}</span>
+            ) : null}
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm px-2 text-[9px] font-bold uppercase tracking-widest border-border hover:bg-accent md:px-3 flex-shrink-0">
               <LogOut className="mr-1.5 size-3 md:mr-2 md:size-3.5" />
               <span className="hidden xs:inline">Sign out</span>
               <span className="xs:hidden">Out</span>
@@ -137,28 +135,23 @@ export function AppShell({
           </div>
         </header>
 
-        {/* Mobile Persistent Horizontal Navigation (< 768px) */}
-        <nav className="sticky top-16 z-40 flex w-full gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 no-scrollbar md:hidden no-scrollbar">
+        {/* Mobile Sub-header for title on very small screens if needed, but we keep it compact */}
+
+        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 no-scrollbar lg:hidden">
           {NAV.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
-              className="flex min-w-0 flex-shrink-0 items-center gap-2 rounded-sm px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground transition-colors active:bg-accent"
-              activeProps={{ 
-                className: "flex min-w-0 flex-shrink-0 items-center gap-2 rounded-sm px-3 py-2 text-[10px] font-bold uppercase tracking-widest bg-accent text-primary shadow-[0_2px_0_0_var(--primary)]" 
-              }}
+              className="flex items-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground"
+              activeProps={{ className: "flex items-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest bg-accent text-primary" }}
             >
-              <Icon className="size-3.5 flex-shrink-0" />
-              <span>{label}</span>
+              <Icon className="size-3" />
+              {label}
             </Link>
           ))}
         </nav>
 
-        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-8">
-          <div className="mx-auto w-full max-w-7xl">
-            {children}
-          </div>
-        </main>
+        <main className="flex-1 px-4 py-4 md:px-6 md:py-6">{children}</main>
       </div>
     </div>
   );
