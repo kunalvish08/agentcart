@@ -324,7 +324,183 @@ function DashboardPage() {
             {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            next ?`}
+                                            Redesign ONLY the existing Merchant Dashboard UI.
+
+Do NOT change backend, database, authentication, APIs, merchant data, policies, agent logic, Razorpay/payment logic, Evaluation Lab, Judge Mode, or any existing functionality. UI/UX only.
+
+GOAL:
+
+Make the dashboard feel like a premium, human-designed B2B AI-commerce control plane — not a generic AI/admin dashboard.
+
+Use the existing Agentic Commerce visual language:
+
+- clean light/neutral background
+
+- deep navy typography
+
+- restrained sapphire accent
+
+- thin borders
+
+- subtle shadows
+
+- strong typography hierarchy
+
+- minimal rounded cards
+
+- no neon/RGB, excessive gradients, glassmorphism or AI clichés
+
+RESTRUCTURE THE PAGE AROUND THIS STORY:
+
+Merchant
+
+→ Catalog & Policies
+
+→ AI Buyers
+
+→ Server Authority
+
+→ Human Approval
+
+→ Razorpay
+
+→ Completed Order
+
+1. HEADER
+
+Keep existing navigation.
+
+Clearly show:
+
+TechNova Store
+
+Store Active
+
+AI Commerce Enabled
+
+2. MAIN HERO
+
+Title:
+
+"TechNova Store"
+
+Subtitle:
+
+"Your catalog, commercial rules and AI commerce activity — in one place."
+
+Add a compact visual flow:
+
+CATALOG → AI BUYER → SERVER AUTHORITY → APPROVAL → RAZORPAY → COMPLETED
+
+Make "SERVER AUTHORITY" visually strongest.
+
+3. STORE OVERVIEW
+
+Present existing:
+
+- 6 products
+
+- 275 inventory units
+
+- 5 active products
+
+- ₹17,27,750 inventory value
+
+Use compact metrics, not oversized generic cards.
+
+4. COMMERCIAL RULES
+
+Show:
+
+- 12% max discount
+
+- ₹1,00,000 max order
+
+- ₹50,000 approval threshold
+
+- Negotiation enabled
+
+- Upsell enabled
+
+Add:
+
+"AI may request. Policy decides."
+
+5. AI COMMERCE
+
+Create a clean system-status panel for:
+
+- Public catalog live
+
+- Public API operational
+
+- Negotiation enabled
+
+- Upsell enabled
+
+- Razorpay test mode
+
+Keep "View Agent API" CTA.
+
+6. NEGOTIATION & GROWTH
+
+Visually connect:
+
+List value → Final offer value → Discount given
+
+Show existing negotiation, offer and recommendation metrics.
+
+Clearly state:
+
+"Discount decisions are enforced by the server policy engine."
+
+7. AGENTIC CHECKOUT
+
+Show a simple state pipeline:
+
+Checkout Requests → Approval Required → Awaiting Payment → Verified → Completed
+
+Use the existing real metrics.
+
+CTA:
+
+"Open approval queue & payments"
+
+8. JUDGE MODE
+
+Create a compact "Proof" section:
+
+"Run one complete transaction and inspect every decision."
+
+Show:
+
+11 steps · 5 tool calls · Server-authoritative pricing · Verified payment
+
+CTA:
+
+"Open Judge Mode"
+
+9. RECENT ACTIVITY
+
+Use existing persisted activity as a clean vertical timeline:
+
+Negotiation → Checkout → Approval → Payment → Completion.
+
+Do not invent data.
+
+RESPONSIVE:
+
+Desktop should use the horizontal commerce flow.
+
+Mobile should convert it into a vertical flow.
+
+Use subtle Framer Motion only for page/section reveals and hover states.
+
+The final dashboard should answer within 10 seconds:
+
+"What does the merchant control, what can the AI do, and where does the server retain authority?"
+
+Preserve all existing data and functionality exactly.`}
           </div>
         </CardContent>
       </Card>
