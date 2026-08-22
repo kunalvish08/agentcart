@@ -603,7 +603,7 @@ function BuyerPage() {
             </div>
           </div>
         </section>
-      </div>
+      </motion.div>
     </AppShell>
   );
 }
