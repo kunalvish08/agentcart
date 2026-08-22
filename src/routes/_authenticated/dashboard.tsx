@@ -159,14 +159,24 @@ function DashboardPage() {
                         </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 border border-border rounded-sm bg-approval-amber/5">
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.4 }}
+                          className="p-4 border border-border rounded-sm bg-approval-amber/5"
+                        >
                             <p className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1">Pending Review</p>
-                            <p className="text-lg font-bold">{checkout?.pendingApprovals ?? 0} orders</p>
-                        </div>
-                        <div className="p-4 border border-border rounded-sm bg-approval-amber/5">
+                            <p className="text-lg font-bold"><CountUp value={checkout?.pendingApprovals ?? 0} /> orders</p>
+                        </motion.div>
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.4, delay: 0.1 }}
+                          className="p-4 border border-border rounded-sm bg-approval-amber/5"
+                        >
                             <p className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1">Payment Pending</p>
-                            <p className="text-lg font-bold font-mono">{inr.format(checkout?.paymentPendingValue ?? 0)}</p>
-                        </div>
+                            <p className="text-lg font-bold font-mono"><CountUp value={inr.format(checkout?.paymentPendingValue ?? 0)} /></p>
+                        </motion.div>
                     </div>
                 </section>
             </div>
