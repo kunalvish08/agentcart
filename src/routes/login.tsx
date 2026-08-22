@@ -135,6 +135,7 @@ function ArchitectureConnector({ delay = 0 }: { delay?: number }) {
 
 function LoginPage() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState(DEMO_EMAIL);
@@ -142,6 +143,10 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [storeName, setStoreName] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -246,7 +251,11 @@ function LoginPage() {
             onClick={toggleTheme}
             className="flex size-9 items-center justify-center rounded-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors border border-border"
           >
-            {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+            {mounted ? (
+              theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />
+            ) : (
+              <Sun className="size-4" />
+            )}
           </button>
         </div>
 
