@@ -234,7 +234,7 @@ function Landing() {
                     <SchematicNode 
                       title="STATUS" 
                       items={["COMPLETED"]} 
-                      className="border-[#18A878]/30 bg-[#0B1220] text-[#18A878]"
+                      className="border-[#18A878]/30 bg-[#0B1220] !text-[#18A878]"
                       delay={2.0}
                     />
                   </div>
