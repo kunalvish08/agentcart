@@ -23,7 +23,7 @@ import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCheckoutMetrics, getCheckoutAudit } from "@/lib/checkout.functions";
-import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
+import { getGrowthMetrics, getRevenueAgentMetrics, getWorkspace } from "@/lib/merchant.functions";
 import { cn } from "@/lib/utils";
 import { CountUp } from "@/components/dashboard/CountUp";
 
