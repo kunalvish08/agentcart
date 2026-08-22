@@ -170,23 +170,23 @@ function Landing() {
                >
                  REQ 30%
                </motion.div>
-               <div className="absolute right-12 h-full w-px bg-copper" />
+               <div className="absolute right-12 h-full w-px bg-primary" />
                <motion.div 
                  initial={{ opacity: 0 }}
                  animate={{ opacity: [0, 1, 0] }}
                  transition={{ repeat: Infinity, duration: 3, delay: 1.5 }}
-                 className="text-[10px] font-mono text-copper"
+                 className="text-[10px] font-mono text-primary"
                >
                  LIMIT 12%
                </motion.div>
             </div>
 
           </div>
-          <div className="border border-slate p-8">
+          <div className="border border-border p-8 bg-card">
             <CreditCard className="text-verified-green" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">03 TRANSACTABLE</h3>
-            <p className="mt-4 text-[11px] font-mono text-ice">Take the transaction to verified payment.</p>
-            <p className="mt-8 text-sm text-steel">Every transaction flows through server-side Razorpay verification to ensure orders are completed safely.</p>
+            <p className="mt-4 text-[11px] font-mono text-primary">Take the transaction to verified payment.</p>
+            <p className="mt-8 text-sm text-muted-foreground">Every transaction flows through server-side Razorpay verification to ensure orders are completed safely.</p>
             <div className="mt-8 flex gap-1">
               {["QUOTE", "CHCKOUT", "PAY", "DONE"].map((s, i) => (
                 <motion.div 
@@ -196,7 +196,7 @@ function Landing() {
                   transition={{ repeat: Infinity, duration: 4, delay: i * 1 }}
                   className={cn(
                     "flex-1 text-[8px] font-bold text-center py-1 border",
-                    i === 3 ? "border-verified-green text-verified-green" : "border-slate text-steel"
+                    i === 3 ? "border-verified-green text-verified-green" : "border-border text-muted-foreground"
                   )}
                 >
                   {s}
@@ -205,7 +205,7 @@ function Landing() {
             </div>
 
           </div>
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-steel/60">
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
              <div>No client-side pricing</div>
              <div>No AI-controlled discounts</div>
              <div>No autonomous payment capture</div>
@@ -214,29 +214,29 @@ function Landing() {
         </section>
 
 
-        <section className="py-32 border-t border-slate">
+        <section className="py-32 border-t border-border">
           <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
              {["AI REQUESTS", "MERCHANT POLICY BOUNDS", "SERVER DECIDES", "RAZORPAY VERIFIES"].map((title, i) => (
                 <motion.div 
                   key={title} 
-                  initial={{ opacity: 0.5, borderColor: "var(--color-slate)" }}
+                  initial={{ opacity: 0.5, borderColor: "var(--border)" }}
                   whileInView={{ 
                     opacity: 1, 
-                    borderColor: i === 2 ? "var(--color-copper)" : "var(--color-slate)",
-                    backgroundColor: i === 2 ? "rgba(213, 155, 98, 0.05)" : "transparent"
+                    borderColor: i === 2 ? "var(--primary)" : "var(--border)",
+                    backgroundColor: i === 2 ? "oklch(from var(--primary) l c h / 0.05)" : "transparent"
                   }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.2 }}
                   className="border p-6"
                 >
-                    <p className="text-[10px] font-bold uppercase text-steel">{title}</p>
-                    <div className="mt-4 h-[1px] w-full bg-slate relative overflow-hidden">
+                    <p className="text-[10px] font-bold uppercase text-muted-foreground">{title}</p>
+                    <div className="mt-4 h-[1px] w-full bg-border relative overflow-hidden">
                        {i === 2 && (
                          <motion.div 
                            animate={{ x: ["-100%", "100%"] }}
                            transition={{ repeat: Infinity, duration: 2 }}
-                           className="absolute inset-0 bg-copper/40"
+                           className="absolute inset-0 bg-primary/40"
                          />
                        )}
                     </div>
@@ -246,39 +246,39 @@ function Landing() {
 
         </section>
  
-        <section className="py-20 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-slate">
+        <section className="py-20 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-border">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">SERVER AUTHORITY</p>
-            <p className="mt-2 text-sm text-steel">Pricing · Inventory · Policy</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER AUTHORITY</p>
+            <p className="mt-2 text-sm text-muted-foreground">Pricing · Inventory · Policy</p>
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">TENANT ISOLATION</p>
-            <p className="mt-2 text-sm text-steel">Merchant-scoped data</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">TENANT ISOLATION</p>
+            <p className="mt-2 text-sm text-muted-foreground">Merchant-scoped data</p>
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">AUDITABLE</p>
-            <p className="mt-2 text-sm text-steel">Orders · Payments · Agent traces</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">AUDITABLE</p>
+            <p className="mt-2 text-sm text-muted-foreground">Orders · Payments · Agent traces</p>
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">RAZORPAY</p>
-            <p className="mt-2 text-sm text-steel">Verified payments</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">RAZORPAY</p>
+            <p className="mt-2 text-sm text-muted-foreground">Verified payments</p>
           </div>
         </section>
 
 
-        <section className="py-32 text-center bg-graphite border border-slate">
-           <p className="text-[10px] font-bold uppercase text-copper tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
+        <section className="py-32 text-center bg-card border border-border">
+           <p className="text-[10px] font-bold uppercase text-primary tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
            <h2 className="mt-6 text-5xl font-semibold">Make your store legible to AI.</h2>
-           <p className="mt-6 text-steel max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
+           <p className="mt-6 text-muted-foreground max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
            <div className="mt-12 flex justify-center gap-4">
-              <Button asChild className="h-12 bg-copper hover:bg-copper/90 text-obsidian font-bold rounded-none"><Link to="/login">Open Merchant Console</Link></Button>
-              <Button asChild variant="outline" className="h-12 border-slate text-white hover:bg-slate rounded-none"><Link to="/agent-api">Explore Agent API</Link></Button>
+              <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none"><Link to="/login">Open Merchant Console</Link></Button>
+              <Button asChild variant="outline" className="h-12 border-border text-foreground hover:bg-accent rounded-none"><Link to="/agent-api">Explore Agent API</Link></Button>
            </div>
         </section>
 
       </main>
 
-      <footer className="border-t border-slate py-12 text-center text-steel text-[11px] uppercase tracking-widest">
+      <footer className="border-t border-border py-12 text-center text-muted-foreground text-[11px] uppercase tracking-widest">
         <p>© 2026 Agentic Commerce. AI-native commerce infrastructure.</p>
       </footer>
     </div>
