@@ -127,7 +127,7 @@ export function AppShell({
             {accountLabel ? (
               <span className="hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground sm:inline-block">{accountLabel}</span>
             ) : null}
-            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm px-2 text-[9px] font-bold uppercase tracking-widest border-border hover:bg-accent md:px-3">
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm px-2 text-[9px] font-bold uppercase tracking-widest border-border hover:bg-accent md:px-3 flex-shrink-0">
               <LogOut className="mr-1.5 size-3 md:mr-2 md:size-3.5" />
               <span className="hidden xs:inline">Sign out</span>
               <span className="xs:hidden">Out</span>
