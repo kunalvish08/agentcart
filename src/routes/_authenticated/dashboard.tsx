@@ -429,9 +429,8 @@ function PipelineStep({ label, value, active = false, highlight = false }: { lab
 }
 
 function StatusRow({ label, status }: { label: string; status: string }) {
-  const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
-  const isTest = status === 'test mode';
-  const isWarning = status === 'inactive' || status === 'pending';
+  const isOk = ['live', 'operational', 'configured', 'enforced', 'protected', 'ok', 'active'].includes(status.toLowerCase());
+  const isWarning = ['inactive', 'pending', 'running', 'test mode'].includes(status.toLowerCase());
   
   return (
     <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-tight">
@@ -441,7 +440,7 @@ function StatusRow({ label, status }: { label: string; status: string }) {
           isOk ? "text-verified-green" : isWarning ? "text-approval-amber" : "text-destructive"
         )}>{status}</span>
         <div className={cn(
-          "size-1.5 rounded-full", 
+          "size-1.5 rounded-sm", 
           isOk ? "bg-verified-green" : isWarning ? "bg-approval-amber" : "bg-destructive"
         )} />
       </div>
