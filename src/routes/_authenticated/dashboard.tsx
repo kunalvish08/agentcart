@@ -148,6 +148,16 @@ function DashboardPage() {
                         <SmallStat label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} index={2} />
                         <SmallStat label="Negotiations" value={growth?.negotiations} index={3} />
                     </div>
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="mt-6 pt-4 border-t border-border/40"
+                    >
+                         <p className="text-[9px] font-bold text-copper uppercase tracking-widest italic">
+                           All discounts bounded by merchant policy.
+                         </p>
+                    </motion.div>
                 </section>
                 
                 {/* SECTION 5: CHECKOUT */}
