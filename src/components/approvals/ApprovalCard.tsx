@@ -48,7 +48,7 @@ export function ApprovalCard({
       isPendingStatus ? "border-amber-500/20 shadow-[0_2px_10px_-4px_rgba(245,158,11,0.1)]" : "bg-muted/10 opacity-80"
     )}>
       {/* COMPACT ROW */}
-      <div className="flex flex-col gap-4 p-4 sm:grid sm:grid-cols-[minmax(0,1.5fr)_auto_auto_auto] sm:items-center">
+      <div className="flex flex-col gap-4 p-4 lg:grid lg:grid-cols-[minmax(0,1.5fr)_auto_auto_auto] lg:items-center">
         {/* LEFT: Product + order information */}
         <div className="min-w-0 space-y-1">
           <h3 className="text-[11px] font-bold tracking-tight text-foreground truncate uppercase">
@@ -74,14 +74,14 @@ export function ApprovalCard({
         </div>
 
         {/* RIGHT-CENTER: Amount */}
-        <div className="sm:text-right sm:pr-4">
+        <div className="lg:text-right lg:pr-4">
           <p className="text-[13px] font-mono font-bold text-foreground">
             {money(row.final_amount, row.currency)}
           </p>
         </div>
 
         {/* RIGHT: Actions & Expand Toggle */}
-        <div className="flex items-center justify-between sm:justify-end gap-2">
+        <div className="flex items-center justify-between lg:justify-end gap-2">
           {isPendingStatus && (
             <div className="flex items-center gap-2">
               <Button

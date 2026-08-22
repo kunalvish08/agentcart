@@ -39,7 +39,7 @@ export function ApprovalsHeader({ pendingCount, email, totalPendingValue = 0 }: 
       </div>
 
       {/* 2. APPROVAL SUMMARY METRICS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border/40 border border-border/40 overflow-hidden w-full min-w-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border/40 border border-border/40 overflow-hidden w-full min-w-0">
         <div className="bg-background p-4 space-y-1.5">
           <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Pending Approvals</p>
           <div className="flex items-baseline gap-2">
