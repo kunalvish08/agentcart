@@ -700,9 +700,11 @@ Do not make further visual changes.''' */}
           </ul>
         </section>
       </div>
-    </AppShell>
-  );
+    </div>
+  </AppShell>
+);
 }
+
 
 
 /* ------------------------------ assistant turn ----------------------------- */
