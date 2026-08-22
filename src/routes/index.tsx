@@ -214,9 +214,9 @@ function Landing() {
         </section>
 
 
-        <section className="py-32 border-t border-border">
-          <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="py-20 sm:py-32 border-t border-border">
+          <h2 className="text-3xl sm:text-4xl font-semibold">Every money action has an authority.</h2>
+          <div className="mt-8 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
              {["AI REQUESTS", "MERCHANT POLICY BOUNDS", "SERVER DECIDES", "RAZORPAY VERIFIES"].map((title, i) => (
                 <motion.div 
                   key={title} 
