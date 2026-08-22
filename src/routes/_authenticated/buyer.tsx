@@ -707,6 +707,7 @@ Do not change anything else." */}
                     <motion.button
                       key={s}
                       variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }}
+                      custom={idx}
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       type="button"
