@@ -478,9 +478,9 @@ function BuyerPage() {
             </motion.section>
 
             {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
-            <div className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+            <motion.div variants={itemReveal} className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
               {/* LEFT: AGENT WORKSPACE */}
-              <section className="flex-1 flex flex-col gap-4 p-5">
+              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
                   {sessionId && (
@@ -495,27 +495,34 @@ function BuyerPage() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {turns.map((turn) =>
-                      turn.role === "user" ? (
-                        <div key={turn.id} className="flex flex-col gap-1.5 opacity-60">
-                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
-                           <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
-                             <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
-                           </div>
-                        </div>
-                      ) : (
-                        <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
-                      )
-                    )}
+                    <AnimatePresence mode="popLayout" initial={false}>
+                      {turns.map((turn) =>
+                        turn.role === "user" ? (
+                          <motion.div 
+                            key={turn.id} 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 0.6, y: 0 }}
+                            className="flex flex-col gap-1.5"
+                          >
+                             <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
+                             <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
+                               <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
+                             </div>
+                          </motion.div>
+                        ) : (
+                          <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
+                        )
+                      )}
+                    </AnimatePresence>
                     <div ref={bottomRef} />
                   </div>
                 )}
-              </section>
+              </motion.section>
 
               <div className="hidden md:block w-px bg-border/40" />
 
               {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
-              <aside className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+              <motion.aside variants={itemReveal} className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</span>
