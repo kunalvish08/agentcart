@@ -562,3 +562,170 @@ export async function eligibleGrowthRecommendations(args: {
     recommendations,
   };
 }
+
+/* ------------------------- Phase 05b offer resolution ------------------------ */
+// The buyer must explicitly accept a countered/approved offer before checkout.
+// Accepting re-checks policy + inventory and issues a FRESH server quote; the
+// buyer's device never supplies a price, discount or total.
+
+export type OfferResolution = {
+  offer_id: string;
+  action: "accept" | "reject";
+  status: "accepted" | "rejected";
+  approved_discount_percent: number;
+  policy_limit_percent: number;
+  quote: ServerQuote | null;
+  quote_error: { code: string; message: string; details?: unknown } | null;
+  order_created: false;
+  message: string;
+  policy_authority: "server";
+};
+
+export async function respondToOffer(args: {
+  merchant: PublicMerchant;
+  buyerSessionId: string | null;
+  baseUrl: string;
+  offerId: string;
+  action: "accept" | "reject";
+}): Promise<{ ok: true; data: OfferResolution } | { ok: false; error: { code: string; message: string } }> {
+  if (!args.buyerSessionId) {
+    return { ok: false, error: { code: "session_required", message: "A buyer session is required to accept or reject an offer." } };
+  }
+
+  const { data: offer, error } = await supabaseAdmin
+    .from("offers")
+    .select(
+      "id, status, quantity, product_id, requested_discount_percent, approved_discount_percent, negotiation_session_id, negotiation_sessions(id, buyer_session_id, merchant_id)",
+    )
+    .eq("id", args.offerId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  const parent = (offer as unknown as Record<string, any> | null)?.["negotiation_sessions"];
+  if (!offer || !parent) {
+    return { ok: false, error: { code: "offer_not_found", message: "That offer does not exist." } };
+  }
+  if (parent.buyer_session_id !== args.buyerSessionId || parent.merchant_id !== args.merchant.id) {
+    return { ok: false, error: { code: "offer_forbidden", message: "That offer belongs to a different buyer session." } };
+  }
+  if (offer.status !== "proposed") {
+    return {
+      ok: false,
+      error: { code: "offer_not_open", message: `That offer is already ${offer.status} and cannot be changed.` },
+    };
+  }
+
+  const policy = await getPolicy(args.merchant.id);
+  const { recordRevenueEvent } = await import("@/lib/revenue.server");
+
+  if (args.action === "reject") {
+    await supabaseAdmin.from("offers").update({ status: "rejected" }).eq("id", offer.id);
+    await supabaseAdmin
+      .from("negotiation_sessions")
+      .update({ status: "rejected" })
+      .eq("id", parent.id);
+    await recordRevenueEvent({
+      merchantId: args.merchant.id,
+      event: "REVENUE_OPPORTUNITY_DETECTED",
+      buyerSessionId: args.buyerSessionId,
+      sourceProductId: offer.product_id,
+      productId: offer.product_id,
+      amount: 0,
+      reason: "Buyer rejected the negotiated offer; no order or payment was created.",
+      detail: {
+        kind: "negotiation_offer_rejected",
+        offer_id: offer.id,
+        requested_discount_percent: Number(offer.requested_discount_percent),
+        offered_discount_percent: Number(offer.approved_discount_percent),
+        policy_authority: "server",
+      },
+    });
+    return {
+      ok: true,
+      data: {
+        offer_id: offer.id,
+        action: "reject",
+        status: "rejected",
+        approved_discount_percent: Number(offer.approved_discount_percent),
+        policy_limit_percent: policy.allow_negotiation ? policy.max_discount_percent : 0,
+        quote: null,
+        quote_error: null,
+        order_created: false,
+        message: "The offer was rejected. No order and no payment were created.",
+        policy_authority: "server",
+      },
+    };
+  }
+
+  // ----- accept: re-validate policy + inventory, then re-price server-side -----
+  const cap = policy.allow_negotiation && policy.merchant_agent_commerce_enabled
+    ? Math.max(0, Math.min(100, Number(policy.max_discount_percent ?? 0)))
+    : 0;
+  const approved = Math.min(Number(offer.approved_discount_percent), cap);
+
+  const product = await loadSellableProduct(args.merchant.id, offer.product_id);
+  if (!product || product.status !== "active") {
+    return { ok: false, error: { code: "product_unavailable", message: "The offered product is no longer available for sale." } };
+  }
+  if (product.stock_quantity < offer.quantity) {
+    return {
+      ok: false,
+      error: { code: "insufficient_inventory", message: "There is no longer enough stock to honour this offer." },
+    };
+  }
+
+  const quoteOutcome = await requestServerQuote({
+    baseUrl: args.baseUrl,
+    merchantSlug: args.merchant.slug,
+    productId: offer.product_id,
+    quantity: offer.quantity,
+    discountPercent: approved,
+  });
+  if (!quoteOutcome.ok) {
+    return { ok: false, error: { code: quoteOutcome.error.code, message: quoteOutcome.error.message } };
+  }
+  const quote = quoteOutcome.quote;
+
+  await supabaseAdmin
+    .from("offers")
+    .update({ status: "accepted", quote_id: quote.quote_id })
+    .eq("id", offer.id);
+  await supabaseAdmin.from("negotiation_sessions").update({ status: "agreed" }).eq("id", parent.id);
+
+  await recordRevenueEvent({
+    merchantId: args.merchant.id,
+    event: "REVENUE_OPPORTUNITY_DETECTED",
+    buyerSessionId: args.buyerSessionId,
+    sourceProductId: offer.product_id,
+    productId: offer.product_id,
+    amount: quote.final_amount,
+    currency: quote.currency,
+    reason: `Buyer accepted a server-authorised ${quote.allowed_discount_percent}% negotiated offer.`,
+    detail: {
+      kind: "negotiation_offer_accepted",
+      offer_id: offer.id,
+      quote_id: quote.quote_id,
+      requested_discount_percent: Number(offer.requested_discount_percent),
+      approved_discount_percent: quote.allowed_discount_percent,
+      policy_limit_percent: cap,
+      base_amount: quote.base_amount,
+      final_amount: quote.final_amount,
+      policy_authority: "server",
+    },
+  });
+
+  return {
+    ok: true,
+    data: {
+      offer_id: offer.id,
+      action: "accept",
+      status: "accepted",
+      approved_discount_percent: quote.allowed_discount_percent,
+      policy_limit_percent: cap,
+      quote,
+      quote_error: null,
+      order_created: false,
+      message: `Offer accepted at ${quote.allowed_discount_percent}%. Fresh server quote ${quote.quote_id} totals ${quote.final_amount} ${quote.currency}. Use this quote_id to check out.`,
+      policy_authority: "server",
+    },
+  };
+}

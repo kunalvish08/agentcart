@@ -60,6 +60,10 @@ const requestCheckoutSchema = z.object({
     .optional(),
 });
 
+const offerResponseSchema = z.object({
+  offer_id: z.string().uuid("offer_id must be the offer_id returned by propose_discount"),
+});
+
 const relatedGrowthSchema = z.object({
   product_id: z.string().uuid("product_id must be a catalog product UUID"),
   limit: z.number().int().min(1).max(2).optional(),
@@ -80,6 +84,8 @@ export type ToolName =
   | "get_eligible_related_products"
   | "propose_discount"
   | "validate_offer"
+  | "accept_offer"
+  | "reject_offer"
   | "request_checkout";
 
 export type ToolResult = {
@@ -471,6 +477,60 @@ export const TOOL_REGISTRY: Record<ToolName, ToolDefinition> = {
           policy_authority: "server",
         },
       };
+    },
+  },
+
+  accept_offer: {
+    name: "accept_offer",
+    description:
+      "Record that the shopper explicitly ACCEPTED a negotiated offer returned by propose_discount. Pass the offer_id exactly as returned. The server re-checks merchant policy and inventory, then issues a FRESH authoritative quote whose quote_id you must use for request_checkout. Never accept on the shopper's behalf and never check out a negotiated discount without calling this first.",
+    parameters: jsonSchema({ offer_id: { type: "string" } }, ["offer_id"]),
+    schema: offerResponseSchema,
+    label: () => "Recording buyer acceptance of the offer",
+    run: async (args: z.infer<typeof offerResponseSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return { ok: false, error: { code: "merchant_unavailable", message: "No public merchant is available." } };
+      }
+      const { respondToOffer } = await import("@/lib/negotiation.server");
+      const outcome = await respondToOffer({
+        merchant,
+        buyerSessionId: ctx.buyerSessionId ?? null,
+        baseUrl: ctx.baseUrl,
+        offerId: args.offer_id,
+        action: "accept",
+      });
+      if (!outcome.ok) return { ok: false, error: outcome.error };
+      return {
+        ok: true,
+        label: `Offer accepted at ${outcome.data.approved_discount_percent}% — fresh quote issued`,
+        data: outcome.data,
+      };
+    },
+  },
+
+  reject_offer: {
+    name: "reject_offer",
+    description:
+      "Record that the shopper explicitly REJECTED a negotiated offer returned by propose_discount. Pass the offer_id exactly as returned. No order and no payment are created. Do not re-request the same discount afterwards.",
+    parameters: jsonSchema({ offer_id: { type: "string" } }, ["offer_id"]),
+    schema: offerResponseSchema,
+    label: () => "Recording buyer rejection of the offer",
+    run: async (args: z.infer<typeof offerResponseSchema>, ctx) => {
+      const merchant = await contextMerchant(ctx);
+      if (!merchant) {
+        return { ok: false, error: { code: "merchant_unavailable", message: "No public merchant is available." } };
+      }
+      const { respondToOffer } = await import("@/lib/negotiation.server");
+      const outcome = await respondToOffer({
+        merchant,
+        buyerSessionId: ctx.buyerSessionId ?? null,
+        baseUrl: ctx.baseUrl,
+        offerId: args.offer_id,
+        action: "reject",
+      });
+      if (!outcome.ok) return { ok: false, error: outcome.error };
+      return { ok: true, label: "Offer rejected — no order created", data: outcome.data };
     },
   },
 
