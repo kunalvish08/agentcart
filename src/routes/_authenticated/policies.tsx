@@ -54,7 +54,7 @@ function PoliciesPage() {
   const [form, setForm] = useState<PolicyForm | null>(null);
 
   useEffect(() => {
-    if (workspace.data && form === null) {
+    if (workspace.data) {
       setForm({
         max_discount_percent: String(workspace.data.policy.max_discount_percent),
         max_order_value: String(workspace.data.policy.max_order_value),
@@ -63,7 +63,7 @@ function PoliciesPage() {
         allow_upsell: workspace.data.policy.allow_upsell,
       });
     }
-  }, [workspace.data, form]);
+  }, [workspace.data]);
 
   const mutation = useMutation({
     mutationFn: (state: PolicyForm) =>
