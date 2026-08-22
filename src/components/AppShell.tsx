@@ -58,7 +58,8 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 shrink-0 flex-col justify-between bg-sidebar px-4 py-6 text-sidebar-foreground md:flex">
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-64 shrink-0 flex-col justify-between bg-sidebar px-4 py-6 text-sidebar-foreground lg:flex">
         <div>
           <div className="flex items-center gap-2 px-2">
             <span className="flex size-8 items-center justify-center rounded-sm bg-primary text-primary-foreground">
@@ -95,12 +96,27 @@ export function AppShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border bg-card px-6 py-4">
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
-            {subtitle ? <p className="text-xs font-medium text-muted-foreground">{subtitle}</p> : null}
+        <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 md:px-6">
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="size-8 text-muted-foreground"
+                asChild
+              >
+                <Link to="/dashboard">
+                  <Sparkles className="size-4 text-primary" />
+                </Link>
+              </Button>
+            </div>
+            <div>
+              <h1 className="text-sm font-bold tracking-tight text-foreground md:text-lg">{title}</h1>
+              {subtitle ? <p className="hidden text-[10px] font-medium text-muted-foreground md:block">{subtitle}</p> : null}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <button 
               onClick={toggleTheme}
               className="flex size-8 items-center justify-center rounded-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
@@ -109,29 +125,33 @@ export function AppShell({
             </button>
             <div className="h-4 w-px bg-border" />
             {accountLabel ? (
-              <span className="hidden text-[11px] font-bold uppercase tracking-widest text-muted-foreground sm:inline">{accountLabel}</span>
+              <span className="hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground sm:inline-block">{accountLabel}</span>
             ) : null}
-            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm text-[10px] font-bold uppercase tracking-widest border-border hover:bg-accent">
-              <LogOut className="mr-2 size-3.5" />
-              Sign out
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 rounded-sm px-2 text-[9px] font-bold uppercase tracking-widest border-border hover:bg-accent md:px-3">
+              <LogOut className="mr-1.5 size-3 md:mr-2 md:size-3.5" />
+              <span className="hidden xs:inline">Sign out</span>
+              <span className="xs:hidden">Out</span>
             </Button>
           </div>
         </header>
 
-        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden no-scrollbar">
-          {NAV.map(({ to, label }) => (
+        {/* Mobile Sub-header for title on very small screens if needed, but we keep it compact */}
+
+        <nav className="flex gap-1 overflow-x-auto border-b border-border bg-card px-4 py-2 no-scrollbar lg:hidden">
+          {NAV.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
-              className="whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
-              activeProps={{ className: "whitespace-nowrap rounded-sm px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-accent text-primary" }}
+              className="flex items-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground"
+              activeProps={{ className: "flex items-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest bg-accent text-primary" }}
             >
+              <Icon className="size-3" />
               {label}
             </Link>
           ))}
         </nav>
 
-        <main className="flex-1 px-6 py-6">{children}</main>
+        <main className="flex-1 px-4 py-4 md:px-6 md:py-6">{children}</main>
       </div>
     </div>
   );
