@@ -909,7 +909,7 @@ export async function collectJudgeEvidence(merchantId: string): Promise<JudgeEvi
 /* -------------------------- 4. replay (read-only) -------------------------- */
 
 export type JudgeRunSummary = {
-  run_id: string;
+  id: string;
   session_id: string;
   /** Phase 08: distinguishes internal AI Buyer runs from external agent-to-agent runs. */
   run_type: "EXTERNAL_AI_BUYER" | "JUDGE_DEMO" | "INTERNAL_AI_BUYER";
@@ -923,6 +923,8 @@ export type JudgeRunSummary = {
   step_count: number;
   tool_call_count: number;
   total_tokens: number | null;
+  chaos_mode?: boolean;
+  steps?: JudgeReplayStep[];
 };
 
 export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> {
@@ -960,7 +962,7 @@ export async function listJudgeRuns(userId: string): Promise<JudgeRunSummary[]> 
           ? "Judge Mode (deterministic)"
           : "Internal AI Buyer";
     return {
-    run_id: r.id,
+    id: r.id,
     session_id: r.session_id,
     run_type: runType,
     actor,
