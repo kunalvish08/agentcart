@@ -43,10 +43,10 @@ export const Route = createFileRoute("/")({
 function SchematicNode({ title, items, className, delay = 0, isServerAuthority = false }: { title: string, items: string[], className?: string, delay?: number, isServerAuthority?: boolean }) {
   return (
     <motion.div 
-      initial={{ opacity: 0, x: -10 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, scale: 0.98 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "relative rounded-sm border border-border/60 bg-card/50 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40",
         isServerAuthority && "border-primary/40 bg-primary/[0.03] ring-1 ring-primary/20 shadow-[0_0_30px_-10px_rgba(49,87,255,0.2)]",
@@ -54,7 +54,11 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
       )}
     >
       {isServerAuthority && (
-        <div className="absolute -top-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+        <motion.div 
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          transition={{ repeat: Infinity, duration: 3 }}
+          className="absolute -top-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" 
+        />
       )}
       <p className={cn(
         "mb-3 text-[10px] font-bold uppercase tracking-[0.2em]",
@@ -62,7 +66,14 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
       )}>{title}</p>
       <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2.5">
+          <motion.div 
+            key={i} 
+            initial={{ opacity: 0, x: -5 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: delay + 0.2 + (i * 0.1), duration: 0.4 }}
+            className="flex items-center gap-2.5"
+          >
             <div className={cn(
               "h-[1px] w-2",
               isServerAuthority ? "bg-primary/40" : "bg-border"
@@ -71,7 +82,7 @@ function SchematicNode({ title, items, className, delay = 0, isServerAuthority =
               "text-[11px] font-medium tracking-tight",
               isServerAuthority ? "text-white" : (className?.includes("!text-[#18A878]") ? "text-[#18A878]" : (className?.includes("!text-[#36C5D8]") ? "text-[#36C5D8]" : "text-[#B8C4D6]"))
             )}>{item}</span>
-          </div>
+          </motion.div>
         ))}
       </div>
     </motion.div>
