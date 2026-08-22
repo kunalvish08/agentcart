@@ -186,10 +186,10 @@ function DashboardPage() {
                 <section className="border border-border p-6 rounded-sm">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-6">System Status</h3>
                     <div className="space-y-3">
-                        <StatusRow label="Public Catalog" status="LIVE" />
-                        <StatusRow label="Public API" status="OPERATIONAL" />
-                        <StatusRow label="Negotiation" status="ENFORCED" />
-                        <StatusRow label="Razorpay" status="TEST MODE" />
+                        <StatusRow label="Public Catalog" status="LIVE" index={0} />
+                        <StatusRow label="Public API" status="OPERATIONAL" index={1} />
+                        <StatusRow label="Negotiation" status="ENFORCED" index={2} />
+                        <StatusRow label="Razorpay" status="TEST MODE" index={3} />
                     </div>
                 </section>
 
