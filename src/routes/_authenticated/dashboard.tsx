@@ -3,26 +3,34 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Bot,
-  Boxes,
   CheckCircle2,
-  ClipboardCheck,
   ExternalLink,
   Handshake,
   IndianRupee,
   Package,
   Percent,
   Store,
+  ArrowRight,
+  ArrowDown,
+  ShieldCheck,
+  ClipboardCheck,
+  CreditCard,
+  Layers,
+  Search,
+  Activity,
+  History,
+  TrendingUp,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getCheckoutMetrics } from "@/lib/checkout.functions";
+import { getCheckoutMetrics, getCheckoutAudit } from "@/lib/checkout.functions";
 import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
 import { getPaymentMetrics } from "@/lib/payments.functions";
-
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -37,7 +45,11 @@ const inr = new Intl.NumberFormat("en-IN", {
 function DashboardPage() {
   const fetchWorkspace = useServerFn(getWorkspace);
   const fetchGrowth = useServerFn(getGrowthMetrics);
-  const { data, isPending, error } = useQuery({
+  const fetchCheckout = useServerFn(getCheckoutMetrics);
+  const fetchPayments = useServerFn(getPaymentMetrics);
+  const fetchAudit = useServerFn(getCheckoutAudit);
+
+  const { data: data, isPending: isWorkspacePending } = useQuery({
     queryKey: ["workspace"],
     queryFn: () => fetchWorkspace(),
   });
@@ -45,476 +57,370 @@ function DashboardPage() {
     queryKey: ["growth-metrics"],
     queryFn: () => fetchGrowth(),
   });
-  const fetchCheckout = useServerFn(getCheckoutMetrics);
   const { data: checkout } = useQuery({
     queryKey: ["checkout-metrics"],
     queryFn: () => fetchCheckout(),
     refetchInterval: 15_000,
   });
-  const fetchPayments = useServerFn(getPaymentMetrics);
   const { data: payments } = useQuery({
     queryKey: ["payment-metrics"],
     queryFn: () => fetchPayments(),
     refetchInterval: 15_000,
   });
-
+  const { data: audit } = useQuery({
+    queryKey: ["checkout-audit"],
+    queryFn: () => fetchAudit(),
+    refetchInterval: 15_000,
+  });
 
   const manifestUrl =
     typeof window === "undefined"
       ? "/.well-known/agent-manifest"
       : `${window.location.origin}/.well-known/agent-manifest`;
 
-
-  const metrics = [
-    { label: "Total products", value: data ? String(data.stats.totalProducts) : "—", icon: Package },
-    {
-      label: "Total inventory units",
-      value: data ? data.stats.totalInventoryUnits.toLocaleString("en-IN") : "—",
-      icon: Boxes,
-    },
-    {
-      label: "Active products",
-      value: data ? String(data.stats.activeProducts) : "—",
-      icon: CheckCircle2,
-    },
-    {
-      label: "Max discount allowed",
-      value: data ? `${data.policy.max_discount_percent}%` : "—",
-      icon: Percent,
-    },
-    {
-      label: "Max order value",
-      value: data ? inr.format(data.policy.max_order_value) : "—",
-      icon: IndianRupee,
-    },
-    {
-      label: "Inventory value",
-      value: data ? inr.format(data.stats.inventoryValue) : "—",
-      icon: Store,
-    },
-  ];
-
   return (
     <AppShell
-      title={data?.merchant.name ?? "Merchant dashboard"}
-      subtitle={data?.merchant.description ?? "Store overview"}
+      title={data?.merchant.name ?? "TechNova Store"}
+      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
       accountLabel={data?.profile.email ?? undefined}
     >
-      {error ? (
-        <p className="text-sm text-destructive">
-          {error instanceof Error ? error.message : "Could not load your workspace"}
-        </p>
-      ) : null}
+      <div className="space-y-8 max-w-7xl mx-auto">
+        {/* 1. HEADER / STORE STATUS */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-6">
+          <div className="flex flex-col gap-1">
+             <h2 className="text-3xl font-semibold tracking-tight text-slate-900">TechNova Store</h2>
+             <div className="flex items-center gap-3">
+               <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600">
+                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                 STORE ACTIVE
+               </div>
+               <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                 <ShieldCheck className="size-3" />
+                 AI COMMERCE ENABLED
+               </div>
+             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="h-7 px-2.5 text-[10px] font-bold tracking-widest uppercase">Currency: INR</Badge>
+            {(data?.roles ?? []).map((role) => (
+              <Badge key={role} variant="secondary" className="h-7 px-2.5 text-[10px] font-bold tracking-widest uppercase">Role: {role}</Badge>
+            ))}
+          </div>
+        </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge variant="secondary">Currency: {data?.merchant.currency ?? "INR"}</Badge>
-        <Badge variant={data?.merchant.status === "active" ? "default" : "outline"}>
-          Store {data?.merchant.status ?? "—"}
-        </Badge>
-        {(data?.roles ?? []).map((role) => (
-          <Badge key={role} variant="outline">
-            Role: {role}
-          </Badge>
-        ))}
+        {/* 2. MAIN HERO & FLOW */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative rounded-2xl border border-border bg-card p-8 shadow-sm overflow-hidden"
+        >
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          
+          <div className="relative flex flex-col items-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8">Authoritative Commerce Chain</p>
+            
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
+              <FlowStep label="CATALOG" icon={Search} />
+              <FlowConnector />
+              <FlowStep label="AI BUYER" icon={Bot} />
+              <FlowConnector />
+              <FlowStep label="SERVER AUTHORITY" icon={ShieldCheck} active />
+              <FlowConnector />
+              <FlowStep label="APPROVAL" icon={ClipboardCheck} />
+              <FlowConnector />
+              <FlowStep label="RAZORPAY" icon={CreditCard} />
+              <FlowConnector />
+              <FlowStep label="COMPLETED" icon={CheckCircle2} />
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+          <div className="space-y-6">
+            {/* 3. STORE OVERVIEW */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Stat label="Products" value={data?.stats.totalProducts} icon={Package} />
+              <Stat label="Inventory Units" value={data?.stats.totalInventoryUnits.toLocaleString("en-IN")} icon={Layers} />
+              <Stat label="Active Products" value={data?.stats.activeProducts} icon={CheckCircle2} />
+              <Stat label="Inventory Value" value={data ? inr.format(data.stats.inventoryValue) : "—"} icon={Store} />
+            </div>
+
+            {/* 4. COMMERCIAL RULES */}
+            <Card className="border-border/60 shadow-none">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                   <ShieldCheck className="size-3.5" /> Commercial Rules
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-8 sm:grid-cols-3">
+                  <RuleItem label="Max Discount" value={`${data?.policy.max_discount_percent}%`} />
+                  <RuleItem label="Max Order Value" value={data ? inr.format(data.policy.max_order_value) : "—"} />
+                  <RuleItem label="Approval Threshold" value={data ? inr.format(data.policy.approval_required_above) : "—"} />
+                </div>
+                <div className="mt-8 pt-6 border-t border-border/40 flex flex-wrap items-center gap-x-8 gap-y-4">
+                  <StatusToggle label="Negotiation" enabled={data?.policy.allow_negotiation ?? false} />
+                  <StatusToggle label="Upsell" enabled={data?.policy.allow_upsell ?? false} />
+                  <p className="text-[11px] font-bold text-primary uppercase tracking-widest italic ml-auto">
+                    AI may request. Policy decides.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 5. NEGOTIATION & GROWTH */}
+            <Card className="border-border/60 shadow-none">
+              <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                   <TrendingUp className="size-3.5" /> Negotiation & Growth
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="flex flex-col md:flex-row items-stretch gap-4">
+                   <RevenueMetric label="List Value" value={growth ? inr.format(growth.listValue) : "—"} />
+                   <div className="flex items-center justify-center px-2 text-muted-foreground/30">
+                     <ArrowRight className="hidden md:block" />
+                     <ArrowDown className="md:hidden" />
+                   </div>
+                   <RevenueMetric label="Final Offer" value={growth ? inr.format(growth.offerValue) : "—"} active />
+                   <div className="flex items-center justify-center px-2 text-muted-foreground/30">
+                     <ArrowRight className="hidden md:block" />
+                     <ArrowDown className="md:hidden" />
+                   </div>
+                   <RevenueMetric label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} sub={`Avg ${growth?.avgApprovedDiscount}%`} />
+                </div>
+                
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pt-4">
+                  <SmallMetric label="Negotiations" value={growth?.negotiations} sub={`${growth?.openNegotiations} open`} />
+                  <SmallMetric label="Counter-offers" value={growth?.countered} sub="Policy enforced" />
+                  <SmallMetric label="Offers Made" value={growth?.offers} />
+                  <SmallMetric label="Upsell Accpt." value={growth?.acceptedRecommendations} sub={`${growth?.recommendations} suggested`} />
+                </div>
+
+                <p className="text-[10px] text-muted-foreground italic font-medium">
+                  "Discount decisions are enforced by the server policy engine."
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* 6. AGENTIC CHECKOUT */}
+            <Card className="border-border/60 shadow-none">
+              <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                   <ClipboardCheck className="size-3.5" /> Agentic Checkout Pipeline
+                </CardTitle>
+                <Button asChild size="sm" variant="ghost" className="h-7 text-[10px] font-bold uppercase tracking-widest hover:bg-primary/5 hover:text-primary">
+                  <Link to="/approvals">Approval Queue <ArrowRight className="ml-2 size-3" /></Link>
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-5 gap-2">
+                  <PipelineStep label="Requests" value={checkout?.orders} active={Boolean(checkout?.orders)} />
+                  <PipelineStep label="Approvals" value={checkout?.pendingApprovals} active={Boolean(checkout?.pendingApprovals)} highlight />
+                  <PipelineStep label="Payment" value={checkout?.awaitingPayment} active={Boolean(checkout?.awaitingPayment)} />
+                  <PipelineStep label="Verified" value={payments?.verified} active={Boolean(payments?.verified)} />
+                  <PipelineStep label="Completed" value={payments?.completedOrders} active={Boolean(payments?.completedOrders)} />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                    <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Human Decision Needed</p>
+                    <p className="text-sm font-semibold">{checkout?.pendingApprovals ?? 0} orders awaiting review</p>
+                  </div>
+                  <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+                    <p className="text-muted-foreground uppercase font-bold text-[9px] tracking-widest mb-1">Payment Pending</p>
+                    <p className="text-sm font-semibold">{inr.format(checkout?.paymentPendingValue ?? 0)} in transit</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <aside className="space-y-6">
+            {/* 7. AI SYSTEM STATUS */}
+            <Card className="border-border/60 shadow-none bg-slate-50/50">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                   <Activity className="size-3.5" /> System Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <StatusRow label="Public catalog live" status="live" />
+                <StatusRow label="Public API operational" status="operational" />
+                <StatusRow label="Razorpay test mode" status={payments?.configured ? "configured" : "offline"} />
+                <StatusRow label="Negotiation Authority" status="enforced" />
+                <StatusRow label="Upsell Authority" status="enforced" />
+                
+                <div className="pt-4 border-t border-border/40 space-y-3">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Discovery Manifest</p>
+                    <code className="text-[10px] bg-white border border-border/60 rounded px-2 py-1 truncate text-slate-500">{manifestUrl}</code>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px] font-semibold">
+                    <span className="text-muted-foreground">API Requests (24h)</span>
+                    <span>{data?.agentApi.requests24h ?? 0}</span>
+                  </div>
+                  <Button asChild variant="outline" className="w-full h-9 text-[11px] font-bold uppercase tracking-widest">
+                    <Link to="/agent-api">View Agent API Documentation</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 8. JUDGE MODE PROOF */}
+            <Card className="border-primary/20 shadow-none bg-primary/[0.02]">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                   <ShieldCheck className="size-3.5" /> Proof of Authority
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-[11px] font-medium leading-relaxed text-slate-600">
+                  "Run one complete transaction and inspect every decision made by the server."
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-slate-900">
+                  <div className="flex items-center gap-1.5"><div className="size-1 rounded-full bg-primary" /> 11 STEPS</div>
+                  <div className="flex items-center gap-1.5"><div className="size-1 rounded-full bg-primary" /> 5 TOOL CALLS</div>
+                  <div className="flex items-center gap-1.5"><div className="size-1 rounded-full bg-primary" /> SERVER PRICING</div>
+                  <div className="flex items-center gap-1.5"><div className="size-1 rounded-full bg-primary" /> VERIFIED PAY</div>
+                </div>
+                <Button asChild className="w-full h-9 text-[11px] font-bold uppercase tracking-widest shadow-none">
+                  <Link to="/judge">Open Judge Mode</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* 9. RECENT ACTIVITY */}
+            <Card className="border-border/60 shadow-none">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                   <History className="size-3.5" /> Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 relative">
+                  <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-border/40" />
+                  {audit && audit.length > 0 ? (
+                    audit.slice(0, 5).map((event) => (
+                      <div key={event.id} className="relative pl-6 space-y-1">
+                        <div className="absolute left-0 top-[5px] size-[15px] rounded-full bg-white border border-border flex items-center justify-center">
+                          <div className={cn("size-1.5 rounded-full", event.event.includes('REJECTED') ? 'bg-destructive' : 'bg-primary/60')} />
+                        </div>
+                        <p className="text-[11px] font-bold uppercase tracking-tight text-foreground">{event.event.replace(/_/g, ' ')}</p>
+                        <p className="text-[10px] text-muted-foreground">{new Date(event.created_at).toLocaleString("en-IN", { timeStyle: 'short', dateStyle: 'short' })}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[11px] text-muted-foreground italic pl-2">No transaction history yet.</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
       </div>
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {metrics.map(({ label, value, icon: Icon }) => (
-          <Card key={label}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-              <Icon className="size-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {isPending ? (
-                <Skeleton className="h-8 w-24" />
-              ) : (
-                <p className="text-2xl font-semibold tracking-tight text-foreground">{value}</p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="text-base">Negotiation authority</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-3">
-          <Field
-            label="Approval required above"
-            value={data ? inr.format(data.policy.approval_required_above) : "—"}
-          />
-          <Field label="Negotiation" value={data?.policy.allow_negotiation ? "Enabled" : "Disabled"} />
-          <Field label="Upsell" value={data?.policy.allow_upsell ? "Enabled" : "Disabled"} />
-        </CardContent>
-      </Card>
-
-      <Card className="mt-6">
-        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Bot className="size-4" /> AI Commerce
-          </CardTitle>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/agent-api">
-              View Agent API
-              <ExternalLink className="ml-2 size-4" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Badge variant={data?.merchant.agent_commerce_enabled ? "default" : "outline"}>
-              AI Commerce {data?.merchant.agent_commerce_enabled ? "enabled" : "disabled"}
-            </Badge>
-            <Badge variant={data?.merchant.status === "active" ? "secondary" : "outline"}>
-              Public catalog {data?.merchant.status === "active" ? "live" : "offline"}
-            </Badge>
-            <Badge variant="secondary">Public API operational</Badge>
-            <Badge variant="outline">
-              Negotiation {data?.policy.allow_negotiation ? "enabled" : "disabled"}
-            </Badge>
-            <Badge variant="outline">Upsell {data?.policy.allow_upsell ? "enabled" : "disabled"}</Badge>
-            <Badge variant={payments?.configured ? "secondary" : "outline"}>
-              Razorpay test mode {payments?.configured ? "configured" : "not configured"}
-            </Badge>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field
-              label="Discovery manifest"
-              value={manifestUrl ?? "/.well-known/agent-manifest"}
-            />
-            <Field
-              label="Public API calls (24h)"
-              value={data ? `${data.agentApi.requests24h} (${data.agentApi.failures24h} failed)` : "—"}
-            />
-            <Field
-              label="Last agent request"
-              value={
-                data?.agentApi.lastRequestAt
-                  ? new Date(data.agentApi.lastRequestAt).toLocaleString("en-IN")
-                  : "No requests yet"
-              }
-            />
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            Public endpoints: <code>/api/public/catalog</code>, <code>/api/public/products/:id</code>,{" "}
-            <code>/api/public/search</code>, <code>/api/public/quote</code>. Prices, inventory and
-            discounts are always computed server-side against your merchant policy.
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Handshake className="size-4" /> Negotiation &amp; growth
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            <Field
-              label="Negotiations"
-              value={growth ? `${growth.negotiations} (${growth.openNegotiations} open)` : "—"}
-            />
-            <Field
-              label="Discount rounds"
-              value={growth ? `${growth.rounds} (${growth.countered} countered)` : "—"}
-            />
-            <Field
-              label="Avg approved discount"
-              value={growth ? `${growth.avgApprovedDiscount}%` : "—"}
-            />
-            <Field label="Offers generated" value={growth ? String(growth.offers) : "—"} />
-            <Field
-              label="Offer value (final)"
-              value={growth ? inr.format(growth.offerValue) : "—"}
-            />
-            <Field label="List value" value={growth ? inr.format(growth.listValue) : "—"} />
-            <Field label="Discount given" value={growth ? inr.format(growth.discountGiven) : "—"} />
-            <Field
-              label="Recommendations"
-              value={
-                growth
-                  ? `${growth.recommendations} (${growth.acceptedRecommendations} accepted)`
-                  : "—"
-              }
-            />
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Every discount here was decided by the server policy engine against your
-            {" "}
-            {data ? `${data.policy.max_discount_percent}%` : ""} cap — never by the AI model.
-            Payment capture arrives in a later phase.
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="mt-6">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <ClipboardCheck className="size-4" /> Agentic checkout
-            {checkout && checkout.pendingApprovals > 0 ? (
-              <Badge variant="secondary">{checkout.pendingApprovals} awaiting you</Badge>
-            ) : null}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            <Field label="Orders created" value={checkout ? String(checkout.orders) : "—"} />
-            <Field
-              label="Pending approvals"
-              value={checkout ? String(checkout.pendingApprovals) : "—"}
-            />
-            <Field
-              label="Reviewed today"
-              value={
-                checkout
-                  ? `${checkout.approvedToday} approved · ${checkout.rejectedToday} rejected`
-                  : "—"
-              }
-            />
-            <Field
-              label="Awaiting payment"
-              value={
-                checkout
-                  ? `${checkout.awaitingPayment} · ${inr.format(checkout.paymentPendingValue)}`
-                  : "—"
-              }
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            <Field label="Payments pending" value={payments ? String(payments.pending) : "—"} />
-            <Field label="Payments verified" value={payments ? String(payments.verified) : "—"} />
-            <Field label="Failed payments" value={payments ? String(payments.failed) : "—"} />
-            <Field
-              label="Completed orders"
-              value={
-                payments
-                  ? `${payments.completedOrders} · ${inr.format(payments.verifiedValue)}`
-                  : "—"
-              }
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button asChild size="sm" variant="outline">
-              <Link to="/approvals">Open approval queue &amp; payments</Link>
-            </Button>
-            <p className="text-xs text-muted-foreground">
-              Orders above your{" "}
-              {data ? inr.format(data.policy.approval_required_above) : ""} approval threshold wait for
-              your decision. The AI agent can request checkout but can never approve one, and an
-              order is only COMPLETED after a server-verified Razorpay test-mode payment.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="mt-6 border-primary/30 bg-primary/[0.03]">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <ClipboardCheck className="size-4 text-primary" />
-            Judge Mode & Phase 11
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          <div className="rounded-md border border-border bg-card p-4 font-mono text-[10px] leading-relaxed whitespace-pre-wrap">
-            {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            Redesign ONLY the existing Merchant Dashboard UI.
-
-Do NOT change backend, database, authentication, APIs, merchant data, policies, agent logic, Razorpay/payment logic, Evaluation Lab, Judge Mode, or any existing functionality. UI/UX only.
-
-GOAL:
-
-Make the dashboard feel like a premium, human-designed B2B AI-commerce control plane — not a generic AI/admin dashboard.
-
-Use the existing Agentic Commerce visual language:
-
-- clean light/neutral background
-
-- deep navy typography
-
-- restrained sapphire accent
-
-- thin borders
-
-- subtle shadows
-
-- strong typography hierarchy
-
-- minimal rounded cards
-
-- no neon/RGB, excessive gradients, glassmorphism or AI clichés
-
-RESTRUCTURE THE PAGE AROUND THIS STORY:
-
-Merchant
-
-→ Catalog & Policies
-
-→ AI Buyers
-
-→ Server Authority
-
-→ Human Approval
-
-→ Razorpay
-
-→ Completed Order
-
-1. HEADER
-
-Keep existing navigation.
-
-Clearly show:
-
-TechNova Store
-
-Store Active
-
-AI Commerce Enabled
-
-2. MAIN HERO
-
-Title:
-
-"TechNova Store"
-
-Subtitle:
-
-"Your catalog, commercial rules and AI commerce activity — in one place."
-
-Add a compact visual flow:
-
-CATALOG → AI BUYER → SERVER AUTHORITY → APPROVAL → RAZORPAY → COMPLETED
-
-Make "SERVER AUTHORITY" visually strongest.
-
-3. STORE OVERVIEW
-
-Present existing:
-
-- 6 products
-
-- 275 inventory units
-
-- 5 active products
-
-- ₹17,27,750 inventory value
-
-Use compact metrics, not oversized generic cards.
-
-4. COMMERCIAL RULES
-
-Show:
-
-- 12% max discount
-
-- ₹1,00,000 max order
-
-- ₹50,000 approval threshold
-
-- Negotiation enabled
-
-- Upsell enabled
-
-Add:
-
-"AI may request. Policy decides."
-
-5. AI COMMERCE
-
-Create a clean system-status panel for:
-
-- Public catalog live
-
-- Public API operational
-
-- Negotiation enabled
-
-- Upsell enabled
-
-- Razorpay test mode
-
-Keep "View Agent API" CTA.
-
-6. NEGOTIATION & GROWTH
-
-Visually connect:
-
-List value → Final offer value → Discount given
-
-Show existing negotiation, offer and recommendation metrics.
-
-Clearly state:
-
-"Discount decisions are enforced by the server policy engine."
-
-7. AGENTIC CHECKOUT
-
-Show a simple state pipeline:
-
-Checkout Requests → Approval Required → Awaiting Payment → Verified → Completed
-
-Use the existing real metrics.
-
-CTA:
-
-"Open approval queue & payments"
-
-8. JUDGE MODE
-
-Create a compact "Proof" section:
-
-"Run one complete transaction and inspect every decision."
-
-Show:
-
-11 steps · 5 tool calls · Server-authoritative pricing · Verified payment
-
-CTA:
-
-"Open Judge Mode"
-
-9. RECENT ACTIVITY
-
-Use existing persisted activity as a clean vertical timeline:
-
-Negotiation → Checkout → Approval → Payment → Completion.
-
-Do not invent data.
-
-RESPONSIVE:
-
-Desktop should use the horizontal commerce flow.
-
-Mobile should convert it into a vertical flow.
-
-Use subtle Framer Motion only for page/section reveals and hover states.
-
-The final dashboard should answer within 10 seconds:
-
-"What does the merchant control, what can the AI do, and where does the server retain authority?"
-
-Preserve all existing data and functionality exactly.`}
-          </div>
-        </CardContent>
-      </Card>
-
     </AppShell>
   );
 }
 
+function FlowStep({ label, icon: Icon, active = false }: { label: string; icon: any; active?: boolean }) {
+  return (
+    <div className={cn("flex flex-col items-center gap-3 transition-all", active ? "scale-110" : "opacity-60")}>
+      <div className={cn(
+        "flex size-12 items-center justify-center rounded-xl border transition-all",
+        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border"
+      )}>
+        <Icon className="size-5" />
+      </div>
+      <span className={cn("text-[10px] font-bold uppercase tracking-widest", active ? "text-primary" : "text-muted-foreground")}>{label}</span>
+    </div>
+  );
+}
 
-function Field({ label, value }: { label: string; value: string }) {
+function FlowConnector() {
+  return (
+    <div className="hidden md:flex items-center text-muted-foreground/30 mb-8">
+      <ArrowRight className="size-4" />
+    </div>
+  );
+}
+
+function Stat({ label, value, icon: Icon }: { label: string; value: any; icon: any }) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-none">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className="size-3.5 text-muted-foreground" />
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</span>
+      </div>
+      <p className="text-xl font-semibold tracking-tight text-slate-900">{value ?? "—"}</p>
+    </div>
+  );
+}
+
+function RuleItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-medium text-foreground">{value}</p>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
+      <p className="text-lg font-semibold tracking-tight text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+function StatusToggle({ label, enabled }: { label: string; enabled?: boolean }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className={cn("size-2 rounded-full", enabled ? "bg-emerald-500 shadow-[0_0_8px_oklch(0.64_0.17_153)]" : "bg-slate-300")} />
+      <span className="text-[11px] font-bold uppercase tracking-widest text-slate-600">{label}</span>
+    </div>
+  );
+}
+
+function RevenueMetric({ label, value, active = false, sub }: { label: string; value: string; active?: boolean; sub?: string }) {
+  return (
+    <div className={cn(
+      "flex-1 flex flex-col justify-center rounded-xl border p-4 shadow-none",
+      active ? "bg-primary/[0.03] border-primary/20" : "bg-card border-border/60"
+    )}>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{label}</p>
+      <p className={cn("text-xl font-bold tracking-tight", active ? "text-primary" : "text-slate-900")}>{value}</p>
+      {sub && <p className="mt-1 text-[10px] font-bold uppercase text-primary/70">{sub}</p>}
+    </div>
+  );
+}
+
+function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: string }) {
+  return (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
+      <p className="text-sm font-bold text-slate-900">{value ?? 0}</p>
+      {sub && <p className="text-[9px] font-bold uppercase text-muted-foreground/60 tracking-tight">{sub}</p>}
+    </div>
+  );
+}
+
+function PipelineStep({ label, value, active = false, highlight = false }: { label: string; value: any; active?: boolean; highlight?: boolean }) {
+  return (
+    <div className={cn(
+      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 transition-all",
+      highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm" : 
+      active ? "bg-primary/5 border-primary/20 text-primary" : "bg-muted/10 border-border/40 text-muted-foreground"
+    )}>
+      <span className="text-xs font-bold">{value ?? 0}</span>
+      <span className="text-[8px] font-bold uppercase tracking-widest text-center px-1">{label}</span>
+    </div>
+  );
+}
+
+function StatusRow({ label, status }: { label: string; status: string }) {
+  const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
+  return (
+    <div className="flex items-center justify-between text-[11px] font-semibold">
+      <span className="text-muted-foreground">{label}</span>
+      <div className="flex items-center gap-2">
+        <span className={cn("capitalize", isOk ? "text-emerald-600" : "text-amber-600")}>{status}</span>
+        <div className={cn("size-1.5 rounded-full", isOk ? "bg-emerald-500" : "bg-amber-500")} />
+      </div>
     </div>
   );
 }
