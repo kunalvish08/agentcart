@@ -3,15 +3,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { 
   Loader2, 
-  ArrowDown, 
-  CheckCircle2, 
-  ChevronRight,
   ShieldCheck,
   Database,
   Lock,
-  ArrowRight
+  ArrowRight,
+  ChevronRight
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -43,28 +41,101 @@ export const Route = createFileRoute("/login")({
 const DEMO_EMAIL = "demo@technova.test";
 const DEMO_PASSWORD = "TechNova@2026";
 
-function ArchitectureNode({ title, sub, delay = 0 }: { title: string, sub: string, delay?: number }) {
+// Palette Reference (Midnight Commerce)
+const COLORS = {
+  INK: "#0B1220",
+  MIDNIGHT: "#111B2E",
+  COBALT: "#3157FF",
+  CYAN: "#36C5D8",
+  EMERALD: "#18A878",
+  AMBER: "#D99020",
+  CLOUD: "#F7F9FC",
+};
+
+function ArchitectureNode({ 
+  title, 
+  labels = [], 
+  delay = 0, 
+  isPrimary = false,
+  isLast = false
+}: { 
+  title: string, 
+  labels?: string[], 
+  delay?: number,
+  isPrimary?: boolean,
+  isLast?: boolean
+}) {
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.5 }}
-      className="flex flex-col gap-1 rounded border border-white/10 bg-white/5 p-3"
-    >
-      <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">{title}</span>
-      <span className="text-xs font-medium text-white/80">{sub}</span>
-    </motion.div>
+    <div className="flex flex-col items-center">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          boxShadow: isPrimary ? ["0 0 0 0px rgba(49, 87, 255, 0)", "0 0 0 10px rgba(49, 87, 255, 0.1)", "0 0 0 0px rgba(49, 87, 255, 0)"] : "none"
+        }}
+        transition={{ 
+          delay, 
+          duration: 0.5,
+          boxShadow: isPrimary ? { repeat: Infinity, duration: 3 } : {}
+        }}
+        className={cn(
+          "relative flex flex-col gap-2 rounded-lg border px-5 py-4 w-52",
+          isPrimary 
+            ? "border-[#3157FF]/40 bg-[#3157FF]/10" 
+            : isLast 
+              ? "border-[#18A878]/30 bg-[#18A878]/5"
+              : "border-white/10 bg-white/5"
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <span className={cn(
+            "text-[10px] font-bold uppercase tracking-[0.2em]",
+            isPrimary ? "text-[#3157FF]" : isLast ? "text-[#18A878]" : "text-white/40"
+          )}>
+            {title}
+          </span>
+          {isPrimary && (
+            <motion.div 
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 w-1.5 rounded-full bg-[#3157FF]" 
+            />
+          )}
+        </div>
+        
+        {labels.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {labels.map((label, i) => (
+              <span key={i} className="text-[9px] font-semibold text-white/30 border border-white/5 rounded px-1.5 py-0.5 uppercase tracking-wider">
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
+      </motion.div>
+      {!isLast && (
+        <ArchitectureConnector delay={delay + 0.3} />
+      )}
+    </div>
   );
 }
 
 function ArchitectureConnector({ delay = 0 }: { delay?: number }) {
   return (
-    <div className="flex h-6 w-full items-center justify-center">
+    <div className="h-8 w-[1px] relative overflow-hidden">
       <motion.div 
         initial={{ height: 0 }}
         animate={{ height: "100%" }}
-        transition={{ delay, duration: 0.5 }}
-        className="w-[1px] bg-white/10"
+        transition={{ delay, duration: 0.4, ease: "easeInOut" }}
+        className="w-full bg-gradient-to-b from-white/10 to-white/10"
+      />
+      {/* Signal packet */}
+      <motion.div
+        initial={{ top: "-10%" }}
+        animate={{ top: "110%" }}
+        transition={{ delay: delay + 0.5, duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+        className="absolute left-0 w-full h-1/4 bg-[#36C5D8]/40 blur-[1px]"
       />
     </div>
   );
@@ -107,7 +178,7 @@ function LoginPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Signed in");
+        toast.success("Signed in successfully");
         navigate({ to: "/dashboard", replace: true });
         return;
       }
@@ -123,12 +194,12 @@ function LoginPage() {
       if (error) throw error;
 
       if (!data.session) {
-        toast.info("Check your email to confirm your account before signing in.");
+        toast.info("Check your email to confirm your account.");
         setMode("signin");
         return;
       }
 
-      toast.success("Account created");
+      toast.success("Account created successfully");
       navigate({ to: "/dashboard", replace: true });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Authentication failed");
@@ -138,137 +209,144 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background selection:bg-primary/10">
-      {/* LEFT SIDE — PRODUCT CONTEXT */}
-      <div className="relative hidden w-full max-w-sm flex-col bg-[oklch(0.12_0.025_240)] p-10 text-white lg:flex xl:max-w-md">
+    <div className="flex min-h-screen bg-background selection:bg-primary/20 text-foreground overflow-hidden font-sans">
+      {/* LEFT: TECHNICAL VISUALIZATION */}
+      <div className="relative hidden w-[450px] flex-col bg-[#0B1220] px-12 py-12 text-white lg:flex border-r border-white/5">
+        {/* Grid Pattern Overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+             style={{ backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         
-        <div className="z-10 flex flex-col items-start leading-none">
-          <Link to="/" className="text-sm font-bold tracking-tight text-white transition-opacity hover:opacity-80">
+        <div className="z-10 flex flex-col items-start">
+          <Link to="/" className="text-xs font-bold tracking-[0.2em] text-white/90 hover:text-white transition-colors">
             AGENTIC COMMERCE
           </Link>
-          <span className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/40">MERCHANT CONTROL PLANE</span>
+          <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#36C5D8]/60">Merchant Infra v1.0</span>
         </div>
 
-        <div className="z-10 mt-32">
-          <motion.h2 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-semibold leading-[1.1] tracking-tight"
-          >
-            Your catalog.<br />
-            Your policies.<br />
-            Your authority.
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-6 text-sm leading-relaxed text-white/50"
-          >
-            Configure the commercial rules that AI buyers must operate within.
-          </motion.p>
+        <div className="z-10 mt-auto mb-auto flex flex-col items-center py-12">
+          <ArchitectureNode 
+            title="CATALOG" 
+            labels={["SKU", "INVENTORY"]} 
+            delay={0.5} 
+          />
+          <ArchitectureNode 
+            title="POLICY" 
+            labels={["PRICE", "LIMITS"]} 
+            delay={1.2} 
+          />
+          <ArchitectureNode 
+            title="AI BUYER" 
+            labels={["DISCOVERY", "NEGOTIATION"]} 
+            delay={1.9} 
+          />
+          <ArchitectureNode 
+            title="SERVER AUTHORITY" 
+            labels={["ENFORCEMENT", "VALUATION"]} 
+            delay={2.6} 
+            isPrimary
+          />
+          <ArchitectureNode 
+            title="CHECKOUT" 
+            labels={["PAYMENT", "GATEWAY"]} 
+            delay={3.3} 
+            isLast
+          />
         </div>
 
-        <div className="z-10 mt-20 max-w-[240px]">
-          <ArchitectureNode title="CATALOG" sub="Products · Inventory" delay={0.3} />
-          <ArchitectureConnector delay={0.4} />
-          <ArchitectureNode title="POLICY" sub="Discount · Order limits" delay={0.5} />
-          <ArchitectureConnector delay={0.6} />
-          <ArchitectureNode title="AGENT API" sub="Machine-readable commerce" delay={0.7} />
-          <ArchitectureConnector delay={0.8} />
-          <ArchitectureNode title="CHECKOUT" sub="Server-authorized order" delay={0.9} />
-        </div>
-
-        <div className="mt-auto z-10 space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 rounded-full bg-[oklch(0.65_0.15_160)]/10 px-2 py-0.5 text-[9px] font-bold text-[oklch(0.65_0.15_160)]">
-              <div className="h-1 w-1 rounded-full bg-[oklch(0.65_0.15_160)] animate-pulse" />
-              SYSTEM
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Secure merchant environment</span>
+        <div className="z-10 mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-10 border-t border-white/5">
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-[#3157FF]" />
+            <span className="text-[9px] font-bold uppercase tracking-widest text-white/30">Database Enforced</span>
           </div>
-          <p className="text-[10px] font-medium text-white/30 uppercase tracking-tight">
-            Authentication and authorization are enforced server-side.
-          </p>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-[#18A878]" />
+            <span className="text-[9px] font-bold uppercase tracking-widest text-white/30">Server Authority</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-[#36C5D8]" />
+            <span className="text-[9px] font-bold uppercase tracking-widest text-white/30">Merchant Scoped</span>
+          </div>
         </div>
       </div>
 
-      {/* RIGHT SIDE — AUTHENTICATION */}
-      <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-20 xl:px-32">
-        {/* Subtle background structure */}
-        <div className="absolute inset-0 z-0 opacity-[0.02] pointer-events-none" 
-             style={{ backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        
+      {/* RIGHT: AUTH PANEL */}
+      <div className="relative flex flex-1 flex-col items-center justify-center bg-[#F7F9FC] px-6 py-12 lg:px-20">
         <div className="z-10 w-full max-w-[400px]">
-          <div className="lg:hidden mb-12 flex flex-col items-start leading-none">
-            <Link to="/" className="text-sm font-bold tracking-tight text-foreground">AGENTIC COMMERCE</Link>
-            <span className="mt-1 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">MERCHANT CONTROL PLANE</span>
+          <div className="lg:hidden mb-12 flex flex-col items-start">
+            <Link to="/" className="text-sm font-bold tracking-tight text-[#0B1220]">AGENTIC COMMERCE</Link>
+            <span className="mt-1 text-[9px] font-bold uppercase tracking-widest text-[#34445A]">MERCHANT CONSOLE</span>
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">MERCHANT ACCESS</span>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight">Sign in to your store</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Manage your catalog, policies and AI commerce controls.</p>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#3157FF]">Merchant Console</span>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[#0B1220]">Sign in to your commerce control plane.</h1>
+            <p className="mt-2 text-sm text-[#34445A]">Manage your catalog, policies and AI commerce activity.</p>
           </motion.div>
 
           <div className="mt-10">
-            <div className="flex border-b border-border">
+            <div className="flex gap-6 border-b border-[#0B1220]/5">
               <button 
                 onClick={() => switchMode("signin")}
                 className={cn(
-                  "px-4 py-2 text-xs font-semibold tracking-tight transition-colors relative",
-                  mode === "signin" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  "pb-3 text-xs font-bold uppercase tracking-widest transition-colors relative",
+                  mode === "signin" ? "text-[#0B1220]" : "text-[#34445A]/60 hover:text-[#0B1220]"
                 )}
               >
                 Sign in
-                {mode === "signin" && <motion.div layoutId="auth-tab" className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-primary" />}
+                {mode === "signin" && <motion.div layoutId="tab-indicator" className="absolute bottom-[-1px] left-0 right-0 h-0.5 bg-[#3157FF]" />}
               </button>
               <button 
                 onClick={() => switchMode("signup")}
                 className={cn(
-                  "px-4 py-2 text-xs font-semibold tracking-tight transition-colors relative",
-                  mode === "signup" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  "pb-3 text-xs font-bold uppercase tracking-widest transition-colors relative",
+                  mode === "signup" ? "text-[#0B1220]" : "text-[#34445A]/60 hover:text-[#0B1220]"
                 )}
               >
                 Create account
-                {mode === "signup" && <motion.div layoutId="auth-tab" className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-primary" />}
+                {mode === "signup" && <motion.div layoutId="tab-indicator" className="absolute bottom-[-1px] left-0 right-0 h-0.5 bg-[#3157FF]" />}
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-              {mode === "signup" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Full name</Label>
-                    <Input
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Aarav Sharma"
-                      autoComplete="name"
-                      className="h-11 border-border/60 bg-transparent text-sm shadow-none focus-visible:ring-primary/20"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="storeName" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Store name</Label>
-                    <Input
-                      id="storeName"
-                      value={storeName}
-                      onChange={(e) => setStoreName(e.target.value)}
-                      placeholder="My Store"
-                      className="h-11 border-border/60 bg-transparent text-sm shadow-none focus-visible:ring-primary/20"
-                    />
-                  </div>
-                </div>
-              )}
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <AnimatePresence mode="wait">
+                {mode === "signup" && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="grid grid-cols-2 gap-4 overflow-hidden"
+                  >
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest text-[#34445A]/70">Full name</Label>
+                      <Input
+                        id="fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="e.g. Aarav Sharma"
+                        className="h-10 border-[#0B1220]/10 bg-white text-sm shadow-none focus-visible:ring-[#3157FF]/20"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="storeName" className="text-[10px] font-bold uppercase tracking-widest text-[#34445A]/70">Store name</Label>
+                      <Input
+                        id="storeName"
+                        value={storeName}
+                        onChange={(e) => setStoreName(e.target.value)}
+                        placeholder="e.g. TechNova"
+                        className="h-10 border-[#0B1220]/10 bg-white text-sm shadow-none focus-visible:ring-[#3157FF]/20"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Email</Label>
+                <Label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-[#34445A]/70">Email address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -276,12 +354,12 @@ function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  className="h-11 border-border/60 bg-transparent text-sm shadow-none focus-visible:ring-primary/20"
+                  className="h-10 border-[#0B1220]/10 bg-white text-sm shadow-none focus-visible:ring-[#3157FF]/20"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Password</Label>
+                <Label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-[#34445A]/70">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -290,56 +368,49 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                  className="h-11 border-border/60 bg-transparent text-sm shadow-none focus-visible:ring-primary/20"
+                  className="h-10 border-[#0B1220]/10 bg-white text-sm shadow-none focus-visible:ring-[#3157FF]/20"
                 />
               </div>
 
-              <Button type="submit" className="h-11 w-full text-xs font-bold uppercase tracking-widest shadow-md" disabled={loading}>
-                {loading ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-                {mode === "signin" ? "Sign in" : "Create account"}
+              <Button 
+                type="submit" 
+                className="mt-2 h-10 w-full bg-[#3157FF] text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-[#3157FF]/90 transition-all hover:translate-y-[-1px]" 
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="mr-2 size-3 animate-spin" /> : null}
+                {mode === "signin" ? "Sign in" : "Register Store"}
               </Button>
             </form>
 
-            {mode === "signup" && (
-              <p className="mt-4 text-center text-[11px] font-medium text-muted-foreground italic">
-                Create a merchant workspace and configure your commerce policies.
-              </p>
-            )}
-
-            {mode === "signin" && (
-              <div className="mt-12 rounded-lg border border-border/60 bg-muted/30 p-5">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Demo merchant</p>
-                <div className="mt-3 font-mono text-xs text-foreground/80">
-                  <div className="flex items-center justify-between border-b border-border/40 py-1.5">
-                    <span className="text-muted-foreground">Email</span>
-                    <span>{DEMO_EMAIL}</span>
+            <AnimatePresence>
+              {mode === "signin" && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-10 rounded-lg border border-[#3157FF]/10 bg-[#3157FF]/5 p-5 relative overflow-hidden group"
+                >
+                  <div className="absolute top-0 right-0 p-2 opacity-10">
+                    <Database size={40} className="text-[#3157FF]" />
                   </div>
-                  <div className="flex items-center justify-between py-1.5">
-                    <span className="text-muted-foreground">Password</span>
-                    <span>{DEMO_PASSWORD}</span>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#3157FF]">Demo merchant credentials</p>
+                  <div className="mt-3 font-mono text-[11px] space-y-1.5 relative z-10">
+                    <div className="flex items-center justify-between text-[#0B1220]/80">
+                      <span className="text-[#34445A]/60">Email</span>
+                      <span className="select-all font-semibold tracking-tight">{DEMO_EMAIL}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[#0B1220]/80">
+                      <span className="text-[#34445A]/60">Password</span>
+                      <span className="select-all font-semibold tracking-tight">{DEMO_PASSWORD}</span>
+                    </div>
                   </div>
-                </div>
-                <p className="mt-3 text-[10px] font-medium text-muted-foreground/70">
-                   Owns the seeded TechNova Store data.
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-20 border-t border-border/40 pt-10">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">SECURE ACCESS</p>
-            <div className="mt-6 space-y-4">
-              {[
-                { icon: Database, text: "Database-enforced authentication" },
-                { icon: ShieldCheck, text: "Merchant-scoped authorization" },
-                { icon: Lock, text: "Server-side commerce controls" }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <item.icon size={14} className="text-primary/60" />
-                  <span className="text-[11px] font-semibold tracking-tight text-foreground/70">{item.text}</span>
-                </div>
-              ))}
-            </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-[9px] font-medium text-[#34445A]/50 italic">
+                    <ShieldCheck size={10} />
+                    <span>Seeded with TechNova Store commercial policies</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
