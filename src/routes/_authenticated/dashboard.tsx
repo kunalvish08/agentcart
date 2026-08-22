@@ -16,7 +16,7 @@ import {
   TrendingUp,
   Search,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { getCheckoutMetrics, getCheckoutAudit } from "@/lib/checkout.functions";
 import { getGrowthMetrics, getWorkspace } from "@/lib/merchant.functions";
 import { cn } from "@/lib/utils";
+import { CountUp } from "@/components/dashboard/CountUp";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
