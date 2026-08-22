@@ -141,6 +141,26 @@ function Landing() {
              ))}
           </div>
         </section>
+ 
+        <section className="py-20 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-slate">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">SERVER AUTHORITY</p>
+            <p className="mt-2 text-sm text-steel">Pricing · Inventory · Policy</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">TENANT ISOLATION</p>
+            <p className="mt-2 text-sm text-steel">Merchant-scoped data</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">AUDITABLE</p>
+            <p className="mt-2 text-sm text-steel">Orders · Payments · Agent traces</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">RAZORPAY</p>
+            <p className="mt-2 text-sm text-steel">Verified payments</p>
+          </div>
+        </section>
+
 
         <section className="py-32 text-center bg-graphite border border-slate">
            <p className="text-[10px] font-bold uppercase text-copper tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
