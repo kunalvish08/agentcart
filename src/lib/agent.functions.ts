@@ -124,7 +124,7 @@ export const respondToRecommendation = createServerFn({ method: "POST" })
       quote: outcome.ok
         ? {
             quote_id: outcome.quote.quote_id,
-            product_name: outcome.quote.product?.name ?? "",
+            product_name: outcome.quote.product_name,
             quantity: Number(outcome.quote.quantity ?? 1),
             currency: String(outcome.quote.currency ?? rec.currency),
             unit_price: Number(outcome.quote.unit_price ?? 0),
