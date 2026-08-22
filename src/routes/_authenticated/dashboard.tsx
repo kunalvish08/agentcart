@@ -58,11 +58,20 @@ function DashboardPage() {
       <div className="space-y-8 max-w-7xl mx-auto pb-20">
         
         {/* HEADER */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
-          <div>
+        <motion.header 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h1 className="text-2xl font-bold tracking-tight text-foreground">{data?.merchant.name ?? "TechNova Store"}</h1>
             <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Commerce Control Plane</p>
-          </div>
+          </motion.div>
           <div className="flex items-center gap-3">
              <div className="flex items-center gap-1.5 rounded-full bg-verified-green/10 px-3 py-1 text-[10px] font-bold text-verified-green">
                <div className="h-1.5 w-1.5 rounded-full bg-verified-green animate-pulse" />
@@ -70,7 +79,7 @@ function DashboardPage() {
              </div>
              <Badge variant="outline" className="rounded-full h-7 text-[10px] uppercase font-bold tracking-widest">INR</Badge>
           </div>
-        </header>
+        </motion.header>
 
         {/* SECTION 1: HEALTH */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
