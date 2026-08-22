@@ -704,6 +704,7 @@ Do not make further visual changes.''' */}
   );
 }
 
+
 /* ------------------------------ assistant turn ----------------------------- */
 
 function stepIcon(step: TraceStep) {
