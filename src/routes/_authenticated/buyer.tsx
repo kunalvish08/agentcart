@@ -953,7 +953,7 @@ function AssistantTurn({
                           {step.latency_ms} ms
                         </span>
                       ) : null}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               ) : null}
