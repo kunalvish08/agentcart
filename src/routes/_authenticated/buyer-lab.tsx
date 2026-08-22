@@ -816,6 +816,7 @@ function BuyerLabPage() {
           </Card>
           </motion.div>
         </div>
+      </motion.div>
 
 
         {/* evaluation metrics */}
