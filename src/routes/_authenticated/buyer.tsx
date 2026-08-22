@@ -358,11 +358,11 @@ function BuyerPage() {
         <motion.header variants={itemReveal} className="flex flex-col gap-4 pb-4 border-b border-border/40">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</p>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</h1>
+              <motion.p variants={itemReveal} className="text-[10px] font-bold tracking-[0.2em] text-copper uppercase mb-1">AI BUYER</motion.p>
+              <motion.h1 variants={itemReveal} className="text-xl font-bold tracking-tight text-foreground">Your autonomous commerce agent</motion.h1>
             </div>
             
-            <div className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
+            <motion.div variants={itemReveal} className="flex items-center gap-6 px-4 py-2 bg-muted/30 border border-border/40 rounded-md">
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tools</span>
                   <span className="text-xs font-mono font-bold text-foreground"><CountUp value={7} /></span>
@@ -389,9 +389,9 @@ function BuyerPage() {
                     SERVER
                   </motion.span>
                 </div>
-            </div>
+            </motion.div>
           </div>
-        </header>
+        </motion.header>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="flex flex-col gap-6 min-w-0">
