@@ -1289,8 +1289,17 @@ function ActiveOrdersCard({ buyerName }: { buyerName?: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/20">
-              {rows.map((row: BuyerActiveOrder) => (
-                <OrderRow key={row.order_id} row={row} buyerName={buyerName ?? undefined} />
+              {rows.map((row: BuyerActiveOrder, idx: number) => (
+                <motion.div 
+                  key={row.order_id} 
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05 }}
+                  style={{ display: 'contents' }}
+                >
+                  <OrderRow row={row} buyerName={buyerName ?? undefined} />
+                </motion.div>
               ))}
             </tbody>
           </table>
