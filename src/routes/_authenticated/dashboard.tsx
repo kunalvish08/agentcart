@@ -11,6 +11,7 @@ import {
   Percent,
   Store,
   ArrowRight,
+  ArrowDown,
   ShieldCheck,
   ClipboardCheck,
   CreditCard,
