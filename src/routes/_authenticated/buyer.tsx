@@ -569,7 +569,7 @@ function AssistantTurn({
           ) : null}
 
           {turn.content ? (
-            <div className="space-y-1.5 rounded-lg border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
+            <div className="space-y-1.5 rounded-sm border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground shadow-none">
               <AssistantText content={turn.content} />
             </div>
           ) : running ? (
@@ -624,11 +624,11 @@ function AssistantTurn({
                 </div>
 
                 {quote ? (
-                  <div className="rounded-md border border-border bg-muted/40 p-3 text-sm">
-                    <p className="mb-2 flex items-center gap-2 font-medium text-foreground">
-                      <Receipt className="size-4" /> Server-calculated quote
+                  <div className="rounded-sm border border-border bg-muted/40 p-4 text-xs">
+                    <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-widest text-foreground">
+                      <Receipt className="size-3.5" /> Authority Quote
                     </p>
-                    <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                    <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-muted-foreground">
                       <dt>Quantity</dt>
                       <dd className="text-right text-foreground">{quote.quantity ?? "—"}</dd>
                       <dt>Base amount</dt>
@@ -639,8 +639,8 @@ function AssistantTurn({
                       <dd className="text-right text-foreground">
                         {Number(quote.allowed_discount_percent ?? 0)}%
                       </dd>
-                      <dt className="font-medium text-foreground">Final amount</dt>
-                      <dd className="text-right font-semibold text-foreground">
+                      <dt className="font-bold uppercase tracking-widest text-foreground">Final Total</dt>
+                      <dd className="text-right font-bold font-mono text-primary">
                         {money(quote.final_amount, quote.currency ?? rec.product.currency)}
                       </dd>
                       {quote.requires_merchant_approval !== undefined ? (
