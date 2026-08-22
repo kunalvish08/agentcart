@@ -7,7 +7,9 @@ import {
   Database,
   Lock,
   ArrowRight,
-  ChevronRight
+  ChevronRight,
+  Sun,
+  Moon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useTheme } from "./__root";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -142,13 +145,13 @@ function ArchitectureConnector({ delay = 0 }: { delay?: number }) {
 }
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const { theme, toggleTheme } = useTheme();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState(DEMO_EMAIL);
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [fullName, setFullName] = useState("");
   const [storeName, setStoreName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let active = true;
