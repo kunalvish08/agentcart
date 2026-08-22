@@ -224,7 +224,7 @@ export async function requestCheckout(args: {
     };
   }
 
-  // --- authoritative quote ---
+  // --- authoritative quote + accepted add-ons ---
   const { data: quote, error: quoteError } = await supabaseAdmin
     .from("quotes")
     .select(
@@ -240,6 +240,15 @@ export async function requestCheckout(args: {
       error: { code: "quote_not_found", message: "That quote does not exist." },
     };
   }
+
+  // Load any accepted growth recommendations (add-ons) for this session.
+  const { data: addOns, error: addOnsError } = await supabaseAdmin
+    .from("growth_recommendations")
+    .select("recommended_product_id, recommended_price, accepted, products(name)")
+    .eq("buyer_session_id", args.buyerSessionId)
+    .eq("accepted", true);
+  if (addOnsError) throw new Error(addOnsError.message);
+
   if (quote.merchant_id !== session.merchant_id) {
     return {
       ok: false,
@@ -250,7 +259,11 @@ export async function requestCheckout(args: {
       },
     };
   }
-  add("Quote verified");
+  add("Main quote verified");
+  if ((addOns ?? []).length > 0) {
+    add(`${addOns!.length} add-on(s) verified`);
+  }
+
 
   const merchantId = quote.merchant_id;
   const merchantSlug = (quote as unknown as Record<string, any>)["merchants"]?.slug ?? "";
@@ -331,17 +344,40 @@ export async function requestCheckout(args: {
 
   // --- merchant policy re-check at checkout time ---
   const policy = await getPolicy(merchantId);
-  const subtotal = Number(quote.base_amount);
-  const finalAmount = Number(quote.final_amount);
-  const discountAmount = Number((subtotal - finalAmount).toFixed(2));
-  const allowedDiscount = Number(quote.allowed_discount_percent);
+  const baseQuoteSubtotal = Number(quote.base_amount);
+  const baseQuoteFinal = Number(quote.final_amount);
+  const baseQuoteDiscount = Number((baseQuoteSubtotal - baseQuoteFinal).toFixed(2));
+  const baseQuoteDiscountPercent = Number(quote.allowed_discount_percent);
+
+  // Re-verify policy for add-ons if any are present.
+  if ((addOns ?? []).length > 0 && !policy.allow_upsell) {
+    return failWith(
+      "upsell_policy_violation",
+      "Upselling is currently disabled by merchant policy, but the order contains accepted add-ons."
+    );
+  }
+
+  // Authoritative server-side total recalculation (paise units).
+  const { toMinor, fromMinor, applyDiscountMinor } = await import("@/lib/public-api.server");
+  let subtotalMinor = toMinor(baseQuoteSubtotal);
+  let discountMinor = toMinor(baseQuoteDiscount);
+
+  // Add-ons are currently list-price (0% discount) in Phase 1.
+  for (const addOn of (addOns ?? [])) {
+    subtotalMinor += toMinor(Number(addOn.recommended_price ?? 0));
+  }
+
+  const finalAmountMinor = subtotalMinor - discountMinor;
+  const finalAmount = fromMinor(finalAmountMinor);
+  const subtotalAmount = fromMinor(subtotalMinor);
+  const discountAmount = fromMinor(discountMinor);
 
   const policyCap = policy.allow_negotiation ? policy.max_discount_percent : 0;
-  if (allowedDiscount > policyCap + 1e-9) {
+  if (baseQuoteDiscountPercent > policyCap + 1e-9) {
     return failWith(
       "discount_exceeds_policy",
       "The quoted discount is above the merchant's current policy limit, so checkout is refused.",
-      { quoted_discount_percent: allowedDiscount, policy_limit_percent: policyCap },
+      { quoted_discount_percent: baseQuoteDiscountPercent, policy_limit_percent: policyCap },
     );
   }
   if (policy.max_order_value > 0 && finalAmount > policy.max_order_value) {
@@ -351,7 +387,8 @@ export async function requestCheckout(args: {
       { final_amount: finalAmount, max_order_value: policy.max_order_value },
     );
   }
-  add(`Merchant policy checked — max discount ${policyCap}%`);
+  add(`Merchant policy checked — total ₹${finalAmount}`);
+
 
   // --- approval decision: server-derived, never client- or model-supplied ---
   const approvalRequired =
@@ -362,7 +399,7 @@ export async function requestCheckout(args: {
 
   const negotiationSummary = await summarizeNegotiation(args.buyerSessionId, quote.product_id);
 
-  // --- create the order (all money copied from the quote row) ---
+  // --- create the order (all money recalculated/authoritative) ---
   const insert = await supabaseAdmin
     .from("orders")
     .insert({
@@ -372,7 +409,7 @@ export async function requestCheckout(args: {
       idempotency_key: args.idempotencyKey,
       status: "CHECKOUT_REQUESTED",
       currency: quote.currency,
-      subtotal_amount: subtotal,
+      subtotal_amount: subtotalAmount,
       discount_amount: discountAmount,
       final_amount: finalAmount,
       approval_required: approvalRequired,
@@ -384,13 +421,15 @@ export async function requestCheckout(args: {
         max_order_value: policy.max_order_value,
         approval_required_above: policy.approval_required_above,
         allow_negotiation: policy.allow_negotiation,
-        quoted_discount_percent: allowedDiscount,
+        quoted_discount_percent: baseQuoteDiscountPercent,
         requested_discount_percent: Number(quote.requested_discount_percent),
+        add_on_count: (addOns ?? []).length,
       } as never,
       expires_at: new Date(Date.now() + ORDER_TTL_HOURS * 3_600_000).toISOString(),
     })
     .select("id")
     .maybeSingle();
+
 
   if (insert.error) {
     // Unique violation = concurrent duplicate: return the winner, never a second order.
@@ -411,14 +450,29 @@ export async function requestCheckout(args: {
   const orderId = insert.data!.id;
   add("Checkout requested");
 
+  // Add the base product
   await supabaseAdmin.from("order_items").insert({
     order_id: orderId,
     product_id: product.id,
     quantity: quote.quantity,
     unit_price: Number(quote.unit_price),
-    discount_amount: discountAmount,
-    final_unit_price: Number((finalAmount / quote.quantity).toFixed(2)),
+    discount_amount: baseQuoteDiscount,
+    final_unit_price: Number((baseQuoteFinal / quote.quantity).toFixed(2)),
   });
+
+  // Add the add-ons
+  for (const addOn of (addOns ?? [])) {
+    await supabaseAdmin.from("order_items").insert({
+      order_id: orderId,
+      product_id: addOn.recommended_product_id,
+      quantity: 1,
+      unit_price: Number(addOn.recommended_price),
+      discount_amount: 0,
+      final_unit_price: Number(addOn.recommended_price),
+      metadata: { source: "revenue_agent_recommendation" } as any,
+    });
+  }
+
 
   await writeAudit({
     orderId,
