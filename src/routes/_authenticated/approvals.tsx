@@ -188,7 +188,7 @@ function ApprovalsPage() {
                 <span className="text-[9px] font-mono text-muted-foreground/20 italic tracking-widest">IMMUTABLE DECISIONS</span>
               </div>
               
-              <div className="overflow-x-auto border border-border/40">
+              <div className="w-full overflow-x-auto no-scrollbar border border-border/40">
                 <table className="w-full text-left border-collapse min-w-[600px]">
                   <thead>
                     <tr className="bg-muted/30 border-b border-border/40">
