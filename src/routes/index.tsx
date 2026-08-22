@@ -203,6 +203,7 @@ function Landing() {
                     title="AI BUYER" 
                     items={['"Laptop under ₹60k"']} 
                     delay={0.6}
+                    className="!text-[#36C5D8]"
                   />
 
                   <Connector vertical delay={0.8} />
