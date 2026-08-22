@@ -3,20 +3,27 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  AlertTriangle,
-  BarChart3,
-  Beaker,
-  CircleDollarSign,
-  Database,
-  Gauge,
-  Loader2,
-  Pause,
-  Play,
-  ShieldCheck,
-  Store,
+import { 
+  AlertTriangle, 
+  BarChart3, 
+  Beaker, 
+  CircleDollarSign, 
+  Database, 
+  Gauge, 
+  Loader2, 
+  Pause, 
+  Play, 
+  ShieldCheck, 
   TrendingUp,
+  ChevronRight,
+  Info,
+  Shield,
+  Zap,
+  Microscope,
+  Fingerprint
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
@@ -39,24 +46,12 @@ import {
 import type { ArmMetrics } from "@/lib/evaluation-metrics.server";
 import type { ResultRowView, RunSummary } from "@/lib/evaluation-read.server";
 import { getWorkspace } from "@/lib/merchant.functions";
+import { CountUp } from "@/components/dashboard/CountUp";
 
 export const Route = createFileRoute("/_authenticated/lab")({
   head: () => ({
     meta: [
-      { title: "Evaluation Lab · Does agentic commerce actually earn more?" },
-      {
-        name: "description",
-        content:
-          "A reproducible A/B experiment: the same synthetic buyers shop a traditional storefront and an AI agent through the same public API and the same merchant policy, measured on conversion, order value, safety and honest failures.",
-      },
-      { property: "og:title", content: "Evaluation Lab · Agentic commerce vs a traditional storefront" },
-      {
-        property: "og:description",
-        content:
-          "Reproducible synthetic-buyer evaluation with revenue lift, safety containment and a published failure list.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { title: "Evaluation Lab · Benchmark agentic commerce" },
     ],
   }),
   component: LabPage,
@@ -83,95 +78,37 @@ function DeltaBadge({ value, suffix = "pp" }: { value: number | null; suffix?: s
   if (value === null) return <Badge variant="outline">n/a</Badge>;
   const tone =
     value > 0.05
-      ? "border-verified-green/40 bg-verified-green/10 text-verified-green"
+      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600"
       : value < -0.05
         ? "border-destructive/40 bg-destructive/10 text-destructive"
         : "border-muted bg-muted/40 text-muted-foreground";
-  return <Badge className={cn("rounded-sm font-bold", tone)} variant="outline">{signed(value, suffix)}</Badge>;
+  return <Badge className={cn("rounded-sm font-bold font-mono", tone)} variant="outline">{signed(value, suffix)}</Badge>;
 }
 
-function MetricRow({
-  label,
-  traditional,
-  agentic,
-  delta,
-  hint,
-}: {
-  label: string;
-  traditional: string;
-  agentic: string;
-  delta?: React.ReactNode;
-  hint?: string;
-}) {
+function MetricRow({ label, traditional, agentic, delta, hint }: { label: string; traditional: string; agentic: string; delta?: React.ReactNode; hint?: string }) {
   return (
     <div className="grid grid-cols-[1.4fr_1fr_1fr_auto] items-center gap-3 border-b border-border/60 py-2.5 last:border-0">
       <div>
-        <p className="text-sm font-medium">{label}</p>
-        {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+        <p className="text-[11px] font-bold text-foreground">{label}</p>
+        {hint ? <p className="text-[10px] text-muted-foreground">{hint}</p> : null}
       </div>
-      <p className="text-sm tabular-nums text-muted-foreground">{traditional}</p>
-      <p className="text-sm font-semibold tabular-nums">{agentic}</p>
+      <p className="text-[11px] font-mono text-muted-foreground">{traditional}</p>
+      <p className="text-[11px] font-mono font-semibold text-foreground">{agentic}</p>
       <div className="justify-self-end">{delta}</div>
     </div>
-  );
-}
-
-function ArmCard({ title, icon, metrics, tone }: { title: string; icon: React.ReactNode; metrics: ArmMetrics; tone: string }) {
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <span className={`flex size-7 items-center justify-center rounded-md ${tone}`}>{icon}</span>
-          {title}
-        </CardTitle>
-        <CardDescription>
-          {metrics.sessions} sessions · {metrics.conversions} orders
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-1 text-sm">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Conversion</span>
-          <span className="font-medium tabular-nums">{pct(metrics.conversion_rate)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Revenue</span>
-          <span className="font-medium tabular-nums">{money(metrics.revenue + metrics.cross_sell_revenue)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Revenue / session</span>
-          <span className="font-medium tabular-nums">{money(metrics.revenue_per_session)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">AOV</span>
-          <span className="font-medium tabular-nums">{money(metrics.aov)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Median latency</span>
-          <span className="font-medium tabular-nums">
-            {metrics.avg_latency_ms ? `${(metrics.avg_latency_ms / 1000).toFixed(1)}s` : "—"}
-          </span>
-        </div>
-      </CardContent>
-    </Card>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
   const tone =
     status === "completed"
-      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600"
       : status === "running"
-        ? "border-primary/40 bg-primary/10 text-primary"
-        : status === "paused"
-          ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-          : status === "failed" || status === "cancelled"
-            ? "border-destructive/40 bg-destructive/10 text-destructive"
-            : "border-muted bg-muted/40 text-muted-foreground";
-  return (
-    <Badge variant="outline" className={tone}>
-      {status}
-    </Badge>
-  );
+        ? "border-blue-500/40 bg-blue-500/10 text-blue-600"
+        : status === "failed" 
+          ? "border-destructive/40 bg-destructive/10 text-destructive"
+          : "border-muted bg-muted/40 text-muted-foreground";
+  return <Badge variant="outline" className={cn("rounded-sm text-[9px] font-bold tracking-widest uppercase", tone)}>{status}</Badge>;
 }
 
 function LabPage() {
@@ -259,7 +196,6 @@ function LabPage() {
     },
   });
 
-  // Auto-advance: one chunk at a time, never overlapping, stops on pause/finish.
   useEffect(() => {
     autoRunRef.current = autoRun;
   }, [autoRun]);
@@ -302,50 +238,55 @@ function LabPage() {
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
       <div className="flex items-center justify-between border-b border-border/40 pb-6 mb-8">
-        <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Experiment Console</h2>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Evaluation Lab</h2>
+          <p className="text-xs text-muted-foreground mt-1">"Benchmark agentic mechanisms against traditional commerce patterns on identical buyer intent."</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-widest text-emerald-500 uppercase">EVALUATION ENGINE READY</span>
+        </div>
       </div>
 
       <div className="space-y-8">
-        <Card className="rounded-sm border-primary/20 bg-primary/[0.02] shadow-none overflow-hidden">
-          <CardHeader className="bg-primary/[0.05] border-b border-primary/10 pb-4">
-            <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/80">
-              <Beaker className="size-3.5" />
-              Experiment Methodology
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-8 pt-6 pb-8 text-xs md:grid-cols-3">
-            <div>
-              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Isolating Variables</p>
-              <p className="text-muted-foreground leading-relaxed">
-                Both arms execute against identical buyer profiles, catalog data, and merchant policies. The only variable is the commerce engine.
-              </p>
+        {/* Methodology Panel */}
+        <div className="grid gap-4 md:grid-cols-3 bg-muted/20 border border-border p-6 rounded-sm">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Zap className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">ISOLATING VARIABLES</p>
             </div>
-            <div>
-              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Baseline Parity</p>
-              <p className="text-muted-foreground leading-relaxed">
-                The control arm implements standard storefront logic: budget matching, stock checking, and upsell rules. It lacks negotiation agency.
-              </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">Both arms execute against identical buyer profiles, catalog data, and merchant policies.</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Microscope className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">BASELINE PARITY</p>
             </div>
-            <div>
-              <p className="font-bold uppercase tracking-tight text-foreground mb-1.5">Deterministic Signal</p>
-              <p className="text-muted-foreground leading-relaxed">
-                Scenarios are seeded to ensure reproducible results. Outcomes provide mechanism evidence, not stochastic projections.
-              </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">The control arm implements standard storefront logic, lacking negotiation agency.</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Fingerprint className="size-3.5 text-blue-500" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-foreground">DETERMINISTIC SIGNAL</p>
             </div>
-          </CardContent>
-        </Card>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">Scenarios are seeded for reproducible outcomes, not stochastic projections.</p>
+          </div>
+        </div>
+
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-6">
-            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-              <CardHeader className="bg-muted/30 border-b border-border pb-4">
-                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">New Evaluation</CardTitle>
-                <CardDescription className="text-xs">
-                  Dataset {overview.data?.dataset.version ?? "…"} · {overview.data?.dataset.total ?? 0} scenarios
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-2">
+            <div className="rounded-sm border border-border bg-card shadow-none">
+              <div className="bg-muted/30 border-b border-border px-6 py-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Create Evaluation Run</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Dataset</Label>
+                  <div className="px-3 py-2 bg-muted/30 border border-border rounded-sm text-xs font-mono">{overview.data?.dataset.version ?? "technova-eval-v1"}</div>
+                </div>
+                <div className="space-y-1.5">
                   <Label htmlFor="run-label" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Run Label</Label>
                   <Input 
                     id="run-label" 
@@ -354,474 +295,431 @@ function LabPage() {
                     onChange={(event) => setLabel(event.target.value)} 
                   />
                 </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="sample">Scenarios</Label>
-                  <Input
-                    id="sample"
-                    type="number"
-                    min={1}
-                    max={overview.data?.dataset.total ?? 120}
-                    value={sampleSize}
-                    onChange={(event) => setSampleSize(Number(event.target.value))}
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="sample" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenarios</Label>
+                    <Input id="sample" type="number" value={sampleSize ?? 0} onChange={(e) => setSampleSize(Number(e.target.value))} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="batch" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Batch Size</Label>
+                    <Input id="batch" type="number" value={batchSize} onChange={(e) => setBatchSize(Number(e.target.value))} />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="batch">Batch size</Label>
-                  <Input
-                    id="batch"
-                    type="number"
-                    min={1}
-                    max={25}
-                    value={batchSize}
-                    onChange={(event) => setBatchSize(Number(event.target.value))}
-                  />
-                </div>
+                <p className="text-[10px] text-muted-foreground leading-relaxed italic">"Each scenario runs twice: storefront + agent, plus deterministic safety probes."</p>
+                <Button className="w-full rounded-sm font-bold uppercase tracking-[0.2em]" onClick={() => create.mutate()} disabled={create.isPending}>
+                  {create.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Play className="mr-2 size-4" />}
+                  CREATE AND START RUN
+                </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Each scenario runs twice (storefront + agent) plus 6 deterministic safety probes. Work is processed in
-                bounded batches with a database lease, so it is safe to leave and come back.
-              </p>
-              <Button className="w-full" onClick={() => create.mutate()} disabled={create.isPending}>
-                {create.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Play className="mr-2 size-4" />}
-                Create and start run
-              </Button>
-
-              <Separator />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Recent runs</p>
-              <div className="space-y-2">
+            </div>
+            <div className="rounded-sm border border-border bg-card shadow-none mt-6">
+              <div className="bg-muted/30 border-b border-border px-6 py-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Recent runs</p>
+              </div>
+              <div className="p-0">
                 {runs.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No runs yet.</p>
+                  <div className="p-6 text-center">
+                    <p className="text-[11px] text-muted-foreground italic">No runs yet.</p>
+                  </div>
                 ) : (
-                  runs.map((item: RunSummary) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedRunId(item.id);
-                        setAutoRun(false);
-                      }}
-                      className={`w-full rounded-md border px-3 py-2 text-left text-sm transition ${
-                        item.id === activeRunId ? "border-primary bg-primary/5" : "border-border hover:bg-muted/50"
-                      }`}
-                    >
-                      <span className="flex items-center justify-between gap-2">
-                        <span className="truncate font-medium">{item.label}</span>
-                        <StatusBadge status={item.status} />
-                      </span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">
-                        {item.completed_results}/{item.total_results} results ·{" "}
-                        {new Date(item.created_at).toLocaleString("en-IN")}
-                      </span>
-                    </button>
-                  ))
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead className="bg-muted/50 border-b border-border">
+                        <tr>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Run</th>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Results</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {runs.map((item: RunSummary) => (
+                          <tr 
+                            key={item.id} 
+                            onClick={() => {
+                              setSelectedRunId(item.id);
+                              setAutoRun(false);
+                            }}
+                            className={cn(
+                              "cursor-pointer hover:bg-muted/30 transition-colors",
+                              item.id === activeRunId ? "bg-primary/5" : ""
+                            )}
+                          >
+                            <td className="px-4 py-3">
+                              <p className="text-[10px] font-bold text-foreground truncate max-w-[120px]">{item.label}</p>
+                              <p className="text-[9px] text-muted-foreground mt-0.5">{new Date(item.created_at).toLocaleDateString()}</p>
+                            </td>
+                            <td className="px-4 py-3">
+                              <StatusBadge status={item.status} />
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <span className="text-[10px] font-mono text-muted-foreground">{item.completed_results}/{item.total_results}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
-        </aside>
+            </div>
+          </aside>
 
-        <div className="space-y-6">
-          {run ? (
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        {run.label} <StatusBadge status={run.status} />
-                      </CardTitle>
-                      <CardDescription>
-                        {run.model} · prompt {run.prompt_version} · dataset {run.dataset_version} · policy{" "}
-                        {run.policy_version ?? "—"} · catalog {run.catalog_version ?? "—"}
-                      </CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                      {run.pending_results > 0 ? (
-                        autoRun ? (
-                          <Button variant="outline" size="sm" onClick={() => setAutoRun(false)}>
-                            <Pause className="mr-2 size-4" /> Pause batching
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={async () => {
-                              if (run.status === "paused") {
-                                await status.mutateAsync({ runId: run.id, status: "queued" });
-                              }
-                              setAutoRun(true);
-                            }}
-                            disabled={batch.isPending}
-                          >
-                            {batch.isPending ? (
-                              <Loader2 className="mr-2 size-4 animate-spin" />
-                            ) : (
-                              <Play className="mr-2 size-4" />
-                            )}
-                            {run.status === "paused" ? "Resume run" : "Run next batches"}
-                          </Button>
-                        )
-                      ) : null}
+
+          <div className="space-y-6">
+            {run ? (
+              <div className="rounded-sm border border-border bg-card p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground flex items-center gap-3">
+                      {run.label} <StatusBadge status={run.status} />
+                    </h3>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {[{l:"Model", v:run.model}, {l:"Prompt", v:run.prompt_version}, {l:"Dataset", v:run.dataset_version}, {l:"Policy", v:run.policy_version}, {l:"Catalog", v:run.catalog_version}].map(c => (
+                        <div key={c.l} className="flex gap-1.5 items-center px-2 py-0.5 border border-border rounded-sm bg-muted/20">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase">{c.l}</span>
+                          <span className="text-[10px] font-mono text-foreground">{c.v ?? "—"}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Progress value={progress} />
-                  <p className="text-xs text-muted-foreground">
-                    {run.completed_results} of {run.total_results} measurements complete
-                    {run.pending_results > 0 ? ` · ${run.pending_results} queued` : ""}
-                    {batch.isPending ? " · batch in flight" : ""}
-                  </p>
-                  {run.paused_reason ? (
-                    <p className="flex items-center gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
-                      <AlertTriangle className="size-4" /> {run.paused_reason}
-                    </p>
-                  ) : null}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                  Create a run to measure agentic commerce against the storefront baseline.
-                </CardContent>
-              </Card>
-            )}
+                </div>
+                <Progress value={progress} className="h-2 rounded-sm" />
+                <p className="text-[10px] font-mono text-muted-foreground mt-2">{run.completed_results} / {run.total_results} measurements complete</p>
+              </div>
+            ) : null}
 
             {metrics ? (
-              <Tabs defaultValue="impact">
-                <TabsList>
-                  <TabsTrigger value="impact">Merchant impact</TabsTrigger>
-                  <TabsTrigger value="ab">A/B detail</TabsTrigger>
-                  <TabsTrigger value="safety">Safety</TabsTrigger>
-                  <TabsTrigger value="failures">Where it failed</TabsTrigger>
-                  <TabsTrigger value="rows">Scenario rows</TabsTrigger>
+              <Tabs defaultValue="impact" className="w-full">
+                <TabsList className="bg-transparent border-b border-border p-0 h-auto w-full justify-start rounded-none">
+                  <TabsTrigger value="impact" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Merchant impact</TabsTrigger>
+                  <TabsTrigger value="ab" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">A/B detail</TabsTrigger>
+                  <TabsTrigger value="safety" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Safety</TabsTrigger>
+                  <TabsTrigger value="failures" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Where it failed</TabsTrigger>
+                  <TabsTrigger value="rows" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 text-[10px] font-bold uppercase tracking-widest">Scenario rows</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="impact" className="space-y-4 pt-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <ArmCard
-                      title="Traditional storefront"
-                      icon={<Store className="size-4" />}
-                      metrics={metrics.traditional}
-                      tone="bg-muted text-muted-foreground"
-                    />
-                    <ArmCard
-                      title="Agentic commerce"
-                      icon={<TrendingUp className="size-4" />}
-                      metrics={metrics.agentic}
-                      tone="bg-primary/10 text-primary"
-                    />
+
+                <TabsContent value="impact" className="space-y-6 pt-6">
+                  {/* Revenue / Conversion lift section */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Control Arm */}
+                    <div className="rounded-sm border border-border bg-card p-6">
+                       <div className="flex items-center gap-2 mb-4">
+                         <div className="size-2 rounded-full bg-slate-400" />
+                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">TRADITIONAL STOREFRONT</p>
+                       </div>
+                       <div className="space-y-6">
+                         <div>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Total measured revenue</p>
+                            <div className="text-3xl font-mono text-foreground">{money(metrics.traditional.revenue + metrics.traditional.cross_sell_revenue)}</div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-6 pt-6 border-t border-border/40">
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Conversion</p>
+                               <div className="text-xl font-mono text-foreground">{pct(metrics.traditional.conversion_rate)}</div>
+                            </div>
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">AOV</p>
+                               <div className="text-xl font-mono text-foreground">{money(metrics.traditional.aov)}</div>
+                            </div>
+                         </div>
+                       </div>
+                    </div>
+
+                    {/* Variant Arm */}
+                    <div className="rounded-sm border border-blue-500/20 bg-blue-500/5 p-6 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 p-3 opacity-10">
+                          <TrendingUp className="size-24 text-blue-500" />
+                       </div>
+                       <div className="flex items-center gap-2 mb-4">
+                         <div className="size-2 rounded-full bg-blue-500 animate-pulse" />
+                         <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">AGENTIC COMMERCE</p>
+                       </div>
+                       <div className="space-y-6">
+                         <div>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">Total measured revenue</p>
+                            <div className="text-3xl font-mono text-foreground">{money(metrics.agentic.revenue + metrics.agentic.cross_sell_revenue)}</div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-6 pt-6 border-t border-blue-500/20">
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">Conversion</p>
+                               <div className="text-xl font-mono text-foreground">{pct(metrics.agentic.conversion_rate)}</div>
+                            </div>
+                            <div>
+                               <p className="text-[9px] font-bold uppercase tracking-widest text-blue-500/60">AOV</p>
+                               <div className="text-xl font-mono text-foreground">{money(metrics.agentic.aov)}</div>
+                            </div>
+                         </div>
+                       </div>
+                    </div>
                   </div>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <CircleDollarSign className="size-4" /> The merchant story
-                      </CardTitle>
-                      <CardDescription>
-                        Same {metrics.traditional.sessions} buyers, both arms, identical policy.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2 text-sm">
-                      <p>
-                        Agentic commerce converted{" "}
-                        <strong>{pct(metrics.agentic.conversion_rate)}</strong> of sessions against{" "}
-                        <strong>{pct(metrics.traditional.conversion_rate)}</strong> on the storefront (
-                        {signed(metrics.lift.conversion_rate_pp, "pp")}), and produced{" "}
-                        <strong>{money(metrics.agentic.revenue_per_session, currency)}</strong> per session against{" "}
-                        <strong>{money(metrics.traditional.revenue_per_session, currency)}</strong>
-                        {metrics.lift.revenue_per_session_pct === null
-                          ? ""
-                          : ` (${signed(metrics.lift.revenue_per_session_pct, "%")})`}
-                        .
-                      </p>
-                      <p>
-                        Discount given away: <strong>{pct(metrics.agentic.discount_rate)}</strong> of gross for the
-                        agent versus <strong>{pct(metrics.traditional.discount_rate)}</strong> for the storefront, and
-                        every discount stayed inside the merchant's policy cap.
-                      </p>
-                      <p className="text-muted-foreground">
-                        Total measured revenue delta across this run:{" "}
-                        <strong className="text-foreground">{money(metrics.lift.revenue_delta, currency)}</strong>. All
-                        amounts are the server's own numbers, read back from persisted orders and quotes.
-                      </p>
-                    </CardContent>
-                  </Card>
+                  {/* Conversion lift viz bar */}
+                  <div className="rounded-sm border border-border bg-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Conversion Benchmark</p>
+                      <div className="text-[11px] font-bold text-emerald-500 flex items-center gap-1">
+                        {signed(metrics.lift.conversion_rate_pp, "pp")} <span className="text-[9px] font-normal uppercase opacity-60">improvement</span>
+                      </div>
+                    </div>
+                    <div className="h-4 w-full bg-muted/40 rounded-full overflow-hidden flex">
+                      <div 
+                        className="h-full bg-slate-400/40" 
+                        style={{ width: `${(metrics.traditional.conversion_rate / Math.max(metrics.traditional.conversion_rate, metrics.agentic.conversion_rate)) * 100}%` }} 
+                      />
+                      <div 
+                        className="h-full bg-blue-500" 
+                        style={{ width: `${((metrics.agentic.conversion_rate - metrics.traditional.conversion_rate) / Math.max(metrics.traditional.conversion_rate, metrics.agentic.conversion_rate)) * 100}%` }} 
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2 text-[10px] font-mono text-muted-foreground">
+                      <span>Storefront: {pct(metrics.traditional.conversion_rate)}</span>
+                      <span>Agentic: {pct(metrics.agentic.conversion_rate)}</span>
+                    </div>
+                  </div>
+
+                  {/* Merchant Impact Story */}
+                  <div className="rounded-sm border border-border bg-card overflow-hidden">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">The Merchant Story</p>
+                    </div>
+                    <div className="p-6">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                         {[
+                           {l: "Conversion delta", v: signed(metrics.lift.conversion_rate_pp, "pp")},
+                           {l: "Revenue/session delta", v: metrics.lift.revenue_per_session_pct !== null ? signed(metrics.lift.revenue_per_session_pct, "%") : "n/a"},
+                           {l: "Discount impact", v: signed(metrics.lift.discount_rate_pp, "pp")},
+                           {l: "Measured revenue delta", v: money(metrics.lift.revenue_delta)}
+                         ].map((m, i) => (
+                           <div key={i} className="space-y-1">
+                             <p className="text-[9px] text-muted-foreground uppercase tracking-widest">{m.l}</p>
+                             <p className={cn("text-lg font-mono font-medium", i !== 2 && !m.v.includes("-") ? "text-emerald-500" : "text-foreground")}>{m.v}</p>
+                           </div>
+                         ))}
+                      </div>
+                      <div className="space-y-3 text-[11px] text-muted-foreground leading-relaxed border-t border-border pt-6 italic">
+                        <p>
+                          Agentic commerce converted <span className="text-foreground font-bold">{pct(metrics.agentic.conversion_rate)}</span> of sessions against <span className="text-foreground font-bold">{pct(metrics.traditional.conversion_rate)}</span> on the storefront.
+                        </p>
+                        <p>
+                          Total measured revenue delta across this run: <span className="text-emerald-500 font-bold font-mono">{money(metrics.lift.revenue_delta, currency)}</span>.
+                        </p>
+                        <p>
+                          All amounts are sourced from the server's authoritative order and quote records, ensuring data integrity across the evaluation lifecycle.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="ab" className="pt-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <BarChart3 className="size-4" /> Controlled comparison
-                      </CardTitle>
-                      <CardDescription>Storefront (control) vs agent (variant) · delta on the right</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-[1.4fr_1fr_1fr_auto] gap-3 border-b pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <TabsContent value="ab" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4 flex items-center justify-between">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Controlled Comparison</p>
+                      <p className="text-[10px] text-muted-foreground italic">Storefront (control) vs agent (variant) · delta on the right</p>
+                    </div>
+                    <div className="p-6">
+                      <div className="grid grid-cols-[1.4fr_1fr_1fr_auto] gap-3 border-b border-border pb-2 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                         <span>Metric</span>
                         <span>Storefront</span>
                         <span>Agent</span>
                         <span className="justify-self-end">Δ</span>
                       </div>
-                      <MetricRow
-                        label="Conversion rate"
-                        traditional={pct(metrics.traditional.conversion_rate)}
-                        agentic={pct(metrics.agentic.conversion_rate)}
-                        delta={<DeltaBadge value={metrics.lift.conversion_rate_pp} />}
-                      />
-                      <MetricRow
-                        label="Average order value"
-                        traditional={money(metrics.traditional.aov, currency)}
-                        agentic={money(metrics.agentic.aov, currency)}
-                        delta={<DeltaBadge value={metrics.lift.aov_pct} suffix="%" />}
-                      />
-                      <MetricRow
-                        label="Revenue per session"
-                        traditional={money(metrics.traditional.revenue_per_session, currency)}
-                        agentic={money(metrics.agentic.revenue_per_session, currency)}
-                        delta={<DeltaBadge value={metrics.lift.revenue_per_session_pct} suffix="%" />}
-                      />
-                      <MetricRow
-                        label="Cross-sell attach rate"
-                        hint="An eligible accessory quoted alongside the primary product"
-                        traditional={pct(metrics.traditional.cross_sell_rate)}
-                        agentic={pct(metrics.agentic.cross_sell_rate)}
-                        delta={<DeltaBadge value={metrics.lift.cross_sell_rate_pp} />}
-                      />
-                      <MetricRow
-                        label="Discount rate"
-                        hint="Discount as a share of gross; lower is better for the merchant"
-                        traditional={pct(metrics.traditional.discount_rate)}
-                        agentic={pct(metrics.agentic.discount_rate)}
-                        delta={<DeltaBadge value={metrics.lift.discount_rate_pp} />}
-                      />
-                      <MetricRow
-                        label="Expected-outcome match"
-                        traditional={pct(metrics.traditional.outcome_match_rate)}
-                        agentic={pct(metrics.agentic.outcome_match_rate)}
-                        delta={
-                          <DeltaBadge
-                            value={metrics.agentic.outcome_match_rate - metrics.traditional.outcome_match_rate}
-                          />
-                        }
-                      />
-                      <MetricRow
-                        label="Unsupported-number rate"
-                        hint="Agent stated a money figure no tool result returned"
-                        traditional={pct(metrics.traditional.hallucination_rate)}
-                        agentic={pct(metrics.agentic.hallucination_rate)}
-                      />
-                      <MetricRow
-                        label="Median session latency"
-                        traditional={
-                          metrics.traditional.avg_latency_ms
-                            ? `${(metrics.traditional.avg_latency_ms / 1000).toFixed(1)}s`
-                            : "—"
-                        }
-                        agentic={
-                          metrics.agentic.avg_latency_ms
-                            ? `${(metrics.agentic.avg_latency_ms / 1000).toFixed(1)}s`
-                            : "—"
-                        }
-                      />
-                      <MetricRow
-                        label="API calls per session"
-                        traditional={metrics.traditional.avg_tool_calls.toFixed(1)}
-                        agentic={metrics.agentic.avg_tool_calls.toFixed(1)}
-                      />
-
-                      <div className="mt-4 rounded-md border bg-muted/30 p-3 text-xs text-muted-foreground">
-                        <p className="flex items-center gap-2 font-medium text-foreground">
-                          <Gauge className="size-3.5" /> AI cost
-                        </p>
-                        <p className="mt-1">
-                          {metrics.ai_cost.note} Measured usage for this run:{" "}
-                          {metrics.ai_cost.prompt_tokens.toLocaleString("en-IN")} prompt +{" "}
-                          {metrics.ai_cost.completion_tokens.toLocaleString("en-IN")} completion tokens.
-                        </p>
+                      <div className="divide-y divide-border/40">
+                        <MetricRow
+                          label="Conversion rate"
+                          traditional={pct(metrics.traditional.conversion_rate)}
+                          agentic={pct(metrics.agentic.conversion_rate)}
+                          delta={<DeltaBadge value={metrics.lift.conversion_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Average order value"
+                          traditional={money(metrics.traditional.aov, currency)}
+                          agentic={money(metrics.agentic.aov, currency)}
+                          delta={<DeltaBadge value={metrics.lift.aov_pct} suffix="%" />}
+                        />
+                        <MetricRow
+                          label="Revenue per session"
+                          traditional={money(metrics.traditional.revenue_per_session, currency)}
+                          agentic={money(metrics.agentic.revenue_per_session, currency)}
+                          delta={<DeltaBadge value={metrics.lift.revenue_per_session_pct} suffix="%" />}
+                        />
+                        <MetricRow
+                          label="Cross-sell attach rate"
+                          hint="An eligible accessory quoted alongside the primary product"
+                          traditional={pct(metrics.traditional.cross_sell_rate)}
+                          agentic={pct(metrics.agentic.cross_sell_rate)}
+                          delta={<DeltaBadge value={metrics.lift.cross_sell_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Discount rate"
+                          hint="Discount as a share of gross; lower is better for the merchant"
+                          traditional={pct(metrics.traditional.discount_rate)}
+                          agentic={pct(metrics.agentic.discount_rate)}
+                          delta={<DeltaBadge value={metrics.lift.discount_rate_pp} />}
+                        />
+                        <MetricRow
+                          label="Median session latency"
+                          traditional={
+                            metrics.traditional.avg_latency_ms
+                              ? `${(metrics.traditional.avg_latency_ms / 1000).toFixed(1)}s`
+                              : "—"
+                          }
+                          agentic={
+                            metrics.agentic.avg_latency_ms
+                              ? `${(metrics.agentic.avg_latency_ms / 1000).toFixed(1)}s`
+                              : "—"
+                          }
+                        />
+                        <MetricRow
+                          label="API calls per session"
+                          traditional={metrics.traditional.avg_tool_calls.toFixed(1)}
+                          agentic={metrics.agentic.avg_tool_calls.toFixed(1)}
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
 
-                  {metrics.by_category.length > 0 ? (
-                    <Card className="mt-4">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">By buyer type</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-sm">
-                            <thead className="text-xs uppercase tracking-wide text-muted-foreground">
-                              <tr className="border-b">
-                                <th className="py-2 text-left font-medium">Scenario type</th>
-                                <th className="py-2 text-right font-medium">n</th>
-                                <th className="py-2 text-right font-medium">Storefront orders</th>
-                                <th className="py-2 text-right font-medium">Agent orders</th>
-                                <th className="py-2 text-right font-medium">Storefront revenue</th>
-                                <th className="py-2 text-right font-medium">Agent revenue</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {metrics.by_category.map((row) => (
-                                <tr key={row.category} className="border-b border-border/60 last:border-0">
-                                  <td className="py-2">
-                                    {CATEGORY_LABELS[row.category as keyof typeof CATEGORY_LABELS] ?? row.category}
-                                  </td>
-                                  <td className="py-2 text-right tabular-nums">{row.scenarios}</td>
-                                  <td className="py-2 text-right tabular-nums">{row.traditional_conversions}</td>
-                                  <td className="py-2 text-right tabular-nums">{row.agentic_conversions}</td>
-                                  <td className="py-2 text-right tabular-nums">
-                                    {money(row.traditional_revenue, currency)}
-                                  </td>
-                                  <td className="py-2 text-right tabular-nums">{money(row.agentic_revenue, currency)}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                      <div className="mt-6 rounded-sm border border-blue-500/20 bg-blue-500/5 p-4 flex gap-3 items-center">
+                        <Gauge className="size-3.5 text-blue-500" />
+                        <div className="text-[10px] text-blue-500/70">
+                          {metrics.ai_cost.note} Measured usage for this run:{" "}
+                          <span className="font-mono font-bold text-blue-500">{metrics.ai_cost.prompt_tokens.toLocaleString("en-IN")}</span> prompt +{" "}
+                          <span className="font-mono font-bold text-blue-500">{metrics.ai_cost.completion_tokens.toLocaleString("en-IN")}</span> completion tokens.
                         </div>
-                      </CardContent>
-                    </Card>
-                  ) : null}
+                      </div>
+                    </div>
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="safety" className="pt-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <ShieldCheck className="size-4" /> Deterministic safety probes
-                      </CardTitle>
-                      <CardDescription>
-                        {metrics.safety.passed}/{metrics.safety.total} contained · these are live calls against the
-                        public API, not assertions about it
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {metrics.safety.probes.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">No safety probes recorded for this run yet.</p>
-                      ) : (
-                        metrics.safety.probes.map((probe) => (
-                          <div
-                            key={probe.id}
-                            className="flex items-start justify-between gap-3 rounded-md border px-3 py-2"
-                          >
-                            <div>
-                              <p className="text-sm font-medium">{probe.title}</p>
-                              <p className="text-xs text-muted-foreground">{probe.evidence}</p>
-                            </div>
-                            <Badge
-                              variant="outline"
-                              className={
-                                probe.passed
-                                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                  : "border-destructive/40 bg-destructive/10 text-destructive"
-                              }
-                            >
-                              {probe.passed ? "contained" : "FAILED"}
-                            </Badge>
-                          </div>
-                        ))
-                      )}
-                      <p className="pt-2 text-xs text-muted-foreground">
-                        Policy containment across scenario rows: storefront{" "}
-                        {pct(metrics.traditional.safely_contained_rate)} · agent{" "}
-                        {pct(metrics.agentic.safely_contained_rate)}.
+                <TabsContent value="safety" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Deterministic Safety Probes</p>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <p className="text-[11px] text-muted-foreground">
+                        {metrics.safety.passed} / {metrics.safety.total} contained · these are live calls against the public API, not assertions about it
                       </p>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="failures" className="pt-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <AlertTriangle className="size-4 text-amber-500" /> Where the agent failed
-                      </CardTitle>
-                      <CardDescription>
-                        {agenticFailures.length} agent rows missed their expected outcome in this run. Nothing here is
-                        filtered.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {failures.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                          No mismatches recorded yet for the completed rows.
-                        </p>
-                      ) : (
-                        failures.slice(0, 40).map((row) => (
-                          <div key={`${row.scenario_id}-${row.baseline_type}`} className="rounded-md border px-3 py-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Badge variant="outline">{row.baseline_type}</Badge>
-                              <span className="font-mono text-xs text-muted-foreground">{row.scenario_id}</span>
-                              <Badge variant="outline">
-                                {OUTCOME_LABELS[row.expected_outcome as keyof typeof OUTCOME_LABELS] ??
-                                  row.expected_outcome}
+                      
+                      <div className="space-y-2">
+                        {metrics.safety.probes.length === 0 ? (
+                          <p className="text-[11px] text-muted-foreground italic">No safety probes recorded for this run yet.</p>
+                        ) : (
+                          metrics.safety.probes.map((probe) => (
+                            <div key={probe.id} className="flex items-center justify-between p-3 border border-border rounded-sm bg-muted/10">
+                              <div>
+                                <p className="text-[11px] font-bold text-foreground">{probe.title}</p>
+                                <p className="text-[10px] text-muted-foreground">{probe.evidence}</p>
+                              </div>
+                              <Badge variant="outline" className={cn("text-[9px] font-bold uppercase tracking-widest rounded-sm", probe.passed ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/5" : "text-destructive border-destructive/20 bg-destructive/5")}>
+                                {probe.passed ? "contained" : "FAILED"}
                               </Badge>
-                              <span className="text-xs text-muted-foreground">→ {row.actual_outcome ?? "—"}</span>
                             </div>
-                            {row.intent ? <p className="mt-1 text-sm">{row.intent}</p> : null}
-                            {row.failure_reason ? (
-                              <p className="mt-1 text-xs text-muted-foreground">{row.failure_reason}</p>
-                            ) : null}
-                            {row.agent_run_id ? (
-                              <Link
-                                to="/judge"
-                                className="mt-1 inline-block text-xs text-primary underline-offset-4 hover:underline"
-                              >
-                                Replay this run in Judge Mode
-                              </Link>
-                            ) : null}
-                          </div>
-                        ))
-                      )}
-                    </CardContent>
-                  </Card>
+                          ))
+                        )}
+                      </div>
+                      
+                      <p className="text-[10px] text-muted-foreground border-t border-border pt-4">
+                        Policy containment across scenario rows: storefront{" "}
+                        <span className="font-mono text-foreground">{pct(metrics.traditional.safely_contained_rate)}</span> · agent{" "}
+                        <span className="font-mono text-foreground">{pct(metrics.agentic.safely_contained_rate)}</span>.
+                      </p>
+                    </div>
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="rows" className="pt-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Database className="size-4" /> Scenario-level results
-                      </CardTitle>
-                      <CardDescription>{scenarioRows.length} measurements</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                <TabsContent value="failures" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Where the Agent Failed</p>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <p className="text-[11px] text-muted-foreground">
+                        {agenticFailures.length} agent rows missed their expected outcome in this run. Nothing here is filtered.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        {failures.length === 0 ? (
+                          <p className="text-[11px] text-muted-foreground italic">No mismatches recorded yet for the completed rows.</p>
+                        ) : (
+                          failures.slice(0, 40).map((row) => (
+                            <div key={`${row.scenario_id}-${row.baseline_type}`} className="p-3 border border-border rounded-sm bg-muted/10">
+                              <div className="flex flex-wrap items-center gap-3 mb-2">
+                                <Badge variant="outline" className="rounded-sm text-[9px] uppercase tracking-widest">{row.baseline_type}</Badge>
+                                <span className="font-mono text-[10px] text-muted-foreground">{row.scenario_id}</span>
+                                <Badge variant="outline" className="rounded-sm text-[9px] uppercase tracking-widest">
+                                  {OUTCOME_LABELS[row.expected_outcome as keyof typeof OUTCOME_LABELS] ?? row.expected_outcome}
+                                </Badge>
+                                <span className="text-[10px] text-muted-foreground">→</span>
+                                <span className="text-[10px] font-bold text-foreground">{row.actual_outcome ?? "—"}</span>
+                              </div>
+                              {row.intent ? <p className="text-[11px] text-foreground mb-1">{row.intent}</p> : null}
+                              {row.failure_reason ? <p className="text-[10px] text-destructive/80 italic">{row.failure_reason}</p> : null}
+                              {row.agent_run_id ? (
+                                <Link to="/judge" className="mt-2 flex items-center gap-1 text-[10px] text-blue-500 hover:underline">
+                                  Replay in Judge Mode <ChevronRight className="size-2.5" />
+                                </Link>
+                              ) : null}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="rows" className="pt-6">
+                  <div className="rounded-sm border border-border bg-card">
+                    <div className="bg-muted/30 border-b border-border px-6 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenario-level results</p>
+                    </div>
+                    <div className="p-0">
                       <div className="max-h-[520px] overflow-auto">
-                        <table className="w-full text-sm">
-                          <thead className="sticky top-0 bg-background text-xs uppercase tracking-wide text-muted-foreground">
-                            <tr className="border-b">
-                              <th className="py-2 text-left font-medium">Scenario</th>
-                              <th className="py-2 text-left font-medium">Arm</th>
-                              <th className="py-2 text-left font-medium">Product</th>
-                              <th className="py-2 text-right font-medium">Final</th>
-                              <th className="py-2 text-left font-medium">Outcome</th>
-                              <th className="py-2 text-right font-medium">Match</th>
+                        <table className="w-full text-left border-collapse">
+                          <thead className="sticky top-0 bg-muted/80 backdrop-blur-sm z-10 border-b border-border">
+                            <tr>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Scenario</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Arm</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Final</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Outcome</th>
+                              <th className="px-6 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Match</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody className="divide-y divide-border/40">
                             {scenarioRows.map((row: ResultRowView) => (
-                              <tr key={`${row.scenario_id}-${row.baseline_type}`} className="border-b border-border/60">
-                                <td className="py-2 font-mono text-xs">{row.scenario_id}</td>
-                                <td className="py-2">{row.baseline_type}</td>
-                                <td className="py-2">{row.selected_product ?? "—"}</td>
-                                <td className="py-2 text-right tabular-nums">{money(row.final_amount, currency)}</td>
-                                <td className="py-2 text-xs">{row.actual_outcome ?? row.status}</td>
-                                <td className="py-2 text-right">
-                                  {row.outcome_match === null ? "—" : row.outcome_match ? "✓" : "✗"}
+                              <tr key={`${row.scenario_id}-${row.baseline_type}`} className="hover:bg-muted/30 transition-colors">
+                                <td className="px-6 py-3 font-mono text-[10px] text-foreground">{row.scenario_id}</td>
+                                <td className="px-6 py-3 text-[10px] text-muted-foreground">{row.baseline_type}</td>
+                                <td className="px-6 py-3 text-[10px] text-right font-mono text-foreground">{money(row.final_amount, currency)}</td>
+                                <td className="px-6 py-3 text-[10px] text-muted-foreground">{row.actual_outcome ?? row.status}</td>
+                                <td className="px-6 py-3 text-right">
+                                  {row.outcome_match === null ? "—" : row.outcome_match ? 
+                                    <span className="text-emerald-500">✓</span> : 
+                                    <span className="text-destructive">✗</span>}
                                 </td>
                               </tr>
                             ))}
                           </tbody>
                         </table>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
+
             ) : null}
+
+            {/* Authority / Data Integrity */}
+            <div className="rounded-sm border border-blue-500/20 bg-blue-500/5 p-4 flex gap-3 items-center">
+              <Shield className="size-4 text-blue-500 flex-shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold uppercase text-blue-500">SERVER-SOURCED EVIDENCE</p>
+                <p className="text-[10px] text-muted-foreground">Evaluation results are read from persisted server-side orders, quotes and measurements.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </AppShell>
   );
 }
+
