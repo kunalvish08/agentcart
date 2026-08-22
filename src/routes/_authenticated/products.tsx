@@ -167,26 +167,28 @@ function ProductsPage() {
           onNewProduct={openCreate}
         />
 
-        <div className="border border-border bg-graphite-950 overflow-hidden">
+        <div className="border border-border bg-[#11161D] overflow-hidden">
           <CatalogToolbar />
 
-          <div className="bg-graphite-900/20 px-4 py-2 border-b border-border flex items-center gap-2">
-            <ShieldCheck className="size-4 text-copper-500" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-copper-500">SERVER-AUTHORITATIVE</span>
-            <span className="text-[10px] text-muted-foreground">Prices and inventory controlled by merchant server.</span>
+          <div className="bg-[rgba(91,141,239,0.06)] px-4 py-3 border-b border-border border-l-2 border-l-[#5B8DEF] flex items-center gap-3">
+            <ShieldCheck className="size-4 text-[#5B8DEF]" />
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#5B8DEF]">SERVER-AUTHORITATIVE</span>
+              <span className="text-[10px] text-[#A0A9B8]">Prices and inventory controlled by merchant server.</span>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-border hover:bg-transparent">
-                  <TableHead className="text-[10px] uppercase tracking-widest">Product</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest">Category</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Price</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest w-40">Stock</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest">Status</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest">AI Commerce</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Updated</TableHead>
+                <TableRow className="border-border hover:bg-transparent bg-[#161C24]/50">
+                  <TableHead className="text-[10px] uppercase tracking-widest text-[#707B8C]">Product</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-[#707B8C]">Category</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right text-[#707B8C]">Price</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest w-40 text-[#707B8C]">Stock</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-[#707B8C]">Status</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-[#707B8C]">AI Commerce</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right text-[#707B8C]">Updated</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
@@ -200,19 +202,24 @@ function ProductsPage() {
                 ) : null}
 
                 {products.data?.map((product) => (
-                  <TableRow key={product.id} className="border-border hover:bg-graphite-900/40 transition-colors">
+                  <TableRow key={product.id} className="border-border hover:bg-[#161C24] hover:border-l-2 hover:border-l-[#5B8DEF] transition-all">
                     <TableCell>
-                      <p className="font-bold text-foreground text-sm font-mono">{product.name}</p>
-                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">{product.description}</p>
+                      <p className="font-bold text-[#F5F7FA] text-sm font-mono">{product.name}</p>
+                      <p className="text-xs text-[#707B8C] truncate max-w-[200px]">{product.description}</p>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="rounded-none bg-graphite-900 border-border text-[10px]">{product.category ?? "—"}</Badge>
+                      <Badge variant="outline" className="rounded-none bg-[rgba(91,141,239,0.05)] border-[#5B8DEF]/20 text-[#5B8DEF] text-[10px] font-mono">
+                        {product.category?.toUpperCase() ?? "—"}
+                      </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono font-medium">{inr.format(product.price)}</TableCell>
+                    <TableCell className="text-right font-mono font-medium text-[#F5F7FA] text-sm">{inr.format(product.price)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Input
-                          className="h-8 w-16 bg-graphite-950 border-border text-xs text-center font-mono"
+                          className={cn(
+                            "h-8 w-16 bg-[#0B0F14] border-[#252D38] text-xs text-center font-mono focus-visible:ring-[#5B8DEF]/20",
+                            product.stock_quantity <= 5 && "border-[#D9A441] text-[#D9A441]"
+                          )}
                           type="number"
                           value={stockDrafts[product.id] ?? String(product.stock_quantity)}
                           onChange={(e) => setStockDrafts((prev) => ({ ...prev, [product.id]: e.target.value }))}
@@ -220,7 +227,7 @@ function ProductsPage() {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 text-[10px] hover:text-copper-500"
+                          className="h-8 text-[10px] text-[#A0A9B8] hover:text-[#5B8DEF] hover:bg-[#5B8DEF]/10 transition-colors"
                           onClick={() => stockMutation.mutate({ id: product.id, stock_quantity: Number(stockDrafts[product.id] ?? product.stock_quantity) })}
                         >
                           SAVE
@@ -228,26 +235,34 @@ function ProductsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("rounded-none text-[10px] px-2", product.status === "active" ? "bg-verified-500/10 text-verified-500 border-verified-500/20" : "bg-muted text-muted-foreground border-border")}>
+                      <Badge className={cn(
+                        "rounded-none text-[10px] px-2 border transition-opacity hover:opacity-90", 
+                        product.status === "active" 
+                          ? "bg-[rgba(53,201,138,0.1)] text-[#35C98A] border-[#35C98A]/30" 
+                          : "bg-[#161C24] text-[#7C8798] border-[#252D38]"
+                      )}>
                         {product.status.toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className="rounded-none bg-graphite-900 border-border text-[10px] text-copper-500">PUBLIC</Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge className="rounded-none bg-[rgba(91,141,239,0.1)] border-[#5B8DEF]/30 text-[10px] text-[#5B8DEF] font-bold">PUBLIC</Badge>
+                        <div className="size-1.5 rounded-full bg-[#35C98A]" title="Active in Catalog" />
+                      </div>
                     </TableCell>
-                    <TableCell className="text-right text-[10px] text-muted-foreground font-mono">
+                    <TableCell className="text-right text-[10px] text-[#707B8C] font-mono">
                       {new Date(product.updated_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost" className="size-8">
+                          <Button size="icon" variant="ghost" className="size-8 text-[#A0A9B8] hover:text-[#5B8DEF] hover:bg-[#5B8DEF]/10">
                             <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-none border-border bg-graphite-950">
-                          <DropdownMenuItem onClick={() => openEdit(product)}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => statusMutation.mutate({ id: product.id, status: product.status === "active" ? "inactive" : "active" })}>
+                        <DropdownMenuContent align="end" className="rounded-none border-[#252D38] bg-[#11161D] text-[#F5F7FA]">
+                          <DropdownMenuItem className="hover:bg-[#161C24] cursor-pointer" onClick={() => openEdit(product)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem className="hover:bg-[#161C24] cursor-pointer" onClick={() => statusMutation.mutate({ id: product.id, status: product.status === "active" ? "inactive" : "active" })}>
                             Toggle Status
                           </DropdownMenuItem>
                         </DropdownMenuContent>
