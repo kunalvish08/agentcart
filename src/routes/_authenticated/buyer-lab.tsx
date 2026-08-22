@@ -339,7 +339,7 @@ function BuyerLabPage() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* LEFT: Simulation configuration */}
-            <motion.div variants={itemReveal} className="space-y-6">
+          <motion.div variants={itemReveal} className="space-y-6">
               <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
               <CardHeader className="bg-muted/30 border-b border-border py-3">
                 <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
