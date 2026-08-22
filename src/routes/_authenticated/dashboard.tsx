@@ -427,8 +427,8 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
 function PipelineStep({ label, value, active = false, highlight = false }: { label: string; value: any; active?: boolean; highlight?: boolean }) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 transition-all",
-      highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm" : 
+      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 px-3 transition-all min-w-[64px]",
+      highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm ring-2 ring-primary/5" : 
       active ? "bg-primary/5 border-primary/20 text-primary" : "bg-muted/10 border-border/40 text-muted-foreground"
     )}>
       <span className="text-xs font-bold">{value ?? 0}</span>
