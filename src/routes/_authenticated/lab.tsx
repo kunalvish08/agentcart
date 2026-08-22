@@ -17,9 +17,13 @@ import {
   TrendingUp,
   ChevronRight,
   Info,
-  Shield
+  Shield,
+  Zap,
+  Microscope,
+  Fingerprint
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
