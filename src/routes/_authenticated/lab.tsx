@@ -298,7 +298,58 @@ function LabPage() {
                 </Button>
               </div>
             </div>
+            <div className="rounded-sm border border-border bg-card shadow-none mt-6">
+              <div className="bg-muted/30 border-b border-border px-6 py-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Recent runs</p>
+              </div>
+              <div className="p-0">
+                {runs.length === 0 ? (
+                  <div className="p-6 text-center">
+                    <p className="text-[11px] text-muted-foreground italic">No runs yet.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead className="bg-muted/50 border-b border-border">
+                        <tr>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Run</th>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                          <th className="px-4 py-3 text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-right">Results</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {runs.map((item: RunSummary) => (
+                          <tr 
+                            key={item.id} 
+                            onClick={() => {
+                              setSelectedRunId(item.id);
+                              setAutoRun(false);
+                            }}
+                            className={cn(
+                              "cursor-pointer hover:bg-muted/30 transition-colors",
+                              item.id === activeRunId ? "bg-primary/5" : ""
+                            )}
+                          >
+                            <td className="px-4 py-3">
+                              <p className="text-[10px] font-bold text-foreground truncate max-w-[120px]">{item.label}</p>
+                              <p className="text-[9px] text-muted-foreground mt-0.5">{new Date(item.created_at).toLocaleDateString()}</p>
+                            </td>
+                            <td className="px-4 py-3">
+                              <StatusBadge status={item.status} />
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <span className="text-[10px] font-mono text-muted-foreground">{item.completed_results}/{item.total_results}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
           </aside>
+
 
           <div className="space-y-6">
             {run ? (
