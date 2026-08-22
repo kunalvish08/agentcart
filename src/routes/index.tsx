@@ -266,10 +266,10 @@ function Landing() {
         </section>
 
 
-        <section className="py-32 text-center bg-card border border-border">
+        <section className="py-20 sm:py-32 text-center bg-card border border-border px-6">
            <p className="text-[10px] font-bold uppercase text-primary tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
-           <h2 className="mt-6 text-5xl font-semibold">Make your store legible to AI.</h2>
-           <p className="mt-6 text-muted-foreground max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
+           <h2 className="mt-6 text-3xl sm:text-5xl font-semibold">Make your store legible to AI.</h2>
+           <p className="mt-6 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
            <div className="mt-12 flex justify-center gap-4">
               <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none"><Link to="/login">Open Merchant Console</Link></Button>
               <Button asChild variant="outline" className="h-12 border-border text-foreground hover:bg-accent rounded-none"><Link to="/agent-api">Explore Agent API</Link></Button>
