@@ -47,7 +47,8 @@ const NavigationMenuTrigger = React.forwardRef<
     className={cn(navigationMenuTriggerStyle(), "group", className)}
     {...props}
   >
-    {children}'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+    {children}
+    {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
                                             Fix the MOBILE NAVIGATION BAR across the entire Agentic Commerce website.
@@ -220,7 +221,7 @@ At 320–430px:
 
 Do not use a hamburger-only replacement. The requirement is a VISIBLE horizontal mobile navigation bar with swipe scrolling.
 
-Implement this in the shared AppShell/layout so it works consistently across ALL pages.
+Implement this in the shared AppShell/layout so it works consistently across ALL pages.`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
