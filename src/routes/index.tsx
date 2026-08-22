@@ -158,15 +158,15 @@ function Landing() {
             <p className="mt-8 text-sm text-muted-foreground">External AI buyers can discover products through a public API designed for LLM tool-calling.</p>
           </div>
           <div className="border border-border p-8 bg-card">
-            <Scale className="text-copper" />
+            <Scale className="text-primary" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">02 BOUNDED</h3>
-            <p className="mt-4 text-[11px] font-mono text-ice">Let agents negotiate without giving them pricing authority.</p>
-            <p className="mt-8 text-sm text-steel">Merchant policies determine discount limits. The AI buyer requests, the server enforces.</p>
-            <div className="mt-8 h-12 flex items-center justify-between px-4 border border-slate bg-obsidian overflow-hidden relative">
+            <p className="mt-4 text-[11px] font-mono text-primary">Let agents negotiate without giving them pricing authority.</p>
+            <p className="mt-8 text-sm text-muted-foreground">Merchant policies determine discount limits. The AI buyer requests, the server enforces.</p>
+            <div className="mt-8 h-12 flex items-center justify-between px-4 border border-border bg-background overflow-hidden relative">
                <motion.div 
                  animate={{ x: [0, 150] }}
                  transition={{ repeat: Infinity, duration: 3, ease: "easeIn" }}
-                 className="text-[10px] font-mono text-ice"
+                 className="text-[10px] font-mono text-foreground/70"
                >
                  REQ 30%
                </motion.div>
