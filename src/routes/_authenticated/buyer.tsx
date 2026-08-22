@@ -478,9 +478,9 @@ function BuyerPage() {
             </motion.section>
 
             {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
-            <motion.div variants={itemReveal} className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+            <motion.div variants={itemReveal} className="flex flex-col lg:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
               {/* LEFT: AGENT WORKSPACE */}
-              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-5">
+              <motion.section variants={itemReveal} className="flex-1 flex flex-col gap-4 p-4 md:p-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
                   {sessionId && (
