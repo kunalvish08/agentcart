@@ -343,8 +343,8 @@ function FlowStep({ label, icon: Icon, active = false, className }: { label: str
   return (
     <div className={cn("flex flex-col items-center gap-3 transition-all", active ? "scale-110" : "opacity-60")}>
       <div className={cn(
-        "flex size-12 items-center justify-center rounded-xl border transition-all",
-        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border",
+        "flex size-12 items-center justify-center rounded-sm border transition-all",
+        active ? "bg-primary text-primary-foreground border-primary shadow-sm" : "bg-muted/30 text-muted-foreground border-border",
         className
       )}>
         <Icon className="size-5" />
@@ -364,12 +364,12 @@ function FlowConnector() {
 
 function Stat({ label, value, icon: Icon }: { label: string; value: any; icon: any }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-none">
+    <div className="rounded-sm border border-border/60 bg-card p-4 shadow-none">
       <div className="flex items-center gap-2 mb-2">
         <Icon className="size-3.5 text-muted-foreground" />
         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</span>
       </div>
-      <p className="text-xl font-semibold tracking-tight text-slate-900">{value ?? "—"}</p>
+      <p className="text-xl font-bold tracking-tight text-foreground">{value ?? "—"}</p>
     </div>
   );
 }
@@ -378,7 +378,7 @@ function RuleItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-      <p className="text-lg font-semibold tracking-tight text-slate-900">{value}</p>
+      <p className="text-lg font-bold tracking-tight text-foreground">{value}</p>
     </div>
   );
 }
@@ -386,8 +386,8 @@ function RuleItem({ label, value }: { label: string; value: string }) {
 function StatusToggle({ label, enabled }: { label: string; enabled?: boolean }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className={cn("size-2 rounded-full", enabled ? "bg-emerald-500 shadow-[0_0_8px_oklch(0.64_0.17_153)]" : "bg-slate-300")} />
-      <span className="text-[11px] font-bold uppercase tracking-widest text-slate-600">{label}</span>
+      <div className={cn("size-2 rounded-full", enabled ? "bg-verified-green shadow-[0_0_8px_oklch(from_var(--verified-green)_l_c_h_/_0.5)]" : "bg-muted-foreground/30")} />
+      <span className="text-[11px] font-bold uppercase tracking-widest text-foreground/70">{label}</span>
     </div>
   );
 }
@@ -395,11 +395,11 @@ function StatusToggle({ label, enabled }: { label: string; enabled?: boolean }) 
 function RevenueMetric({ label, value, active = false, sub }: { label: string; value: string; active?: boolean; sub?: string }) {
   return (
     <div className={cn(
-      "flex-1 flex flex-col justify-center rounded-xl border p-4 shadow-none",
+      "flex-1 flex flex-col justify-center rounded-sm border p-4 shadow-none",
       active ? "bg-primary/[0.03] border-primary/20" : "bg-card border-border/60"
     )}>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{label}</p>
-      <p className={cn("text-xl font-bold tracking-tight", active ? "text-primary" : "text-slate-900")}>{value}</p>
+      <p className={cn("text-xl font-bold tracking-tight", active ? "text-primary" : "text-foreground")}>{value}</p>
       {sub && <p className="mt-1 text-[10px] font-bold uppercase text-primary/70">{sub}</p>}
     </div>
   );
@@ -409,7 +409,7 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
   return (
     <div>
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-      <p className="text-sm font-bold text-slate-900">{value ?? 0}</p>
+      <p className="text-sm font-bold text-foreground">{value ?? 0}</p>
       {sub && <p className="text-[9px] font-bold uppercase text-muted-foreground/60 tracking-tight">{sub}</p>}
     </div>
   );
@@ -418,7 +418,7 @@ function SmallMetric({ label, value, sub }: { label: string; value: any; sub?: s
 function PipelineStep({ label, value, active = false, highlight = false }: { label: string; value: any; active?: boolean; highlight?: boolean }) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 transition-all",
+      "flex flex-col items-center justify-center gap-1 rounded-sm border py-2 transition-all",
       highlight && active ? "bg-primary text-primary-foreground border-primary shadow-sm" : 
       active ? "bg-primary/5 border-primary/20 text-primary" : "bg-muted/10 border-border/40 text-muted-foreground"
     )}>
@@ -431,18 +431,18 @@ function PipelineStep({ label, value, active = false, highlight = false }: { lab
 function StatusRow({ label, status }: { label: string; status: string }) {
   const isOk = ['live', 'operational', 'configured', 'enforced'].includes(status);
   const isTest = status === 'test mode';
+  const isWarning = status === 'inactive' || status === 'pending';
   
   return (
-    <div className="flex items-center justify-between text-[11px] font-semibold">
+    <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-tight">
       <span className="text-muted-foreground">{label}</span>
       <div className="flex items-center gap-2">
         <span className={cn(
-          "capitalize", 
-          isOk ? "text-[oklch(0.65_0.15_160)]" : isTest ? "text-[oklch(0.75_0.15_200)]" : "text-[oklch(0.7_0.15_80)]"
+          isOk ? "text-verified-green" : isWarning ? "text-approval-amber" : "text-destructive"
         )}>{status}</span>
         <div className={cn(
           "size-1.5 rounded-full", 
-          isOk ? "bg-[oklch(0.65_0.15_160)]" : isTest ? "bg-[oklch(0.75_0.15_200)]" : "bg-[oklch(0.7_0.15_80)]"
+          isOk ? "bg-verified-green" : isWarning ? "bg-approval-amber" : "bg-destructive"
         )} />
       </div>
     </div>
