@@ -1342,14 +1342,33 @@ function OrderRow({ row, buyerName }: { row: BuyerActiveOrder; buyerName: string
           }).format(row.final_amount)}
         </td>
         <td className="px-5 py-3">
-          <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
-            "text-[8px] h-4 font-bold uppercase tracking-widest border-border/40",
-            row.status === "COMPLETED" && "bg-verified-green/10 text-verified-green border-verified-green/20",
-            row.status === "PAYMENT_PENDING" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20",
-            row.status === "APPROVAL_REQUIRED" && "bg-muted text-muted-foreground border-border/40"
-          )}>
-            {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
-          </Badge>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={row.status}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Badge variant={isCompleted ? "secondary" : "outline"} className={cn(
+                "text-[8px] h-4 font-bold uppercase tracking-widest border-border/40",
+                row.status === "COMPLETED" && "bg-verified-green/10 text-verified-green border-verified-green/20",
+                row.status === "PAYMENT_PENDING" && "bg-approval-amber/10 text-approval-amber border-approval-amber/20",
+                row.status === "APPROVAL_REQUIRED" && "bg-muted text-muted-foreground border-border/40"
+              )}>
+                {isCompleted && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="mr-1"
+                  >
+                    <Check className="size-2.5" />
+                  </motion.span>
+                )}
+                {CHECKOUT_STATE_LABELS[row.status] ?? row.status}
+              </Badge>
+            </motion.div>
+          </AnimatePresence>
         </td>
         <td className="px-5 py-3 text-muted-foreground/60 whitespace-nowrap text-[11px]">
           {new Date(row.created_at).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
