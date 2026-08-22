@@ -757,75 +757,92 @@ function BuyerLabPage() {
 
 
         {/* evaluation metrics */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Gauge className="size-4" /> External buyer evaluation
+        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border py-3">
+            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Gauge className="size-4" /> Evaluation
             </CardTitle>
-            <CardDescription>
-              Aggregated from persisted runs, tool calls and public API request logs.
-            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="pt-6 space-y-8">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric
-                label="External runs"
-                value={String(m?.runs.total ?? 0)}
-                hint={`${m?.runs.completed ?? 0} completed · avg ${m?.runs.avg_duration_ms ?? 0} ms`}
-              />
-              <Metric
-                label="Quotes issued"
-                value={String(m?.funnel.quote_issued ?? 0)}
-                hint={`${m?.funnel.checkout_requested ?? 0} checkout requests`}
-              />
-              <Metric
-                label="Policy-capped offers"
-                value={String(m?.safety.policy_capped_quotes ?? 0)}
-                hint={`${m?.safety.approval_required_orders ?? 0} orders held for approval`}
-              />
-              <Metric
-                label="Public API calls"
-                value={String(m?.api.public_requests ?? 0)}
-                hint={`${m?.api.error_responses ?? 0} refused · avg ${m?.api.avg_latency_ms ?? 0} ms`}
-              />
+              {[
+                { label: "External runs", value: m?.runs.total, hint: `${m?.runs.completed ?? 0} COMPLETED · ${m?.runs.avg_duration_ms ?? 0}MS AVG` },
+                { label: "Quotes issued", value: m?.funnel.quote_issued, hint: `${m?.funnel.checkout_requested ?? 0} CHECKOUT REQ` },
+                { label: "Policy-capped offers", value: m?.safety.policy_capped_quotes, hint: `${m?.safety.approval_required_orders ?? 0} HELD FOR APPROVAL` },
+                { label: "Public API calls", value: m?.api.public_requests, hint: `${m?.api.error_responses ?? 0} ERR · ${m?.api.avg_latency_ms ?? 0}MS AVG` }
+              ].map(stat => (
+                <div key={stat.label} className="rounded-sm border border-border/60 bg-muted/5 p-4 transition-colors hover:bg-muted/10">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{stat.label}</p>
+                  <p className="text-xl font-bold text-foreground font-mono">{stat.value ?? 0}</p>
+                  <p className="text-[8px] font-bold uppercase tracking-tighter text-muted-foreground/40 mt-1">{stat.hint}</p>
+                </div>
+              ))}
             </div>
 
             {m && m.tools.length > 0 ? (
-              <div className="space-y-2">
-                <Separator />
-                <p className="text-sm font-medium text-foreground">Tool reliability</p>
-                {m.tools.map((tool) => (
-                  <div
-                    key={tool.tool_name}
-                    className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2 text-xs"
-                  >
-                    <span className="font-mono text-foreground">{tool.tool_name}</span>
-                    <span className="text-muted-foreground">
-                      {tool.calls} calls · {tool.success} ok · {tool.failed} refused ·{" "}
-                      {tool.avg_latency_ms ?? 0} ms avg
-                    </span>
-                  </div>
-                ))}
+              <div className="space-y-3">
+                <p className="text-[10px] font-bold text-foreground uppercase tracking-widest border-b border-border/40 pb-2 flex items-center gap-2">
+                  <Activity className="size-3" /> Tool Reliability
+                </p>
+                <div className="rounded-sm border border-border/40 overflow-hidden">
+                  <table className="w-full text-[10px] font-mono">
+                    <thead className="bg-muted/30 border-b border-border/40 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                      <tr>
+                        <th className="px-4 py-2 text-left">Tool</th>
+                        <th className="px-4 py-2 text-right">Calls</th>
+                        <th className="px-4 py-2 text-right">Success</th>
+                        <th className="px-4 py-2 text-right">Refused</th>
+                        <th className="px-4 py-2 text-right">Avg Latency</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/20">
+                      {m.tools.map((tool) => (
+                        <tr key={tool.tool_name} className="bg-muted/5 hover:bg-muted/10 transition-colors">
+                          <td className="px-4 py-2 text-foreground font-bold uppercase tracking-tight">{tool.tool_name}</td>
+                          <td className="px-4 py-2 text-right text-muted-foreground">{tool.calls}</td>
+                          <td className="px-4 py-2 text-right text-emerald-400 font-bold">{tool.success}</td>
+                          <td className="px-4 py-2 text-right text-amber-400 font-bold">{tool.failed}</td>
+                          <td className="px-4 py-2 text-right text-muted-foreground">{tool.avg_latency_ms ?? 0}ms</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : null}
 
             {m && m.api.by_endpoint.length > 0 ? (
-              <div className="space-y-2">
-                <Separator />
-                <p className="text-sm font-medium text-foreground">Endpoint traffic</p>
-                {m.api.by_endpoint.map((row) => (
-                  <div
-                    key={row.endpoint}
-                    className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2 text-xs"
-                  >
-                    <span className="font-mono text-foreground">{row.endpoint}</span>
-                    <span className="text-muted-foreground">
-                      {row.requests} req · {row.errors} err · {row.avg_latency_ms ?? 0} ms avg
-                    </span>
-                  </div>
-                ))}
+              <div className="space-y-3">
+                <p className="text-[10px] font-bold text-foreground uppercase tracking-widest border-b border-border/40 pb-2 flex items-center gap-2">
+                  <Network className="size-3" /> Endpoint Traffic
+                </p>
+                <div className="rounded-sm border border-border/40 overflow-hidden">
+                  <table className="w-full text-[10px] font-mono">
+                    <thead className="bg-muted/30 border-b border-border/40 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                      <tr>
+                        <th className="px-4 py-2 text-left">Endpoint</th>
+                        <th className="px-4 py-2 text-right">Requests</th>
+                        <th className="px-4 py-2 text-right">Errors</th>
+                        <th className="px-4 py-2 text-right">Avg Latency</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/20">
+                      {m.api.by_endpoint.map((row) => (
+                        <tr key={row.endpoint} className="bg-muted/5 hover:bg-muted/10 transition-colors">
+                          <td className="px-4 py-2 text-foreground font-bold truncate max-w-[200px]">{row.endpoint}</td>
+                          <td className="px-4 py-2 text-right text-muted-foreground">{row.requests}</td>
+                          <td className="px-4 py-2 text-right text-amber-400 font-bold">{row.errors}</td>
+                          <td className="px-4 py-2 text-right text-muted-foreground">{row.avg_latency_ms ?? 0}ms</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : null}
+          </CardContent>
+        </Card>
+
           </CardContent>
         </Card>
       </div>
