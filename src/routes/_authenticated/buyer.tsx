@@ -430,91 +430,90 @@ function BuyerPage() {
               </div>
             </section>
 
-            {/* 3. LIVE AGENT WORKSPACE */}
-            <section className="flex flex-col gap-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
-                {sessionId && (
-                  <span className="text-[10px] font-mono text-muted-foreground">SESSION: {sessionId.slice(0, 8)}</span>
-                )}
-              </div>
-
-              {turns.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 border border-dashed border-border rounded-lg bg-muted/10">
-                  <Bot className="size-10 text-muted-foreground/20 mb-4" />
-                  <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Ready to Shop</p>
-                  <p className="text-xs text-muted-foreground/60 mt-1">Describe your intent above to start an agent run.</p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-6">
-                  {turns.map((turn) =>
-                    turn.role === "user" ? (
-                      <div key={turn.id} className="flex flex-col gap-2 opacity-60">
-                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest ml-4">Intent</p>
-                         <div className="ml-4 border-l-2 border-border pl-4 py-1">
-                           <p className="text-sm font-medium text-foreground">{turn.content}</p>
-                         </div>
-                      </div>
-                    ) : (
-                      <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
-                    )
+            {/* 3. AGENT WORKSPACE + SERVER AUTHORITY */}
+            <div className="flex flex-col md:flex-row gap-6 border border-border/40 rounded-lg overflow-hidden bg-card/50">
+              {/* LEFT: AGENT WORKSPACE */}
+              <section className="flex-1 flex flex-col gap-4 p-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">Agent Workspace</h2>
+                  {sessionId && (
+                    <span className="text-[9px] font-mono text-muted-foreground/60 uppercase">Session: {sessionId.slice(0, 8)}</span>
                   )}
-                  <div ref={bottomRef} />
                 </div>
-              )}
-            </section>
+
+                {turns.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 border border-dashed border-border/60 rounded bg-muted/5">
+                    <Bot className="size-8 text-muted-foreground/20 mb-3" />
+                    <p className="text-[9px] font-bold tracking-widest text-muted-foreground/40 uppercase">Ready to Shop</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {turns.map((turn) =>
+                      turn.role === "user" ? (
+                        <div key={turn.id} className="flex flex-col gap-1.5 opacity-60">
+                           <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest ml-3">Intent</p>
+                           <div className="ml-3 border-l-2 border-border pl-3 py-0.5">
+                             <p className="text-[13px] font-medium text-foreground">{turn.content}</p>
+                           </div>
+                        </div>
+                      ) : (
+                        <AssistantTurn key={turn.id} turn={turn} running={running} sessionId={sessionId} />
+                      )
+                    )}
+                    <div ref={bottomRef} />
+                  </div>
+                )}
+              </section>
+
+              <div className="hidden md:block w-px bg-border/40" />
+
+              {/* RIGHT: SERVER AUTHORITY SIDEBAR */}
+              <aside className="w-full md:w-[280px] flex flex-col gap-6 p-5 bg-muted/10">
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</span>
+                    <Badge variant="outline" className="h-4 px-1.5 text-[8px] font-bold text-copper border-copper/30 bg-copper/5">SERVER-AUTHORITATIVE</Badge>
+                  </div>
+                  
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-2.5">Agent Can</p>
+                      <p className="text-[11px] font-medium text-foreground/80 leading-relaxed">
+                        Search · Inspect · Quote · Negotiate · Request checkout
+                      </p>
+                    </div>
+
+                    <Separator className="bg-border/40" />
+
+                    <div>
+                      <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-2.5">Server Controls</p>
+                      <p className="text-[11px] font-bold text-copper leading-relaxed">
+                        Price · Discount · Inventory · Policy · State · Verification
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-border/40">
+                  <h3 className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mb-3">Guardrails</h3>
+                  <ul className="space-y-2">
+                    {[
+                      "Registered tools only",
+                      "Argument validation",
+                      "Computed pricing",
+                      "Server checkout",
+                      "No auto-payment"
+                    ].map(rule => (
+                      <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground/70">
+                        <Check className="size-3 text-verified-green/60 shrink-0 mt-0.5" />
+                        <span>{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
+            </div>
           </div>
-
-          <aside className="flex flex-col gap-8">
-            {/* 4. SERVER AUTHORITY PANEL */}
-            <section className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
-              <div className="px-5 py-4 bg-muted/30 border-b border-border">
-                <h3 className="text-[10px] font-bold tracking-widest text-foreground uppercase">Server Authority</h3>
-              </div>
-              <div className="p-5 space-y-6">
-                <div>
-                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Agent Can</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Search", "Inspect", "Quote Request", "Negotiate", "Checkout Request"].map(c => (
-                      <span key={c} className="px-2 py-0.5 text-[9px] font-bold bg-muted text-muted-foreground rounded uppercase">{c}</span>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-[9px] font-bold text-copper uppercase tracking-widest mb-3">Server Controls</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Price", "Discount", "Inventory", "Policy", "State", "Verification"].map(c => (
-                      <span key={c} className="px-2 py-0.5 text-[9px] font-bold bg-copper/10 text-copper rounded uppercase">{c}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="pt-4 border-t border-border/40">
-                  <p className="text-[10px] font-medium text-muted-foreground leading-relaxed italic">
-                    AI intent is bounded by merchant policy. All calculations occur on protected server hardware.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* 8. GUARDRAILS (Infrastructure footer) */}
-            <section className="bg-muted/10 border border-border/40 rounded-lg p-5">
-              <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-4">Guardrails</h3>
-              <ul className="space-y-3">
-                {[
-                  "Registered tools only",
-                  "Server-side argument validation",
-                  "Server-computed pricing",
-                  "Server-authoritative checkout",
-                  "No autonomous payment capture"
-                ].map(rule => (
-                  <li key={rule} className="flex items-start gap-2 text-[10px] text-muted-foreground">
-                    <Check className="size-3 text-verified-green shrink-0 mt-0.5" />
-                    <span>{rule}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </aside>
         </div>
 
         {/* 5. YOUR ORDERS */}
