@@ -147,7 +147,7 @@ function Landing() {
                 className="mb-8 inline-flex items-center gap-3"
               >
                 <div className="h-[1px] w-8 bg-primary/60" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#3157FF]">
                   AI COMMERCE INFRASTRUCTURE
                 </span>
               </motion.div>
