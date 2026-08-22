@@ -428,30 +428,25 @@ function Landing() {
         <section className="border-t border-border/40 bg-white py-20">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-12">
-              <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">SERVER AUTHORITY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
-                   Price · Inventory · Policy
-                </div>
-              </div>
-              <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">TENANT ISOLATION</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
-                   Merchant-scoped data
-                </div>
-              </div>
-              <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">AUDITABLE</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
-                   Orders · Payments · Traces
-                </div>
-              </div>
-              <div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">RAZORPAY</p>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
-                   Verified payments
-                </div>
-              </div>
+              {[
+                { label: "SERVER AUTHORITY", content: "Price · Inventory · Policy" },
+                { label: "TENANT ISOLATION", content: "Merchant-scoped data" },
+                { label: "AUDITABLE", content: "Orders · Payments · Traces" },
+                { label: "RAZORPAY", content: "Verified payments" }
+              ].map((item, i) => (
+                <motion.div 
+                  key={item.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                >
+                  <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
+                  <div className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
+                    {item.content}
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
