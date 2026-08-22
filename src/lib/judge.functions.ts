@@ -35,7 +35,7 @@ export const runJudgeDemo = createServerFn({ method: "POST" })
     return runJudgeDemo({
       userId: context.userId,
       baseUrl: new URL(getRequest().url).origin,
-      chaosMode: data?.chaosMode
+      chaosMode: data?.chaosMode ?? false
     });
   });
 

@@ -107,6 +107,7 @@ export async function runJudgeDemo(args: {
     return steps[steps.length - 1]!;
   };
   const fail = (code: string, message: string): JudgeDemoResult => ({
+    id: null,
     ok: false,
     session_id: null,
     run_id: null,
@@ -466,6 +467,7 @@ export async function runJudgeDemo(args: {
   await finishRun("completed", "demo_complete");
 
   return {
+    id: runId,
     ok: true,
     session_id: sessionId,
     run_id: runId,

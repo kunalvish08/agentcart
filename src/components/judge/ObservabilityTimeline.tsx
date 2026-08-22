@@ -19,9 +19,9 @@ interface Step {
   step_type: string;
   tool_name?: string | null;
   status: string;
-  latency_ms: number;
-  input_summary?: string;
-  output_summary?: string;
+  latency_ms: number | null;
+  input_summary?: string | null;
+  output_summary?: string | null;
   actor?: string; // We'll infer this if missing
 }
 
