@@ -1204,62 +1204,136 @@ function NegotiationPanel({ outcome }: { outcome: NegotiationOutcome }) {
   );
 }
 
+/**
+ * Revenue Agent recommendations. The AI only proposes: accepting calls the server,
+ * which re-checks merchant policy and returns an authoritative quote. No price is
+ * ever computed on the client.
+ */
 function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
-  const accept = useServerFn(acceptRecommendation);
-  const [accepted, setAccepted] = useState<Record<string, boolean>>({});
+  const respond = useServerFn(respondToRecommendation);
+  const [state, setState] = useState<Record<string, RecommendationResponse | "rejected">>({});
   const [pending, setPending] = useState<string | null>(null);
+  const [failed, setFailed] = useState<Record<string, string>>({});
 
   return (
     <div>
-      <p className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
-        <Sparkles className="size-4 text-primary" /> You may also want
+      <p className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary">
+        <Sparkles className="size-3.5" /> Recommended for your setup
       </p>
       <div className="grid gap-2">
         {picks.map((pick) => {
           const key = pick.recommendation_id ?? pick.product_id;
-          const isAccepted = Boolean(accepted[key]);
+          const result = state[key];
+          const accepted = result && result !== "rejected" ? result : null;
+          const rejected = result === "rejected";
           return (
-            <div key={key} className="rounded-md border border-border px-3 py-2 text-sm">
+            <div
+              key={key}
+              className="rounded-md border border-border bg-card/60 px-3 py-2.5 text-sm"
+            >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="min-w-0 truncate font-medium text-foreground">{pick.name}</span>
                 <span className="flex items-center gap-2">
                   <Badge variant="outline" className="capitalize">
                     {pick.recommendation_type.replace("_", " ")}
                   </Badge>
-                  <span className="text-muted-foreground">{money(pick.price, pick.currency)}</span>
+                  <span className="font-semibold text-foreground">
+                    {money(pick.price, pick.currency)}
+                  </span>
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">{pick.reason}</p>
-              {pick.recommendation_id ? (
-                <Button
-                  size="sm"
-                  variant={isAccepted ? "secondary" : "outline"}
-                  className="mt-2 h-7"
-                  disabled={isAccepted || pending === key}
-                  onClick={async () => {
-                    setPending(key);
-                    try {
-                      await accept({ data: { recommendationId: pick.recommendation_id! } });
-                      setAccepted((prev) => ({ ...prev, [key]: true }));
-                    } catch {
-                      /* keep the button available on failure */
-                    } finally {
-                      setPending(null);
-                    }
-                  }}
-                >
-                  {isAccepted ? (
+
+              {accepted ? (
+                <div className="mt-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-xs">
+                  {accepted.quote ? (
                     <>
-                      <Check className="size-3.5" /> Added to interest
-                    </>
-                  ) : pending === key ? (
-                    <>
-                      <Loader2 className="size-3.5 animate-spin" /> Saving
+                      <p className="flex flex-wrap items-center gap-2 font-medium text-foreground">
+                        <Check className="size-3.5 text-primary" /> Added to order — server quote{" "}
+                        {money(accepted.quote.final_amount, accepted.quote.currency)}
+                      </p>
+                      <p className="mt-1 text-muted-foreground">
+                        {accepted.quote.quantity} × {money(accepted.quote.unit_price, accepted.quote.currency)} ·
+                        quote {accepted.quote.quote_id.slice(0, 8)} · priced by the server
+                      </p>
                     </>
                   ) : (
-                    "I'm interested"
+                    <p className="text-muted-foreground">
+                      Accepted, but the server could not issue a quote
+                      {accepted.quote_error ? ` (${accepted.quote_error.code})` : ""}. No price is
+                      estimated.
+                    </p>
                   )}
-                </Button>
+                </div>
+              ) : null}
+
+              {rejected ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Dismissed — nothing was added to your order.
+                </p>
+              ) : null}
+
+              {failed[key] ? (
+                <p className="mt-2 text-xs text-destructive">{failed[key]}</p>
+              ) : null}
+
+              {pick.recommendation_id && !result ? (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    className="h-7"
+                    disabled={pending === key}
+                    onClick={async () => {
+                      setPending(key);
+                      setFailed((prev) => ({ ...prev, [key]: "" }));
+                      try {
+                        const response = await respond({
+                          data: { recommendationId: pick.recommendation_id!, action: "accept" },
+                        });
+                        setState((prev) => ({ ...prev, [key]: response }));
+                      } catch (error) {
+                        setFailed((prev) => ({
+                          ...prev,
+                          [key]:
+                            error instanceof Error
+                              ? error.message
+                              : "The server refused this recommendation.",
+                        }));
+                      } finally {
+                        setPending(null);
+                      }
+                    }}
+                  >
+                    {pending === key ? (
+                      <>
+                        <Loader2 className="size-3.5 animate-spin" /> Pricing
+                      </>
+                    ) : (
+                      "Add to order"
+                    )}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7"
+                    disabled={pending === key}
+                    onClick={async () => {
+                      setPending(key);
+                      try {
+                        await respond({
+                          data: { recommendationId: pick.recommendation_id!, action: "reject" },
+                        });
+                        setState((prev) => ({ ...prev, [key]: "rejected" }));
+                      } catch {
+                        setState((prev) => ({ ...prev, [key]: "rejected" }));
+                      } finally {
+                        setPending(null);
+                      }
+                    }}
+                  >
+                    Not now
+                  </Button>
+                </div>
               ) : null}
             </div>
           );
@@ -1268,6 +1342,7 @@ function GrowthPicks({ picks }: { picks: GrowthPick[] }) {
     </div>
   );
 }
+
 
 
 /* --------------------------- persisted buyer orders ------------------------ */
