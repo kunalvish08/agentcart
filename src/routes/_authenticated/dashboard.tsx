@@ -125,7 +125,12 @@ function DashboardPage() {
               <FlowConnector />
               <FlowStep label="AI BUYER" icon={Bot} />
               <FlowConnector />
-              <FlowStep label="SERVER AUTHORITY" icon={ShieldCheck} active />
+              <FlowStep 
+                label="SERVER AUTHORITY" 
+                icon={ShieldCheck} 
+                active 
+                className="scale-125 mx-2 md:mx-4 ring-8 ring-primary/5 border-primary bg-primary text-primary-foreground"
+              />
               <FlowConnector />
               <FlowStep label="APPROVAL" icon={ClipboardCheck} />
               <FlowConnector />
