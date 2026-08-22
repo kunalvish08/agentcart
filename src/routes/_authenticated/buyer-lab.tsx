@@ -286,134 +286,152 @@ function BuyerLabPage() {
       subtitle="Benchmark external AI buyers transacting entirely through your public commercial API."
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <div className="flex items-center justify-between border-b border-border/40 pb-6 mb-8">
-        <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Simulator Console</h2>
-      </div>
+      <header className="flex flex-col gap-6 mb-8 border-b border-border/40 pb-8">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-bold tracking-tight text-foreground uppercase">Simulator Console</h2>
+          <div className="flex flex-wrap gap-4 mt-2">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              <Network className="size-3" /> External Agent Testing
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              <Globe className="size-3" /> Public API
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-border/60 bg-muted/20 text-[10px] font-bold text-copper uppercase tracking-widest">
+              <ShieldCheck className="size-3 text-copper" /> Server-Authoritative
+            </div>
+          </div>
+        </div>
+      </header>
 
       <div className="space-y-8">
-        {/* boundary banner */}
-        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border pb-4">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Network className="size-3.5" /> Simulation Boundaries
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Every action is a public HTTP call; commercial authority remains server-side.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-8 pt-6 pb-8 text-xs md:grid-cols-2">
-            <div>
-              <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-tight text-foreground">
-                <Check className="size-3.5 text-verified-green" /> Permissions
-              </p>
-              <ul className="space-y-2">
-                {BUYER_CAN.map((item) => (
-                  <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
-                    <ArrowRight className="mt-0.5 size-3 shrink-0 text-primary/40" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="mb-3 flex items-center gap-2 font-bold uppercase tracking-tight text-foreground">
-                <Ban className="size-3.5 text-destructive" /> Limitations
-              </p>
-              <ul className="space-y-2">
-                {BUYER_CANNOT.map((item) => (
-                  <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
-                    <Lock className="mt-0.5 size-3 shrink-0 text-muted-foreground/30" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* control */}
-        <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border pb-4">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Bot className="size-3.5" /> Initialize External Agent
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Pick a scenario or write your own shopping intent. The agent discovers the merchant from the manifest.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-6">
-            <div className="flex flex-wrap gap-2">
-              {EXTERNAL_SCENARIOS.map((scenario) => (
-                <Button
-                  key={scenario.id}
-                  size="sm"
-                  variant="outline"
-                  disabled={running}
-                  className="rounded-sm h-8 text-[10px] font-bold uppercase tracking-widest border-border hover:bg-accent"
-                  onClick={() => {
-                    setInput(scenario.prompt);
-                    void start(scenario.prompt, scenario.id);
-                  }}
-                  title={scenario.expectation}
-                >
-                  {scenario.label}
-                </Button>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Shopping Intent</Label>
-              <Textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                rows={3}
-                maxLength={600}
-                placeholder="e.g. Find me a developer laptop under ₹60,000 and prepare checkout."
-                disabled={running}
-                className="rounded-sm border-border bg-background focus-visible:ring-primary/20 h-24 resize-none text-sm"
-              />
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Button 
-                onClick={() => void start(input)} 
-                disabled={running || input.trim().length === 0}
-                className="rounded-sm bg-primary text-primary-foreground font-bold uppercase tracking-widest h-10 px-6"
-              >
-                {running ? (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                ) : (
-                  <Send className="mr-2 size-4" />
-                )}
-                {running ? "Simulating…" : "Launch Agent"}
-              </Button>
-              {running ? (
-                <Button 
-                  variant="outline" 
-                  onClick={() => abortRef.current?.abort()}
-                  className="rounded-sm border-border font-bold uppercase tracking-widest h-10"
-                >
-                  <Square className="mr-2 size-4" /> Stop
-                </Button>
-              ) : null}
-              {run.runId ? (
-                <span className="font-mono text-[10px] text-muted-foreground/60 uppercase tracking-tight">
-                  ID: {run.runId.slice(0, 8)} · {run.model?.replace('gemini-', '') ?? "—"}
-                </span>
-              ) : null}
-            </div>
-
-            {run.error ? (
-              <p className="flex items-start gap-2 rounded-sm border border-destructive/20 bg-destructive/5 p-4 text-xs text-foreground">
-                <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-destructive" />
-                {run.error}
-              </p>
-            ) : null}
-          </CardContent>
-        </Card>
-
+        {/* simulator two-column workspace */}
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* transaction journey */}
+          {/* LEFT: Simulation configuration */}
+          <div className="space-y-6">
+            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border py-3">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <ShieldCheck className="size-3.5" /> Simulation Boundaries
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6 pt-6 pb-6 text-xs sm:grid-cols-2">
+                <div>
+                  <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2 border-b border-border/40 pb-2">
+                    Agent Can
+                  </p>
+                  <ul className="space-y-2">
+                    {BUYER_CAN.map((item) => (
+                      <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
+                        <Check className="mt-0.5 size-3 shrink-0 text-verified-green/60" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-copper flex items-center gap-2 border-b border-border/40 pb-2">
+                    Agent Cannot
+                  </p>
+                  <ul className="space-y-2">
+                    {BUYER_CANNOT.map((item) => (
+                      <li key={item} className="flex gap-2 text-muted-foreground leading-relaxed">
+                        <Lock className="mt-0.5 size-3 shrink-0 text-copper/40" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border py-3">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <Bot className="size-3.5" /> Initialize External Agent
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-6">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Scenario Presets</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {EXTERNAL_SCENARIOS.map((scenario) => (
+                      <Button
+                        key={scenario.id}
+                        size="sm"
+                        variant="outline"
+                        disabled={running}
+                        className="rounded-sm h-8 text-[9px] font-bold uppercase tracking-widest border-border/60 bg-muted/10 hover:bg-copper/10 hover:text-copper transition-colors"
+                        onClick={() => {
+                          setInput(scenario.prompt);
+                          void start(scenario.prompt, scenario.id);
+                        }}
+                        title={scenario.expectation}
+                      >
+                        {scenario.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Shopping Intent</Label>
+                  <div className="relative">
+                    <Textarea
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      rows={4}
+                      maxLength={600}
+                      placeholder="e.g. Find me a developer laptop under ₹60,000 and prepare checkout."
+                      disabled={running}
+                      className="rounded-sm border-border bg-muted/5 focus-visible:ring-copper/20 resize-none text-sm font-medium leading-relaxed"
+                    />
+                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                      {run.runId ? (
+                        <span className="font-mono text-[9px] text-muted-foreground/40 uppercase tracking-tight">
+                          ID: {run.runId.slice(0, 8)} · {run.model?.replace('gemini-', '') ?? "—"}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Button 
+                    onClick={() => void start(input)} 
+                    disabled={running || input.trim().length === 0}
+                    className="flex-1 rounded-sm bg-copper hover:bg-copper/90 text-white font-bold uppercase tracking-widest h-10 px-6 shadow-sm shadow-copper/20"
+                  >
+                    {running ? (
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                    ) : (
+                      <Send className="mr-2 size-4" />
+                    )}
+                    {running ? "Simulating…" : "Launch Agent"}
+                  </Button>
+                  {running ? (
+                    <Button 
+                      variant="outline" 
+                      onClick={() => abortRef.current?.abort()}
+                      className="rounded-sm border-border font-bold uppercase tracking-widest h-10 px-4"
+                    >
+                      <Square className="mr-2 size-4" /> Stop
+                    </Button>
+                  ) : null}
+                </div>
+
+                {run.error ? (
+                  <div className="flex items-start gap-2 rounded-sm border border-destructive/20 bg-destructive/5 p-3 text-[11px] text-foreground leading-relaxed">
+                    <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-destructive" />
+                    {run.error}
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* RIGHT: Agent execution / current run */}
+          <div className="space-y-6 flex flex-col">
+
           <Card className="rounded-sm border-border bg-card shadow-none overflow-hidden">
             <CardHeader className="bg-muted/30 border-b border-border pb-4">
               <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
