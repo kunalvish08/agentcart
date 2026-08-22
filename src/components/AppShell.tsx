@@ -131,7 +131,7 @@ export function AppShell({
           ))}
         </nav>
 
-        <main className="flex-1 px-6 py-6">{children}</main>
+        <main className="flex-1 w-full max-w-full min-w-0 px-0 sm:px-6 py-6">{children}</main>
       </div>
     </div>
   );
