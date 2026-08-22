@@ -81,7 +81,7 @@ function DashboardPage() {
   return (
     <AppShell
       title={data?.merchant.name ?? "TechNova Store"}
-      subtitle="Your catalog, commercial rules and AI commerce activity — in one place."
+      subtitle="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Replace the current color system across the entire website with a distinctive premium “Midnight Commerce” design system.\n\nPrimary:\n\n#0B1220 Deep Ink\n\n#111B2E Midnight\n\n#3157FF Royal Cobalt\n\n#36C5D8 Electric Cyan\n\nNeutrals:\n\n#F7F9FC Cloud\n\n#EAF2F7 Soft Ice\n\n#FFFFFF White\n\nSemantic:\n\n#18A878 Verified / Success\n\n#D99020 Pending / Approval\n\n#D95C5C Error / Rejected\n\nUse cobalt for primary actions and server authority.\n\nUse cyan specifically for AI, agent and API concepts.\n\nUse emerald only for verified/completed payment states.\n\nUse amber only for human approval/pending states.\n\nCreate strong contrast between light merchant workspace areas\n\nand dark technical/infrastructure sections.\n\nDo not use purple gradients, neon RGB, excessive glassmorphism,\n\nor generic blue SaaS styling.\n\nThe palette must feel like premium financial infrastructure combined\n\nwith advanced developer tooling.\n\nApply this consistently across every page while preserving all\n\nexisting functionality and backend logic."
       accountLabel={data?.profile.email ?? undefined}
     >
       <div className="space-y-8 max-w-7xl mx-auto">
