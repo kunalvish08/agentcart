@@ -471,6 +471,7 @@ Do not add animations.
 
 Do not make further visual changes.''' */}
 
+      <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-4">
             <div className="space-y-0.5">
@@ -497,6 +498,7 @@ Do not make further visual changes.''' */}
             </div>
           </div>
         </div>
+
 
 
 
