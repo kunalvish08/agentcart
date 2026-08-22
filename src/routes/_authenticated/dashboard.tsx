@@ -174,14 +174,17 @@ function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* 5. NEGOTIATION & GROWTH */}
+            {/* 2. NEGOTIATION & GROWTH */}
             <Card className="border-border/60 shadow-none">
               <CardHeader className="pb-4 flex flex-row items-center justify-between">
                 <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                    <TrendingUp className="size-3.5" /> Negotiation & Growth
                 </CardTitle>
+                <div className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">
+                  POLICY CAP: 12%
+                </div>
               </CardHeader>
-              <CardContent className="space-y-8">
+              <CardContent className="space-y-6">
                 <div className="flex flex-col md:flex-row items-stretch gap-4">
                    <RevenueMetric label="List Value" value={growth ? inr.format(growth.listValue) : "—"} />
                    <div className="flex items-center justify-center px-2 text-muted-foreground/30">
@@ -196,14 +199,14 @@ function DashboardPage() {
                    <RevenueMetric label="Discount Given" value={growth ? inr.format(growth.discountGiven) : "—"} sub={`Avg ${growth?.avgApprovedDiscount}%`} />
                 </div>
                 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pt-4">
+                <div className="grid gap-6 grid-cols-2 md:grid-cols-4 pt-2">
                   <SmallMetric label="Negotiations" value={growth?.negotiations} sub={`${growth?.openNegotiations} open`} />
                   <SmallMetric label="Counter-offers" value={growth?.countered} sub="Policy enforced" />
                   <SmallMetric label="Offers Made" value={growth?.offers} />
-                  <SmallMetric label="Upsell Accpt." value={growth?.acceptedRecommendations} sub={`${growth?.recommendations} suggested`} />
+                  <SmallMetric label="Upsell" value={growth?.acceptedRecommendations} sub={`${growth?.recommendations} units`} />
                 </div>
 
-                <p className="text-[10px] text-muted-foreground italic font-medium">
+                <p className="text-[10px] text-muted-foreground italic font-medium pt-2 border-t border-border/40">
                   "Discount decisions are enforced by the server policy engine."
                 </p>
               </CardContent>
