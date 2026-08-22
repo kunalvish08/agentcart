@@ -24,20 +24,21 @@ function ObsidianNode({ title, subtitle, active = false, copper = false, delay =
       transition={{ delay, duration: 0.5 }}
       className={cn(
         "relative rounded-sm border p-4 transition-all duration-500 overflow-hidden",
-        active ? (copper ? "border-copper bg-slate shadow-[0_0_20px_rgba(213,155,98,0.1)]" : "border-ice/20 bg-slate") : "border-slate bg-graphite",
+        active ? (copper ? "border-primary bg-accent shadow-[0_0_20px_rgba(213,155,98,0.1)]" : "border-border bg-accent") : "border-border bg-card",
       )}
     >
       {active && copper && (
         <motion.div 
-          animate={{ opacity: [0.2, 0.4, 0.2] }}
+          animate={{ opacity: [0.1, 0.2, 0.1] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute inset-0 bg-copper/5"
+          className="absolute inset-0 bg-primary/10"
         />
       )}
-      <p className={cn("text-[10px] font-bold uppercase tracking-[0.2em]", active ? "text-white" : "text-steel")}>{title}</p>
-      {subtitle && <p className={cn("mt-1 text-[11px] font-mono", copper ? "text-copper" : "text-ice")}>{subtitle}</p>}
+      <p className={cn("text-[10px] font-bold uppercase tracking-[0.2em]", active ? "text-foreground" : "text-muted-foreground")}>{title}</p>
+      {subtitle && <p className={cn("mt-1 text-[11px] font-mono", copper ? "text-primary" : "text-foreground/80")}>{subtitle}</p>}
     </motion.div>
   );
+}
 }
 
 function Signal() {
