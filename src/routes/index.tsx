@@ -80,25 +80,25 @@ function Landing() {
       <main className="mx-auto max-w-7xl px-6 py-20">
         <section className="grid lg:grid-cols-2 gap-20 items-center">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-copper">AI COMMERCE INFRASTRUCTURE</span>
-            <h1 className="mt-6 text-6xl font-semibold leading-[1.05] tracking-tight text-white">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">AI COMMERCE INFRASTRUCTURE</span>
+            <h1 className="mt-6 text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
               Let AI buyers shop your store. <br />
-              <span className="text-steel">Keep the money under your control.</span>
+              <span className="text-muted-foreground">Keep the money under your control.</span>
             </h1>
-            <p className="mt-10 text-lg text-ice/70 leading-relaxed max-w-xl">
+            <p className="mt-10 text-lg text-muted-foreground leading-relaxed max-w-xl">
               Expose your catalog to external AI agents while keeping pricing, policy, checkout and payment authority on your server.
             </p>
             <div className="mt-12 flex items-center gap-4">
-              <Button asChild className="h-12 bg-copper hover:bg-copper/90 text-obsidian font-bold rounded-none">
+              <Button asChild className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-none">
                 <Link to="/login">Open Merchant Console</Link>
               </Button>
-              <Button asChild variant="outline" className="h-12 border-slate bg-transparent text-white hover:bg-slate rounded-none">
+              <Button asChild variant="outline" className="h-12 border-border bg-transparent text-foreground hover:bg-accent rounded-none">
                 <Link to="/agent-api">Explore Agent API</Link>
               </Button>
             </div>
           </div>
 
-          <div className="grid gap-1 p-8 border border-slate bg-graphite rounded-sm relative overflow-hidden">
+          <div className="grid gap-1 p-8 border border-border bg-card rounded-sm relative overflow-hidden">
             <ObsidianNode title="AI BUYER" subtitle="Laptop under ₹60k" delay={0.2} />
             <Signal />
             <ObsidianNode title="PUBLIC AGENT API" subtitle="/search · /quote · /negotiate" delay={0.4} />
@@ -122,11 +122,11 @@ function Landing() {
           <div>
             <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
               AI decides what to ask. <br />
-              <span className="text-steel">Your server decides what can happen.</span>
+              <span className="text-muted-foreground">Your server decides what can happen.</span>
             </h2>
-            <div className="mt-12 flex items-center gap-16 border-t border-slate pt-12">
+            <div className="mt-12 flex items-center gap-16 border-t border-border pt-12">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-steel">AI BUYER</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">AI BUYER</p>
                 <ul className="mt-6 space-y-3 text-sm text-ice/80">
                   <li>Discover</li>
                   <li>Search</li>
