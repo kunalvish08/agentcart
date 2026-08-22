@@ -51,67 +51,7 @@ const NavigationMenuTrigger = React.forwardRef<
     {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Redesign the mobile navigation for the entire Agentic Commerce platform.
-
-IMPORTANT:
-
-Keep the existing desktop sidebar/navigation unchanged.
-
-For mobile screens (<768px), replace the desktop sidebar with a compact mobile header:
-
-[☰] Agentic Commerce                         [User]
-
-When the hamburger button is tapped, open a polished dropdown / slide-down navigation menu containing ALL existing routes:
-
-- Dashboard
-
-- AI Buyer
-
-- External AI Buyer
-
-- Approvals
-
-- Products
-
-- Policies
-
-- Evaluation Lab
-
-- Judge Mode
-
-Requirements:
-
-- Menu opens/closes smoothly with a subtle animation.
-
-- Active page is clearly highlighted.
-
-- Each item has its existing icon + label.
-
-- Menu should fit the mobile viewport and never create page-level horizontal overflow.
-
-- Close menu after selecting a route.
-
-- Add a subtle backdrop when the menu is open.
-
-- Touch targets should be at least 44px.
-
-- Keep Sign Out / account action accessible inside the mobile menu or header.
-
-- Preserve the existing desktop navigation exactly as it is.
-
-- Use existing light/dark theme tokens so the menu looks correct in BOTH themes.
-
-- Do not hardcode black/white colors.
-
-- Do not change backend, routes, APIs, database, or page functionality.
-
-Responsive:
-
-320px → 767px: mobile hamburger + dropdown navigation
-
-768px+: existing desktop sidebar
-
-Implement this centrally in AppShell so it works consistently across every page.`}
+                                            use CSS to completely hide the Lovable badge (the 'Made with Lovable' element), without breaking the layout`}
     <ChevronDown
       className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
       aria-hidden="true"
