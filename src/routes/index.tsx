@@ -142,43 +142,47 @@ function Landing() {
             {/* LEFT SIDE */}
             <div className="max-w-2xl">
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6 inline-flex items-center rounded-full border border-[oklch(0.75_0.15_200)]/10 bg-[oklch(0.75_0.15_200)]/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[oklch(0.75_0.15_200)]"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-8 inline-flex items-center gap-3"
               >
-                AI-NATIVE COMMERCE INFRASTRUCTURE
+                <div className="h-[1px] w-8 bg-primary/60" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                  AI COMMERCE INFRASTRUCTURE
+                </span>
               </motion.div>
               
               <motion.h1 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-5xl lg:text-6xl"
+                transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-5xl font-semibold leading-[1.05] tracking-tight text-foreground md:text-6xl lg:text-7xl"
               >
-                Let AI buyers shop your store. <br />
-                <span className="text-muted-foreground">Keep the money under your control.</span>
+                Let AI buyers <br />shop your store.
               </motion.h1>
               
               <motion.p 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-8 text-lg leading-relaxed text-muted-foreground/90 md:text-xl"
+                transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10 text-lg leading-relaxed text-muted-foreground/80 md:text-xl max-w-xl"
               >
-                Expose your catalog to external AI agents, let them discover products and negotiate within your rules, and keep pricing, checkout and payment authority on the server.
+                Keep the money under your control. Expose your catalog to external agents while keeping pricing and payment authority on your server.
               </motion.p>
               
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
+                transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-12 flex flex-col items-center gap-6 sm:flex-row"
               >
-                <Button asChild size="lg" className="h-12 w-full px-8 text-sm font-semibold shadow-md sm:w-auto">
+                <Button asChild size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest shadow-none rounded-none sm:w-auto">
                   <Link to="/login">Open merchant console</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="h-12 w-full border-border bg-transparent px-8 text-sm font-semibold sm:w-auto">
-                  <Link to="/agent-api">Explore Agent API</Link>
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full px-8 text-[11px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-colors sm:w-auto">
+                  <Link to="/agent-api" className="flex items-center gap-2">
+                    Explore Agent API <ArrowRight size={14} />
+                  </Link>
                 </Button>
               </motion.div>
             </div>
