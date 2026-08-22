@@ -223,11 +223,15 @@ function DashboardPage() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid grid-cols-5 gap-2">
+                <div className="flex items-center gap-1">
                   <PipelineStep label="Requests" value={checkout?.orders} active={Boolean(checkout?.orders)} />
-                  <PipelineStep label="Approvals" value={checkout?.pendingApprovals} active={Boolean(checkout?.pendingApprovals)} highlight />
+                  <div className="flex-1 h-[1px] bg-border/40" />
+                  <PipelineStep label="Approval" value={checkout?.pendingApprovals} active={Boolean(checkout?.pendingApprovals)} highlight />
+                  <div className="flex-1 h-[1px] bg-border/40" />
                   <PipelineStep label="Payment" value={checkout?.awaitingPayment} active={Boolean(checkout?.awaitingPayment)} />
+                  <div className="flex-1 h-[1px] bg-border/40" />
                   <PipelineStep label="Verified" value={payments?.verified} active={Boolean(payments?.verified)} />
+                  <div className="flex-1 h-[1px] bg-border/40" />
                   <PipelineStep label="Completed" value={payments?.completedOrders} active={Boolean(payments?.completedOrders)} />
                 </div>
                 
