@@ -565,10 +565,10 @@ function BuyerPage() {
                     ))}
                   </ul>
                 </div>
-              </aside>
-            </div>
+              </motion.aside>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* 5. YOUR ORDERS */}
         <section className="mt-8">
