@@ -58,7 +58,7 @@ export function AuditTrail({ events, isLoading }: AuditTrailProps) {
                 <div className="absolute -left-[5px] top-0 size-2.5 rounded-full border border-border bg-card" />
                 
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="text-[10px] font-bold text-foreground uppercase tracking-tight break-words overflow-wrap-anywhere">
+                  <span className="text-[10px] font-bold text-foreground uppercase tracking-tight">
                     {event.event.replace(/_/g, ' ')}
                   </span>
                   <div className={cn("flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest", ACTOR_COLORS[event.actor_type])}>
@@ -68,13 +68,13 @@ export function AuditTrail({ events, isLoading }: AuditTrailProps) {
                 </div>
 
                 <div className="font-mono text-muted-foreground/60 flex items-center gap-2 mb-1.5">
-                  <span className="text-[9px] uppercase break-all">{event.from_status || 'START'}</span>
-                  <ArrowRight className="size-2.5 shrink-0" />
-                  <span className="text-[9px] text-foreground uppercase break-all">{event.to_status ?? "—"}</span>
+                  <span className="text-[9px] uppercase">{event.from_status || 'START'}</span>
+                  <ArrowRight className="size-2.5" />
+                  <span className="text-[9px] text-foreground uppercase">{event.to_status ?? "—"}</span>
                 </div>
 
                 {event.reason && (
-                  <p className="mb-2 text-[10px] text-muted-foreground italic border-l border-border/60 pl-2 leading-relaxed break-words overflow-wrap-anywhere">
+                  <p className="mb-2 text-[10px] text-muted-foreground italic border-l border-border/60 pl-2 leading-relaxed">
                     {event.reason}
                   </p>
                 )}

@@ -129,7 +129,7 @@ export function PaymentLedgerCard() {
                     <p className="font-bold text-foreground uppercase truncate">
                       {row.product_name ?? "Order"}
                     </p>
-                    <p className="text-[9px] font-mono text-muted-foreground/60 break-all">
+                    <p className="text-[9px] font-mono text-muted-foreground/60">
                       ID: {row.order_id.slice(0, 8)} · {row.razorpay_order_id}
                     </p>
                   </div>
@@ -138,7 +138,7 @@ export function PaymentLedgerCard() {
                   </p>
                 </div>
                 
-                <div className="space-y-1 font-mono text-[9px] text-muted-foreground/60 border-t border-border/40 pt-2 mb-2 break-all">
+                <div className="space-y-1 font-mono text-[9px] text-muted-foreground/60 border-t border-border/40 pt-2 mb-2">
                   <p>PAYMENT: {row.razorpay_payment_id || "PENDING"}</p>
                   <p>METHOD: {row.method?.toUpperCase() || "—"}</p>
                 </div>

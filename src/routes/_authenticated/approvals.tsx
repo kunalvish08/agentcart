@@ -107,7 +107,7 @@ function ApprovalsPage() {
       subtitle="Human-in-the-loop review — the agent can request a checkout but never approve one"
       accountLabel={workspace.data?.profile.email ?? undefined}
     >
-      <div className="space-y-12 w-full max-w-full min-w-0 pb-24 px-4 sm:px-6">
+      <div className="space-y-12 max-w-[1600px] mx-auto pb-24">
         {/* HEADER & SUMMARY */}
         <ApprovalsHeader 
           pendingCount={pending.length} 
@@ -115,8 +115,8 @@ function ApprovalsPage() {
           totalPendingValue={totalPendingValue}
         />
 
-        <div className="flex flex-col lg:grid lg:gap-12 lg:grid-cols-[minmax(0,1fr)_400px]">
-          <div className="space-y-16 min-w-0">
+        <div className="grid gap-12 lg:grid-cols-[1fr_400px]">
+          <div className="space-y-16">
             {/* 3. ACTIVE APPROVAL QUEUE */}
             <section className="space-y-6">
               <div className="flex flex-col gap-1 border-b border-border/40 pb-4">
@@ -188,7 +188,7 @@ function ApprovalsPage() {
                 <span className="text-[9px] font-mono text-muted-foreground/20 italic tracking-widest">IMMUTABLE DECISIONS</span>
               </div>
               
-              <div className="w-full overflow-x-auto no-scrollbar border border-border/40">
+              <div className="overflow-x-auto border border-border/40">
                 <table className="w-full text-left border-collapse min-w-[600px]">
                   <thead>
                     <tr className="bg-muted/30 border-b border-border/40">
@@ -248,7 +248,7 @@ function ApprovalsPage() {
             </section>
           </div>
 
-          <aside className="space-y-12 min-w-0">
+          <aside className="space-y-12">
             {/* 8. PAYMENTS */}
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">
