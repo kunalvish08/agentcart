@@ -339,16 +339,17 @@ function DashboardPage() {
   );
 }
 
-function FlowStep({ label, icon: Icon, active = false }: { label: string; icon: any; active?: boolean }) {
+function FlowStep({ label, icon: Icon, active = false, className }: { label: string; icon: any; active?: boolean; className?: string }) {
   return (
     <div className={cn("flex flex-col items-center gap-3 transition-all", active ? "scale-110" : "opacity-60")}>
       <div className={cn(
         "flex size-12 items-center justify-center rounded-xl border transition-all",
-        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border"
+        active ? "bg-primary text-primary-foreground border-primary shadow-lg ring-4 ring-primary/10" : "bg-muted/30 text-muted-foreground border-border",
+        className
       )}>
         <Icon className="size-5" />
       </div>
-      <span className={cn("text-[10px] font-bold uppercase tracking-widest", active ? "text-primary" : "text-muted-foreground")}>{label}</span>
+      <span className={cn("text-[10px] font-bold uppercase tracking-widest text-center max-w-[80px]", active ? "text-primary" : "text-muted-foreground")}>{label}</span>
     </div>
   );
 }
