@@ -819,7 +819,7 @@ function LabPage() {
               </Tabs>
             ) : null}
           </div>
-        </aside>
+        </div>
       </div>
     </AppShell>
   );
