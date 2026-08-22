@@ -127,7 +127,7 @@ function Landing() {
             <div className="mt-12 flex items-center gap-16 border-t border-border pt-12">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">AI BUYER</p>
-                <ul className="mt-6 space-y-3 text-sm text-ice/80">
+                <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                   <li>Discover</li>
                   <li>Search</li>
                   <li>Quote</li>
@@ -135,10 +135,10 @@ function Landing() {
                   <li>Checkout</li>
                 </ul>
               </div>
-              <div className="text-copper font-mono text-sm">REQUEST ≠ AUTHORITY</div>
+              <div className="text-primary font-mono text-sm">REQUEST ≠ AUTHORITY</div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper">SERVER AUTHORITY</p>
-                <ul className="mt-6 space-y-3 text-sm text-white">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">SERVER AUTHORITY</p>
+                <ul className="mt-6 space-y-3 text-sm text-foreground">
                   <li>Price</li>
                   <li>Inventory</li>
                   <li>Discount limits</li>
@@ -151,13 +151,13 @@ function Landing() {
         </section>
 
         <section className="py-32 grid md:grid-cols-3 gap-8">
-          <div className="border border-slate p-8">
-            <Search className="text-copper" />
+          <div className="border border-border p-8 bg-card">
+            <Search className="text-primary" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">01 DISCOVERABLE</h3>
-            <p className="mt-4 text-[11px] font-mono text-ice">Make your catalog readable by machines.</p>
-            <p className="mt-8 text-sm text-steel">External AI buyers can discover products through a public API designed for LLM tool-calling.</p>
+            <p className="mt-4 text-[11px] font-mono text-primary">Make your catalog readable by machines.</p>
+            <p className="mt-8 text-sm text-muted-foreground">External AI buyers can discover products through a public API designed for LLM tool-calling.</p>
           </div>
-          <div className="border border-slate p-8">
+          <div className="border border-border p-8 bg-card">
             <Scale className="text-copper" />
             <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">02 BOUNDED</h3>
             <p className="mt-4 text-[11px] font-mono text-ice">Let agents negotiate without giving them pricing authority.</p>
