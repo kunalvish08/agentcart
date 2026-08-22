@@ -284,29 +284,28 @@ const ENDPOINTS: Endpoint[] = [
 
 function AgentApiPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card px-6 py-6">
+    <div className="min-h-screen bg-background pb-20">
+      <header className="border-b border-border bg-card px-6 py-10">
         <div className="mx-auto max-w-5xl">
           <Link
             to="/"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground mb-8"
           >
-            <ArrowLeft className="size-4" /> Back home
+            <ArrowLeft className="size-3" /> Back to platform
           </Link>
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-            Agent Commerce API
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Machine-readable HTTP APIs designed for consumption by external AI buying agents — no
-            merchant frontend required. All endpoints return JSON. Monetary amounts, inventory checks
-            and policy enforcement are deterministic server-side code; no language model participates
-            in pricing or authorisation.
+          <div className="flex items-center gap-3 mb-4">
+            <span className="flex size-8 items-center justify-center rounded-sm bg-primary text-primary-foreground">
+              <Terminal className="size-4" />
+            </span>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground uppercase">Agent Commerce API</h1>
+          </div>
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground font-medium">
+            Commercial infrastructure for autonomous AI buyers. Public, machine-readable, and server-authoritative.
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="secondary">Phase 02</Badge>
-            <Badge variant="outline">Public · unauthenticated reads</Badge>
-            <Badge variant="outline">Server-side pricing authority</Badge>
-            <Badge variant="outline">Checkout &amp; payments: not yet available</Badge>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Badge variant="outline" className="rounded-sm border-border text-[9px] font-bold uppercase tracking-widest px-2 h-6">v1.0.6</Badge>
+            <Badge variant="outline" className="rounded-sm border-border text-[9px] font-bold uppercase tracking-widest px-2 h-6">Public Access</Badge>
+            <Badge variant="outline" className="rounded-sm border-border text-[9px] font-bold uppercase tracking-widest px-2 h-6">Pricing Authority: Server</Badge>
           </div>
         </div>
       </header>
