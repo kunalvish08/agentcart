@@ -37,7 +37,7 @@ export async function recordRevenueEvent(entry: {
       amount: entry.amount ?? 0,
       currency: entry.currency ?? "INR",
       reason: entry.reason ?? null,
-      detail: entry.detail ?? {},
+      detail: (entry.detail ?? {}) as never,
     });
   } catch (error) {
     // Observability must never break a commerce flow.
