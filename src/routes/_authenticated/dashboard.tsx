@@ -37,6 +37,68 @@ const inr = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
 });
 
+type Stage = { status: string; state: "idle" | "active" | "pending" | "completed" };
+
+/**
+ * Derives Authority Pipeline stage states from the merchant's real checkout audit
+ * trail (latest transaction). Presentation-only: no defaults are invented — with no
+ * transactions every stage reads a neutral READY state.
+ */
+function derivePipeline(audit: Array<{ event: string; to_status: string | null; order_id: string | null; created_at: string }> | undefined) {
+  const ready: Stage = { status: "READY", state: "idle" };
+  const idle = { cat: ready, ai: ready, auth: ready, app: ready, rzp: ready, fin: ready };
+  if (!audit || audit.length === 0) return idle;
+
+  const latestOrderId = audit.find((row) => row.order_id)?.order_id ?? null;
+  if (!latestOrderId) return idle;
+
+  const rows = audit.filter((row) => row.order_id === latestOrderId);
+  const events = new Set(rows.map((row) => row.event));
+  const orderStatus = rows.find((row) => row.to_status)?.to_status ?? null;
+
+  const done: Stage = { status: "COMPLETED", state: "completed" };
+  const completedOrder = orderStatus === "COMPLETED" || events.has("ORDER_COMPLETED");
+  const paymentVerified = completedOrder || events.has("PAYMENT_VERIFIED");
+  const paymentCaptured = paymentVerified || events.has("PAYMENT_CAPTURED");
+  const paymentStarted =
+    paymentCaptured ||
+    events.has("PAYMENT_INITIALIZED") ||
+    events.has("RAZORPAY_ORDER_CREATED") ||
+    orderStatus === "PAYMENT_PENDING";
+  const paymentFailed = !paymentVerified && events.has("PAYMENT_FAILED");
+  const rejected = orderStatus === "REJECTED" || events.has("REJECTED");
+  const cancelled = orderStatus === "CANCELLED" || orderStatus === "EXPIRED";
+  const awaitingApproval = orderStatus === "APPROVAL_REQUIRED" && !rejected;
+  const approvalNeeded = events.has("APPROVAL_REQUIRED");
+  const approved = events.has("APPROVED") || orderStatus === "APPROVED";
+  const orderCreated = events.has("ORDER_CREATED") || paymentStarted || completedOrder;
+
+  return {
+    cat: done,
+    ai: done,
+    auth: awaitingApproval || approved || orderCreated || rejected ? done : { status: "ACTIVE", state: "active" as const },
+    app: rejected
+      ? { status: "REJECTED", state: "pending" as const }
+      : awaitingApproval
+        ? { status: "PENDING", state: "active" as const }
+        : approved || orderCreated
+          ? { status: approvalNeeded ? "APPROVED" : "COMPLETED", state: "completed" as const }
+          : { status: "PENDING", state: "pending" as const },
+    rzp: paymentVerified
+      ? { status: "VERIFIED", state: "completed" as const }
+      : paymentFailed
+        ? { status: "FAILED", state: "pending" as const }
+        : paymentStarted
+          ? { status: "PENDING", state: "active" as const }
+          : { status: "WAITING", state: "pending" as const },
+    fin: completedOrder
+      ? done
+      : rejected || cancelled
+        ? { status: orderStatus === "EXPIRED" ? "EXPIRED" : rejected ? "REJECTED" : "CANCELLED", state: "pending" as const }
+        : { status: "LOCKED", state: "pending" as const },
+  };
+}
+
 function DashboardPage() {
   const fetchWorkspace = useServerFn(getWorkspace);
   const fetchGrowth = useServerFn(getGrowthMetrics);
