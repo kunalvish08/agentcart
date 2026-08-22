@@ -45,6 +45,8 @@ function DashboardPage() {
 
   const { data: data } = useQuery({ queryKey: ["workspace"], queryFn: () => fetchWorkspace() });
   const { data: growth } = useQuery({ queryKey: ["growth-metrics"], queryFn: () => fetchGrowth() });
+  const fetchRevenue = useServerFn(getRevenueAgentMetrics);
+  const { data: revenue } = useQuery({ queryKey: ["revenue-agent-metrics"], queryFn: () => fetchRevenue(), refetchInterval: 20_000 });
   const { data: checkout } = useQuery({ queryKey: ["checkout-metrics"], queryFn: () => fetchCheckout(), refetchInterval: 15_000 });
   const { data: audit } = useQuery({ queryKey: ["checkout-audit"], queryFn: () => fetchAudit(), refetchInterval: 15_000 });
 
