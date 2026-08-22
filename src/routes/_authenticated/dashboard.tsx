@@ -204,14 +204,14 @@ function DashboardPage() {
                               transition={{ duration: 2 }}
                               className="absolute inset-0 bg-approval-amber/10"
                             />
-                            <p className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1 flex items-center gap-2">
+                            <div className="text-[10px] text-approval-amber uppercase font-bold tracking-widest mb-1 flex items-center gap-2">
                                 Payment Pending
                                 <motion.div 
                                   animate={{ scale: [1, 1.2, 1] }}
                                   transition={{ duration: 2, repeat: Infinity }}
                                   className="size-1 rounded-full bg-approval-amber"
                                 />
-                            </p>
+                            </div>
                             <p className="text-lg font-bold font-mono"><CountUp value={inr.format(checkout?.paymentPendingValue ?? 0)} /></p>
                         </motion.div>
                     </div>
