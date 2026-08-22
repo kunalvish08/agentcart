@@ -279,14 +279,26 @@ function Landing() {
                   </span>
                 </motion.div>
                 
-                <h2 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                  className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.1]"
+                >
                   AI decides what to ask. <br />
                   <span className="text-[#B8C4D6]">Your server decides what can happen.</span>
-                </h2>
+                </motion.h2>
                 
-                <p className="mt-8 text-lg text-[#B8C4D6] max-w-md leading-relaxed">
+                <motion.p 
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="mt-8 text-lg text-[#B8C4D6] max-w-md leading-relaxed"
+                >
                   Every commercial action is evaluated against merchant-defined policies before execution.
-                </p>
+                </motion.p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-sm overflow-hidden">
