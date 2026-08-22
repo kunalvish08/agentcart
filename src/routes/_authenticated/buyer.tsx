@@ -526,12 +526,15 @@ Do not make further visual changes.''' */}
               <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border/40">
                 <div>
                   {SUGGESTIONS.map((s) => (
-                    <button> setInput(s)}
+                    <button
+                      key={s}
+                      onClick={() => setInput(s)}
                       className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full border border-border/60 bg-background hover:border-copper/40 hover:bg-copper/5 transition-colors"
                     >
                       {s}
                     </button>
                   ))}
+
                 </div>
                 {running ? (
                   <Button 
