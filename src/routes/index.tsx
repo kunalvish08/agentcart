@@ -109,6 +109,49 @@ function Landing() {
             </div>
           </div>
         </section>
+
+        <section className="py-32 grid md:grid-cols-3 gap-8">
+          <div className="border border-slate p-8">
+            <Search className="text-copper" />
+            <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">01 DISCOVERABLE</h3>
+            <p className="mt-4 text-[11px] font-mono text-ice">Make your catalog readable by machines.</p>
+            <p className="mt-8 text-sm text-steel">External AI buyers can discover products through a public API designed for LLM tool-calling.</p>
+          </div>
+          <div className="border border-slate p-8">
+            <Scale className="text-copper" />
+            <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">02 BOUNDED</h3>
+            <p className="mt-4 text-[11px] font-mono text-ice">Let agents negotiate without giving them pricing authority.</p>
+            <p className="mt-8 text-sm text-steel">Merchant policies determine discount limits. The AI buyer requests, the server enforces.</p>
+          </div>
+          <div className="border border-slate p-8">
+            <CreditCard className="text-verified-green" />
+            <h3 className="mt-6 text-sm font-bold uppercase tracking-[0.2em]">03 TRANSACTABLE</h3>
+            <p className="mt-4 text-[11px] font-mono text-ice">Take the transaction to verified payment.</p>
+            <p className="mt-8 text-sm text-steel">Every transaction flows through server-side Razorpay verification to ensure orders are completed safely.</p>
+          </div>
+        </section>
+
+        <section className="py-32 border-t border-slate">
+          <h2 className="text-4xl font-semibold">Every money action has an authority.</h2>
+          <div className="mt-16 grid md:grid-cols-4 gap-4">
+             {["AI REQUESTS", "MERCHANT POLICY BOUNDS", "SERVER DECIDES", "RAZORPAY VERIFIES"].map((title, i) => (
+                <div key={title} className={cn("border p-6", i === 2 ? "border-copper" : "border-slate")}>
+                    <p className="text-[10px] font-bold uppercase text-steel">{title}</p>
+                </div>
+             ))}
+          </div>
+        </section>
+
+        <section className="py-32 text-center bg-graphite border border-slate">
+           <p className="text-[10px] font-bold uppercase text-copper tracking-[0.2em]">BUILD FOR THE AGENTIC WEB</p>
+           <h2 className="mt-6 text-5xl font-semibold">Make your store legible to AI.</h2>
+           <p className="mt-6 text-steel max-w-lg mx-auto">Define your commercial limits. Let external agents transact within them.</p>
+           <div className="mt-12 flex justify-center gap-4">
+              <Button asChild className="h-12 bg-copper hover:bg-copper/90 text-obsidian font-bold rounded-none"><Link to="/login">Open Merchant Console</Link></Button>
+              <Button asChild variant="outline" className="h-12 border-slate text-white hover:bg-slate rounded-none"><Link to="/agent-api">Explore Agent API</Link></Button>
+           </div>
+        </section>
+
       </main>
 
       <footer className="border-t border-slate py-12 text-center text-steel text-[11px] uppercase tracking-widest">
