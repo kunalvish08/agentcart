@@ -167,28 +167,26 @@ function ProductsPage() {
           onNewProduct={openCreate}
         />
 
-        <div className="border border-[var(--border-color)] bg-[var(--bg-surface)] overflow-hidden">
+        <div className="border border-border bg-graphite-950 overflow-hidden">
           <CatalogToolbar />
 
-          <div className="bg-[var(--auth-panel-bg)] px-4 py-3 border-b border-[var(--border-color)] border-l-2 border-l-[var(--auth-panel-border)] flex items-center gap-3">
-            <ShieldCheck className="size-4 text-[var(--accent)]" />
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)]">SERVER-AUTHORITATIVE</span>
-              <span className="text-[10px] text-[var(--text-secondary)]">Prices and inventory controlled by merchant server.</span>
-            </div>
+          <div className="bg-graphite-900/20 px-4 py-2 border-b border-border flex items-center gap-2">
+            <ShieldCheck className="size-4 text-copper-500" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-copper-500">SERVER-AUTHORITATIVE</span>
+            <span className="text-[10px] text-muted-foreground">Prices and inventory controlled by merchant server.</span>
           </div>
 
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-[var(--border-color)] hover:bg-transparent bg-[var(--bg-elevated)]/50">
-                  <TableHead className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Product</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Category</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-right text-[var(--text-muted)]">Price</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest w-40 text-[var(--text-muted)]">Stock</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Status</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">AI Commerce</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-widest text-right text-[var(--text-muted)]">Updated</TableHead>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-[10px] uppercase tracking-widest">Product</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">Category</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Price</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest w-40">Stock</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">Status</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest">AI Commerce</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-widest text-right">Updated</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
@@ -202,24 +200,19 @@ function ProductsPage() {
                 ) : null}
 
                 {products.data?.map((product) => (
-                  <TableRow key={product.id} className="border-[var(--border-color)] hover:bg-[var(--bg-page)] hover:border-l-2 hover:border-l-[var(--accent)] transition-all">
+                  <TableRow key={product.id} className="border-border hover:bg-graphite-900/40 transition-colors">
                     <TableCell>
-                      <p className="font-bold text-[var(--text-primary)] text-sm font-mono">{product.name}</p>
-                      <p className="text-xs text-[var(--text-muted)] truncate max-w-[200px]">{product.description}</p>
+                      <p className="font-bold text-foreground text-sm font-mono">{product.name}</p>
+                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">{product.description}</p>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="rounded-none bg-[var(--auth-panel-bg)] border-[var(--auth-panel-border)]/20 text-[var(--accent)] text-[10px] font-mono">
-                        {product.category?.toUpperCase() ?? "—"}
-                      </Badge>
+                      <Badge variant="outline" className="rounded-none bg-graphite-900 border-border text-[10px]">{product.category ?? "—"}</Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono font-medium text-[var(--text-primary)] text-sm">{inr.format(product.price)}</TableCell>
+                    <TableCell className="text-right font-mono font-medium">{inr.format(product.price)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Input
-                          className={cn(
-                            "h-8 w-16 bg-[var(--bg-page)] border-[var(--border-color)] text-xs text-center font-mono focus-visible:ring-[var(--accent)]/20",
-                            product.stock_quantity <= 5 && "border-[var(--warning)] text-[var(--warning)]"
-                          )}
+                          className="h-8 w-16 bg-graphite-950 border-border text-xs text-center font-mono"
                           type="number"
                           value={stockDrafts[product.id] ?? String(product.stock_quantity)}
                           onChange={(e) => setStockDrafts((prev) => ({ ...prev, [product.id]: e.target.value }))}
@@ -227,7 +220,7 @@ function ProductsPage() {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 text-[10px] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
+                          className="h-8 text-[10px] hover:text-copper-500"
                           onClick={() => stockMutation.mutate({ id: product.id, stock_quantity: Number(stockDrafts[product.id] ?? product.stock_quantity) })}
                         >
                           SAVE
@@ -235,34 +228,26 @@ function ProductsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn(
-                        "rounded-none text-[10px] px-2 border transition-opacity hover:opacity-90", 
-                        product.status === "active" 
-                          ? "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/30" 
-                          : "bg-[var(--bg-page)] text-[var(--inactive)] border-[var(--border-color)]"
-                      )}>
+                      <Badge className={cn("rounded-none text-[10px] px-2", product.status === "active" ? "bg-verified-500/10 text-verified-500 border-verified-500/20" : "bg-muted text-muted-foreground border-border")}>
                         {product.status.toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Badge className="rounded-none bg-[var(--accent)]/10 border-[var(--accent)]/30 text-[10px] text-[var(--accent)] font-bold">PUBLIC</Badge>
-                        <div className="size-1.5 rounded-full bg-[var(--success)]" title="Active in Catalog" />
-                      </div>
+                      <Badge className="rounded-none bg-graphite-900 border-border text-[10px] text-copper-500">PUBLIC</Badge>
                     </TableCell>
-                    <TableCell className="text-right text-[10px] text-[var(--text-muted)] font-mono">
+                    <TableCell className="text-right text-[10px] text-muted-foreground font-mono">
                       {new Date(product.updated_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost" className="size-8 text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/10">
+                          <Button size="icon" variant="ghost" className="size-8">
                             <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-primary)]">
-                          <DropdownMenuItem className="hover:bg-[var(--bg-page)] cursor-pointer" onClick={() => openEdit(product)}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="hover:bg-[var(--bg-page)] cursor-pointer" onClick={() => statusMutation.mutate({ id: product.id, status: product.status === "active" ? "inactive" : "active" })}>
+                        <DropdownMenuContent align="end" className="rounded-none border-border bg-graphite-950">
+                          <DropdownMenuItem onClick={() => openEdit(product)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => statusMutation.mutate({ id: product.id, status: product.status === "active" ? "inactive" : "active" })}>
                             Toggle Status
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -277,16 +262,16 @@ function ProductsPage() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl rounded-none border-[var(--border-color)] bg-[var(--bg-page)] p-0 overflow-hidden font-mono text-[var(--text-primary)]">
-          <DialogHeader className="p-6 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
-            <div className="flex items-center gap-2 mb-1 text-[var(--accent)]">
+        <DialogContent className="max-w-2xl rounded-none border-border bg-graphite-950 p-0 overflow-hidden font-mono">
+          <DialogHeader className="p-6 border-b border-border bg-graphite-900/50">
+            <div className="flex items-center gap-2 mb-1 text-copper-500">
               <Database className="size-4" />
               <span className="text-[10px] font-bold tracking-widest uppercase">Infrastructure Node</span>
             </div>
-            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-[var(--text-primary)]">
+            <DialogTitle className="text-xl font-bold uppercase tracking-tight text-foreground">
               {form.id ? "Edit Product" : "New Product"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-[var(--text-muted)] uppercase tracking-widest">
+            <DialogDescription className="text-xs text-muted-foreground uppercase tracking-widest">
               Commercial authority record for TechNova Store
             </DialogDescription>
           </DialogHeader>
@@ -301,28 +286,28 @@ function ProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2 space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Product Information</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Product Information</h3>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Name</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Name</Label>
                     <Input
                       required
-                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm text-[var(--text-primary)]"
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Description</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Description</Label>
                     <Textarea
-                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 min-h-[100px] text-sm text-[var(--text-primary)]"
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 min-h-[100px] text-sm"
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Category</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Category</Label>
                     <Input
-                      className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm text-[var(--text-primary)]"
+                      className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm"
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
                     />
@@ -331,28 +316,28 @@ function ProductsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Pricing</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Pricing</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Price (INR)</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Price (INR)</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm font-mono text-[var(--text-primary)]"
+                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
                         value={form.price}
                         onChange={(e) => setForm({ ...form, price: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Inventory</h3>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Inventory</h3>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Stock Quantity</Label>
+                      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Stock Quantity</Label>
                       <Input
                         type="number"
                         min={0}
                         required
-                        className="rounded-none border-[var(--border-color)] bg-[var(--bg-surface)] focus-visible:ring-[var(--accent)]/20 h-10 text-sm font-mono text-[var(--text-primary)]"
+                        className="rounded-none border-border bg-graphite-900 focus-visible:ring-copper-500/20 h-10 text-sm font-mono"
                         value={form.stock_quantity}
                         onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
                       />
@@ -363,10 +348,10 @@ function ProductsPage() {
 
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">AI Commerce</h3>
-                  <div className="p-4 border border-[var(--border-color)] bg-[var(--bg-surface)] space-y-4">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">AI Commerce</h3>
+                  <div className="p-4 border border-border bg-graphite-900 space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">Public Catalog</span>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Public Catalog</span>
                       <Switch
                         checked={form.status === "active"}
                         onCheckedChange={(checked) =>
@@ -374,64 +359,58 @@ function ProductsPage() {
                         }
                       />
                     </div>
-                    <div className="space-y-2 pt-2 border-t border-[var(--border-color)]/50">
-                      <div className="flex items-center gap-2 text-[var(--success)]">
+                    <div className="space-y-2 pt-2 border-t border-border/50">
+                      <div className="flex items-center gap-2 text-verified-500">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Discovery</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[var(--success)]">
+                      <div className="flex items-center gap-2 text-verified-500">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Quote</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[var(--success)]">
+                      <div className="flex items-center gap-2 text-verified-500">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Negotiation</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[var(--success)]">
+                      <div className="flex items-center gap-2 text-verified-500">
                         <ShieldCheck className="size-3" />
                         <span className="text-[9px] font-bold uppercase tracking-widest">Checkout</span>
                       </div>
                     </div>
-                    <p className="text-[9px] leading-relaxed text-[var(--text-muted)] italic">
+                    <p className="text-[9px] leading-relaxed text-muted-foreground italic">
                       AI agents may discover this product through the public commerce API. Commercial authority remains server-side.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]/80 pb-2 border-b border-[var(--border-color)]/50">Technical Meta</h3>
-                  <div className="p-4 border border-[var(--border-color)] bg-[var(--bg-surface)] space-y-3">
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-[var(--text-secondary)] uppercase tracking-widest">Product ID</span>
-                      <span className="font-mono text-[var(--text-primary)]">{form.id?.slice(0, 8) ?? "PENDING"}</span>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-copper-500/80 pb-2 border-b border-border/50">Technical Meta</h3>
+                  <div className="space-y-2 text-[10px] font-mono text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span className="uppercase">Record ID:</span>
+                      <span className="text-foreground truncate ml-4">{form.id?.slice(0, 8) ?? "NEW_NODE"}</span>
                     </div>
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-[var(--text-secondary)] uppercase tracking-widest">Authority</span>
-                      <span className="text-[var(--accent)] font-bold uppercase tracking-widest">Server-Enforced</span>
+                    <div className="flex justify-between">
+                      <span className="uppercase">Authority:</span>
+                      <span className="text-foreground uppercase">Merchant Server</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="uppercase">Validation:</span>
+                      <span className="text-verified-500 uppercase">Passed</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <DialogFooter className="p-6 border-t border-[var(--border-color)] bg-[var(--bg-surface)] gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-none border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] text-[10px] uppercase tracking-widest font-bold h-10 hover:bg-[var(--bg-page)] hover:text-[var(--text-primary)]"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
+            <DialogFooter className="pt-6 border-t border-border">
               <Button 
                 type="submit" 
-                disabled={saveMutation.isPending}
-                className="rounded-none bg-[var(--accent)] hover:opacity-90 text-white text-[10px] uppercase tracking-widest font-bold h-10 px-8 border-none"
+                disabled={saveMutation.isPending} 
+                className="w-full sm:w-auto bg-copper-500 hover:bg-copper-600 text-black font-bold uppercase tracking-widest rounded-none h-10 px-8"
               >
-                {saveMutation.isPending ? (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                ) : null}
-                {form.id ? "Update record" : "Create record"}
+                {saveMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+                {form.id ? "Commit Changes" : "Create Product"}
               </Button>
             </DialogFooter>
           </form>
