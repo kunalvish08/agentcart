@@ -64,7 +64,7 @@ function Landing() {
           <div className="flex items-center gap-2">
             <Logo iconOnly className="size-7" />
             <span className="text-sm font-bold tracking-tight text-foreground">Agentic Commerce</span>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            remove \"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\\n \\n \\n hii\"</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">AI INFRASTRUCTURE</span>
           </div>
           <div className="flex items-center gap-4 sm:gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             <Link to="/agent-api" className="hidden sm:block hover:text-foreground transition-colors">Agent API</Link>

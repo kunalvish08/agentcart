@@ -137,7 +137,7 @@ function DashboardPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h1 className="text-2xl font-bold tracking-tight text-foreground">{data?.merchant.name ?? "TechNova Store"}</h1>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            remove \"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\\n \\n \\n hii\"</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Commerce Control Plane</p>
           </motion.div>
           <div className="flex items-center gap-3">
              <div className="flex items-center gap-1.5 rounded-full bg-verified-green/10 px-3 py-1 text-[10px] font-bold text-verified-green">
