@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Search, Scale, CreditCard, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,9 @@ function Signal() {
 
 function Landing() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 font-sans">
@@ -73,7 +77,7 @@ function Landing() {
               onClick={toggleTheme}
               className="flex size-8 items-center justify-center rounded-sm hover:bg-accent transition-colors"
             >
-              {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+              {!mounted ? <span className="size-4" /> : theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
             </button>
           </div>
         </div>
