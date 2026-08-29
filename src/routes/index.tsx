@@ -56,6 +56,9 @@ function Signal() {
 
 function Landing() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 font-sans">
