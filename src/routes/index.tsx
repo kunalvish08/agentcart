@@ -77,7 +77,7 @@ function Landing() {
               onClick={toggleTheme}
               className="flex size-8 items-center justify-center rounded-sm hover:bg-accent transition-colors"
             >
-              {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+              {!mounted ? <span className="size-4" /> : theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
             </button>
           </div>
         </div>
