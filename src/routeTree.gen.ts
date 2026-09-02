@@ -24,6 +24,7 @@ import { Route as AuthenticatedPoliciesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as ApiAgentBuyerRouteImport } from './routes/api/agent/buyer'
 import { Route as ApiAgentExternalBuyerRouteImport } from './routes/api/agent/external-buyer'
+import { Route as ApiAgentLabTokenRouteImport } from './routes/api/agent/lab-token'
 import { Route as ApiPublicAgentManifestRouteImport } from './routes/api/public/agent-manifest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
 import { Route as ApiPublicCheckoutRouteImport } from './routes/api/public/checkout'
@@ -33,6 +34,7 @@ import { Route as ApiPublicRazorpayWebhookRouteImport } from './routes/api/publi
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
 import { Route as ApiPublicOrdersIdRouteImport } from './routes/api/public/orders/$id'
 import { Route as ApiPublicProductsIdRouteImport } from './routes/api/public/products/$id'
+import { Route as ApiPublicOffersIdAcceptRouteImport } from './routes/api/public/offers/$id/accept'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -109,6 +111,11 @@ const ApiAgentExternalBuyerRoute = ApiAgentExternalBuyerRouteImport.update({
   path: '/api/agent/external-buyer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAgentLabTokenRoute = ApiAgentLabTokenRouteImport.update({
+  id: '/api/agent/lab-token',
+  path: '/api/agent/lab-token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAgentManifestRoute = ApiPublicAgentManifestRouteImport.update({
   id: '/api/public/agent-manifest',
   path: '/api/public/agent-manifest',
@@ -155,6 +162,11 @@ const ApiPublicProductsIdRoute = ApiPublicProductsIdRouteImport.update({
   path: '/api/public/products/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOffersIdAcceptRoute = ApiPublicOffersIdAcceptRouteImport.update({
+  id: '/api/public/offers/$id/accept',
+  path: '/api/public/offers/$id/accept',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -171,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
+  '/api/agent/lab-token': typeof ApiAgentLabTokenRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/checkout': typeof ApiPublicCheckoutRoute
@@ -180,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
+  '/api/public/offers/$id/accept': typeof ApiPublicOffersIdAcceptRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -196,6 +210,7 @@ export interface FileRoutesByTo {
   '/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
+  '/api/agent/lab-token': typeof ApiAgentLabTokenRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/checkout': typeof ApiPublicCheckoutRoute
@@ -205,6 +220,7 @@ export interface FileRoutesByTo {
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
+  '/api/public/offers/$id/accept': typeof ApiPublicOffersIdAcceptRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -223,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/api/agent/buyer': typeof ApiAgentBuyerRoute
   '/api/agent/external-buyer': typeof ApiAgentExternalBuyerRoute
+  '/api/agent/lab-token': typeof ApiAgentLabTokenRoute
   '/api/public/agent-manifest': typeof ApiPublicAgentManifestRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/checkout': typeof ApiPublicCheckoutRoute
@@ -232,6 +249,7 @@ export interface FileRoutesById {
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/orders/$id': typeof ApiPublicOrdersIdRoute
   '/api/public/products/$id': typeof ApiPublicProductsIdRoute
+  '/api/public/offers/$id/accept': typeof ApiPublicOffersIdAcceptRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -250,6 +268,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/api/agent/buyer'
     | '/api/agent/external-buyer'
+    | '/api/agent/lab-token'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/checkout'
@@ -259,6 +278,7 @@ export interface FileRouteTypes {
     | '/api/public/search'
     | '/api/public/orders/$id'
     | '/api/public/products/$id'
+    | '/api/public/offers/$id/accept'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -275,6 +295,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/api/agent/buyer'
     | '/api/agent/external-buyer'
+    | '/api/agent/lab-token'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/checkout'
@@ -284,6 +305,7 @@ export interface FileRouteTypes {
     | '/api/public/search'
     | '/api/public/orders/$id'
     | '/api/public/products/$id'
+    | '/api/public/offers/$id/accept'
   id:
     | '__root__'
     | '/'
@@ -301,6 +323,7 @@ export interface FileRouteTypes {
     | '/_authenticated/products'
     | '/api/agent/buyer'
     | '/api/agent/external-buyer'
+    | '/api/agent/lab-token'
     | '/api/public/agent-manifest'
     | '/api/public/catalog'
     | '/api/public/checkout'
@@ -310,6 +333,7 @@ export interface FileRouteTypes {
     | '/api/public/search'
     | '/api/public/orders/$id'
     | '/api/public/products/$id'
+    | '/api/public/offers/$id/accept'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -320,6 +344,7 @@ export interface RootRouteChildren {
   DotwellKnownAgentManifestRoute: typeof DotwellKnownAgentManifestRoute
   ApiAgentBuyerRoute: typeof ApiAgentBuyerRoute
   ApiAgentExternalBuyerRoute: typeof ApiAgentExternalBuyerRoute
+  ApiAgentLabTokenRoute: typeof ApiAgentLabTokenRoute
   ApiPublicAgentManifestRoute: typeof ApiPublicAgentManifestRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicCheckoutRoute: typeof ApiPublicCheckoutRoute
@@ -329,6 +354,7 @@ export interface RootRouteChildren {
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
   ApiPublicOrdersIdRoute: typeof ApiPublicOrdersIdRoute
   ApiPublicProductsIdRoute: typeof ApiPublicProductsIdRoute
+  ApiPublicOffersIdAcceptRoute: typeof ApiPublicOffersIdAcceptRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -438,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAgentExternalBuyerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agent/lab-token': {
+      id: '/api/agent/lab-token'
+      path: '/api/agent/lab-token'
+      fullPath: '/api/agent/lab-token'
+      preLoaderRoute: typeof ApiAgentLabTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/agent-manifest': {
       id: '/api/public/agent-manifest'
       path: '/api/public/agent-manifest'
@@ -501,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicProductsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/offers/$id/accept': {
+      id: '/api/public/offers/$id/accept'
+      path: '/api/public/offers/$id/accept'
+      fullPath: '/api/public/offers/$id/accept'
+      preLoaderRoute: typeof ApiPublicOffersIdAcceptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -537,6 +577,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotwellKnownAgentManifestRoute: DotwellKnownAgentManifestRoute,
   ApiAgentBuyerRoute: ApiAgentBuyerRoute,
   ApiAgentExternalBuyerRoute: ApiAgentExternalBuyerRoute,
+  ApiAgentLabTokenRoute: ApiAgentLabTokenRoute,
   ApiPublicAgentManifestRoute: ApiPublicAgentManifestRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicCheckoutRoute: ApiPublicCheckoutRoute,
@@ -546,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicSearchRoute: ApiPublicSearchRoute,
   ApiPublicOrdersIdRoute: ApiPublicOrdersIdRoute,
   ApiPublicProductsIdRoute: ApiPublicProductsIdRoute,
+  ApiPublicOffersIdAcceptRoute: ApiPublicOffersIdAcceptRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
