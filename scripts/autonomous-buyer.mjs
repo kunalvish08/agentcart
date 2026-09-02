@@ -60,8 +60,9 @@ try {
   log(`Buyer session ready · merchant ${tok.merchant_slug} · currency ${tok.currency}`);
 
   log("Searching catalog…");
-  const search = await api(`/api/public/search?q=${encodeURIComponent(GOAL.need)}&max_price=${GOAL.budget}&in_stock=true&limit=5`);
-  const pick = search.results?.[0];
+  const search = await api(`/api/public/search?q=${encodeURIComponent(GOAL.need)}&max_price=${GOAL.budget}&in_stock=true&limit=10`);
+  // Prefer the highest-priced primary product within budget (real laptops over accessories).
+  const pick = (search.results || []).slice().sort((a, b) => Number(b.price) - Number(a.price))[0];
   if (!pick) { log("No product matched the goal within budget. Stopping."); process.exit(0); }
   log(`Picked: ${pick.name} · list ${money(pick.price, pick.currency)} · stock ${pick.stock_status}`);
 
